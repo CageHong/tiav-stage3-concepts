@@ -1,0 +1,2217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stage 3: Concept Generation — TIaV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/Flip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7/dist/d3.min.js"></script>
+<script src="data.js"></script>
+<style>
+  :root {
+    --bg: #12161C;
+    --panel: #1A1F27;
+    --text: #E3E7EE;
+    --muted: #7D8796;
+    --dim-text: #4F5764;
+    --dim-border: #2C333D;
+    --dim-bg: #171B22;
+    --g1-text: #8CC4BC; --g1-border: #4F8780; --g1-bg: #17262A;
+    --g2-text: #9DAEDB; --g2-border: #5C6E9E; --g2-bg: #1A2030;
+    --g3-text: #DDB874; --g3-border: #9A7A3C; --g3-bg: #2A2418;
+    --red1-text: #E57373; --red1-border: #C64949; --red1-bg: #2E1618;
+    --red2-text: #F08CAE; --red2-border: #C24E78; --red2-bg: #2E1623;
+    --red-text: #E57373; --red-border: #A84448; --red-bg: #2B171A;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    width: 100%;
+    height: 100%;
+    background: #0B0E12;
+    color: var(--text);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    overflow: hidden;
+    user-select: none;
+  }
+
+  #viewport {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  #stage {
+    position: relative;
+    width: 1600px;
+    height: 900px;
+    background: var(--bg);
+    transform-origin: center center;
+    overflow: hidden;
+    flex-shrink: 0;
+  }
+
+  /* SVG Layer */
+  #edges-svg {
+    position: absolute;
+    inset: 0;
+    width: 1600px;
+    height: 900px;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Header Safe Area (y: 0..92) */
+  #scene-label {
+    position: absolute;
+    top: 16px;
+    left: 28px;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 20px;
+    font-weight: 400;
+    letter-spacing: 0.02em;
+    color: var(--g3-text);
+    z-index: 50;
+    pointer-events: none;
+  }
+  #scene-label .step-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    color: var(--muted);
+    margin-right: 10px;
+  }
+
+  #hud-counter {
+    position: absolute;
+    z-index: 45;
+    pointer-events: none;
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    opacity: 0;
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+  #hud-counter .num {
+    font-size: 84px;
+    font-weight: 400;
+    line-height: 1;
+    color: var(--g3-text);
+    font-variant-numeric: tabular-nums;
+  }
+  #hud-counter .lbl {
+    font-size: 26px;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  #hud-counter.compact {
+    gap: 8px;
+  }
+  #hud-counter.compact .num {
+    font-size: 24px;
+    color: var(--g1-text);
+  }
+  #hud-counter.compact .lbl {
+    font-size: 14px;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+  }
+
+  #screening-summary {
+    position: absolute;
+    top: 52px;
+    left: 365px;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 15px;
+    color: var(--muted);
+    z-index: 50;
+    opacity: 0;
+    pointer-events: none;
+  }
+  #group-announce {
+    position: absolute;
+    top: 18px;
+    right: 28px;
+    text-align: right;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 24px;
+    font-weight: 400;
+    z-index: 50;
+    opacity: 0;
+    pointer-events: none;
+  }
+  #screening-summary .hl-red { color: var(--red-text); }
+  #screening-summary .hl-found { color: var(--g2-text); }
+  #screening-summary .hl-blocks { color: var(--g1-text); }
+
+  /* Footer Controls Safe Area (y: 848..900) */
+  #hint-bar {
+    position: absolute;
+    bottom: 20px;
+    left: 28px;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.02em;
+    z-index: 60;
+    pointer-events: none;
+  }
+  #controls {
+    position: absolute;
+    bottom: 16px;
+    right: 28px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    z-index: 60;
+  }
+  #dots {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    border: 1.5px solid var(--muted);
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+    transition: background-color 0.2s, border-color 0.2s;
+  }
+  .dot.active {
+    background: var(--text);
+    border-color: var(--text);
+  }
+  .dot:hover {
+    border-color: var(--text);
+  }
+  .ctrl-btn {
+    background: transparent;
+    border: 1px solid var(--dim-border);
+    color: var(--muted);
+    font-family: inherit;
+    font-size: 12px;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .ctrl-btn:hover {
+    color: var(--text);
+    border-color: var(--muted);
+  }
+
+  /* Terminal (Scene 0) */
+  #terminal {
+    position: absolute;
+    left: 200px;
+    top: 130px;
+    width: 900px;
+    height: 600px;
+    background: var(--panel);
+    border: 1px solid var(--dim-border);
+    border-radius: 6px;
+    padding: 18px 22px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--g1-text);
+    overflow: hidden;
+    z-index: 20;
+    opacity: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  #terminal-cmd {
+    color: var(--g1-text);
+    margin-bottom: 8px;
+    flex-shrink: 0;
+  }
+  #terminal-cmd .cursor {
+    display: inline-block;
+    width: 8px;
+    height: 15px;
+    background: var(--g1-text);
+    vertical-align: middle;
+    margin-left: 4px;
+    animation: blink 1s step-end infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+  #terminal-lines {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+  }
+  .term-line {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .term-id {
+    display: inline-block;
+    width: 44px;
+    color: var(--muted);
+  }
+
+  /* Persistent Idea Cards */
+  #nodes-layer {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    pointer-events: none;
+  }
+  .idea-card {
+    position: absolute;
+    background: var(--panel);
+    border: 1px solid var(--dim-border);
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 13px;
+    line-height: 1.25;
+    color: var(--text);
+    width: 170px;
+    overflow: hidden;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    opacity: 0;
+    pointer-events: none;
+    transition: border-color 0.25s, background-color 0.25s, color 0.25s;
+  }
+  .idea-card.dup-red1 {
+    border-color: var(--red1-border);
+    background: var(--red1-bg);
+    color: var(--red1-text);
+  }
+  .idea-card.dup-red2 {
+    border-color: var(--red2-border);
+    background: var(--red2-bg);
+    color: var(--red2-text);
+  }
+  .idea-card.batch-active {
+    border-color: var(--g1-text);
+    background: var(--g1-bg);
+    color: var(--g1-text);
+  }
+
+  /* Persistent Concept Nodes */
+  .concept-node {
+    position: absolute;
+    background: var(--panel);
+    border: 1px solid var(--dim-border);
+    border-radius: 4px;
+    padding: 5px 10px;
+    font-size: 14px;
+    line-height: 1.25;
+    color: var(--text);
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: color 0.25s, border-color 0.25s, background-color 0.25s;
+  }
+  .concept-node .c-code {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+  .concept-node .c-name {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .concept-node .c-tag {
+    font-size: 10px;
+    letter-spacing: 0.03em;
+    padding: 1px 5px;
+    border-radius: 3px;
+    border: 1px dashed currentColor;
+    margin-left: 6px;
+    opacity: 0;
+    display: none;
+    flex-shrink: 0;
+  }
+
+  /* Group color states */
+  .concept-node.g1 { color: var(--g1-text); border-color: var(--g1-border); background: var(--g1-bg); }
+  .concept-node.g2 { color: var(--g2-text); border-color: var(--g2-border); background: var(--g2-bg); }
+  .concept-node.g3 { color: var(--g3-text); border-color: var(--g3-border); background: var(--g3-bg); }
+  .concept-node.g1 .c-code { color: var(--g1-border); }
+  .concept-node.g2 .c-code { color: var(--g2-border); }
+  .concept-node.g3 .c-code { color: var(--g3-border); }
+
+  /* Screening & Interactive states */
+  .concept-node.is-red {
+    color: var(--red-text) !important;
+    border-color: var(--red-border) !important;
+    background: var(--red-bg) !important;
+  }
+  .concept-node.is-red .c-code { color: var(--red-border) !important; }
+  .concept-node.is-red .c-name { text-decoration: line-through; }
+
+  .concept-node.is-eliminated {
+    color: var(--dim-text) !important;
+    border-color: var(--dim-border) !important;
+    background: var(--dim-bg) !important;
+  }
+  .concept-node.is-eliminated .c-code { color: var(--dim-text) !important; }
+  .concept-node.is-eliminated .c-name { text-decoration: line-through; }
+
+  .concept-node.is-not-core {
+    color: var(--dim-text) !important;
+    border-color: var(--dim-border) !important;
+    background: var(--dim-bg) !important;
+    opacity: 0.55;
+  }
+  .concept-node.is-not-core .c-code { color: var(--dim-text) !important; }
+
+  .concept-node.is-dimmed {
+    color: var(--dim-text) !important;
+    border-color: var(--dim-border) !important;
+    background: var(--dim-bg) !important;
+    opacity: 0.45;
+  }
+  .concept-node.is-dimmed .c-code { color: var(--dim-text) !important; }
+
+  .concept-node.code-ref-hover {
+    border-color: var(--text) !important;
+    opacity: 1 !important;
+  }
+
+  .inline-code-ref {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    padding: 0 4px;
+    border-radius: 3px;
+    background: var(--dim-bg);
+    border: 1px solid var(--dim-border);
+    color: var(--text);
+    cursor: pointer;
+  }
+  .inline-code-ref.not-member {
+    color: var(--muted);
+  }
+  .inline-code-ref:hover {
+    border-color: var(--text);
+  }
+
+  /* Tree / List compact sizing */
+  .concept-node.tree-leaf {
+    font-size: 13px;
+    padding: 1px 7px;
+    height: 17.5px;
+    border-radius: 3px;
+    gap: 6px;
+  }
+  .concept-node.tree-leaf .c-code {
+    font-size: 11.5px;
+  }
+  .concept-node.list-item {
+    font-size: 12.5px;
+    padding: 0 7px;
+    height: 16px;
+    border-radius: 3px;
+    width: 500px;
+    pointer-events: auto;
+    cursor: default;
+    gap: 6px;
+  }
+  .concept-node.list-item.is-dimmed,
+  .concept-node.list-item.is-not-core,
+  .concept-node.list-item.is-eliminated {
+    border-color: transparent !important;
+    background: transparent !important;
+  }
+  .concept-node.list-item .c-code {
+    font-size: 10.5px;
+    width: 34px;
+  }
+
+  /* Group & Subgroup Labels */
+  .group-label {
+    position: absolute;
+    font-size: 20px;
+    font-weight: 500;
+    opacity: 0;
+    pointer-events: none;
+    line-height: 1.25;
+  }
+  .group-label.g1 { color: var(--g1-text); }
+  .group-label.g2 { color: var(--g2-text); }
+  .group-label.g3 { color: var(--g3-text); }
+
+  .subgroup-label {
+    position: absolute;
+    font-size: 13px;
+    font-weight: 500;
+    opacity: 0;
+    pointer-events: none;
+    line-height: 1.2;
+  }
+  .subgroup-label.g1 { color: var(--g1-text); }
+  .subgroup-label.g2 { color: var(--g2-text); }
+  .subgroup-label.g3 { color: var(--g3-text); }
+  .subgroup-label.list-header {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    max-width: 500px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: opacity 0.3s ease, color 0.3s ease;
+  }
+  .subgroup-label.is-dim-header {
+    color: var(--dim-text) !important;
+    opacity: 0.45 !important;
+  }
+
+  #tree-root-label {
+    position: absolute;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    background: var(--panel);
+    border: 1px solid var(--dim-border);
+    padding: 5px 10px;
+    border-radius: 4px;
+    opacity: 0;
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  /* Candidate Cards (Scenes 6 & 7) */
+  .candidate-card {
+    position: absolute;
+    left: 600px;
+    width: 365px;
+    background: var(--panel);
+    border: 1px solid var(--dim-border);
+    border-radius: 6px;
+    padding: 13px 16px;
+    opacity: 0;
+    pointer-events: none;
+    cursor: pointer;
+    transition: border-color 0.25s, opacity 0.25s;
+    z-index: 15;
+  }
+  .candidate-card.interactive {
+    pointer-events: auto;
+  }
+  .candidate-card:hover {
+    border-color: var(--muted);
+  }
+  .candidate-card.selected {
+    border-color: var(--text);
+  }
+  .candidate-card.hover-highlight {
+    border-color: var(--text);
+  }
+  .candidate-card .cand-kicker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 3px;
+  }
+  .candidate-card .cand-title {
+    font-size: 15.5px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 5px;
+    line-height: 1.28;
+  }
+  .candidate-card .cand-target {
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.3;
+  }
+
+  /* Right Detail Panel (Scenes 6 & 7) */
+  #detail-panel {
+    position: absolute;
+    left: 1000px;
+    top: 86px;
+    width: 550px;
+    height: 750px;
+    background: var(--panel);
+    border: 1px solid var(--dim-border);
+    border-radius: 6px;
+    padding: 26px 28px;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 15;
+    overflow-y: auto;
+  }
+  #detail-panel.interactive {
+    pointer-events: auto;
+  }
+  #detail-content {
+    transition: opacity 0.3s ease;
+  }
+  #detail-panel h2 {
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 10px;
+    line-height: 1.3;
+  }
+  #detail-panel .dp-target {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 20px;
+    line-height: 1.5;
+  }
+  #detail-panel .dp-sec-title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--muted);
+    margin-top: 16px;
+    margin-bottom: 8px;
+  }
+  #detail-panel .dp-body {
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.55;
+  }
+  #detail-panel .dp-foundation {
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+    padding: 12px 14px;
+    border: 1px dashed var(--dim-border);
+    border-radius: 4px;
+    margin-top: 8px;
+  }
+  .dp-group-block {
+    margin-bottom: 10px;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+  .dp-block-list {
+    margin: 3px 0 0 18px;
+    padding: 0;
+  }
+  .dp-block-list li {
+    margin-bottom: 2px;
+  }
+  .dp-group-block.g1 { color: var(--g1-text); }
+  .dp-group-block.g2 { color: var(--g2-text); }
+  .dp-group-block.g3 { color: var(--g3-text); }
+
+  /* Tooltip */
+  #tooltip {
+    position: absolute;
+    max-width: 360px;
+    background: var(--panel);
+    border: 1px solid var(--muted);
+    border-radius: 5px;
+    padding: 10px 12px;
+    z-index: 80;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.12s;
+  }
+  #tooltip .tt-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  #tooltip .tt-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.4;
+    margin-bottom: 6px;
+  }
+  #tooltip .tt-src {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--g1-text);
+  }
+</style>
+</head>
+<body>
+<div id="viewport">
+  <div id="stage">
+    <svg id="edges-svg" viewBox="0 0 1600 900"></svg>
+
+    <div id="scene-label"><span class="step-num">00</span>80 raw ideas</div>
+    <div id="screening-summary"></div>
+    <div id="group-announce"></div>
+
+    <div id="hud-counter">
+      <span class="num">80</span>
+      <span class="lbl">RAW IDEAS</span>
+    </div>
+
+    <div id="terminal">
+      <div id="terminal-cmd">$ load ideas --session 2026-11-15<span class="cursor"></span></div>
+      <div id="terminal-lines"></div>
+    </div>
+
+    <div id="nodes-layer"></div>
+
+    <div id="detail-panel">
+      <div id="detail-content"></div>
+    </div>
+
+    <div id="tooltip">
+      <div class="tt-title"></div>
+      <div class="tt-desc"></div>
+      <div class="tt-src"></div>
+    </div>
+
+    <div id="hint-bar"></div>
+    <div id="controls">
+      <button id="replay-btn" class="ctrl-btn" type="button" title="Replay from beginning (R)">↺ Replay</button>
+      <div id="dots"></div>
+      <button id="skip-btn" class="ctrl-btn" type="button">Skip to concepts</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  const DATA = window.STAGE3_DATA;
+  if (!DATA) {
+    console.error("STAGE3_DATA not loaded from data.js");
+    return;
+  }
+
+  gsap.registerPlugin(Flip);
+
+  const stage = document.getElementById("stage");
+  const svg = d3.select("#edges-svg");
+  const nodesLayer = document.getElementById("nodes-layer");
+  const sceneLabel = document.getElementById("scene-label");
+  const hudCounter = document.getElementById("hud-counter");
+  const hudNum = hudCounter.querySelector(".num");
+  const hudLbl = hudCounter.querySelector(".lbl");
+  const screeningSummary = document.getElementById("screening-summary");
+  const groupAnnounce = document.getElementById("group-announce");
+  const terminal = document.getElementById("terminal");
+  const terminalLines = document.getElementById("terminal-lines");
+  const detailPanel = document.getElementById("detail-panel");
+  const detailContent = document.getElementById("detail-content");
+  const tooltip = document.getElementById("tooltip");
+  const hintBar = document.getElementById("hint-bar");
+  const dotsWrap = document.getElementById("dots");
+  const skipBtn = document.getElementById("skip-btn");
+  const replayBtn = document.getElementById("replay-btn");
+
+  const COLORS = {
+    1: { text: "#8CC4BC", border: "#4F8780", bg: "#17262A" },
+    2: { text: "#9DAEDB", border: "#5C6E9E", bg: "#1A2030" },
+    3: { text: "#DDB874", border: "#9A7A3C", bg: "#2A2418" },
+    dimLine: "#2C333D",
+    rootLine: "#7D8796"
+  };
+
+  const SCENE_TITLES = [
+    ["00", "80 raw ideas streamed from brainstorming"],
+    ["01", "Remove 2 exact duplicates (80 → 78 distinct ideas)"],
+    ["02", "Merge overlapping ideas into 39 concepts"],
+    ["03", "Color & group into 3 solution stages"],
+    ["04", "Organize 12 sub-groups into mind map"],
+    ["05", "Screen against Need Specification (39 → 33)"],
+    ["06", "Combine 22 core concepts into 5 candidate solutions"],
+    ["07", "Interactive exploration of 5 candidate solutions"]
+  ];
+
+  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function resizeStage() {
+    const scale = Math.min(window.innerWidth / 1600, window.innerHeight / 900);
+    stage.style.transform = `scale(${scale})`;
+  }
+  window.addEventListener("resize", resizeStage);
+  resizeStage();
+
+  const conceptMap = new Map(DATA.concepts.map(c => [c.code, c]));
+  const groupMap = new Map(DATA.groups.map(g => [g.id, g]));
+
+  // Map each concept to its ordered non-duplicate ideas
+  const ideasByConcept = new Map();
+  DATA.concepts.forEach(c => ideasByConcept.set(c.code, []));
+  DATA.ideas.forEach(idea => {
+    if (!idea.duplicate_of && ideasByConcept.has(idea.concept)) {
+      ideasByConcept.get(idea.concept).push(idea);
+    }
+  });
+
+  // Persistent DOM elements
+  const ideaEls = new Map();
+  const conceptEls = new Map();
+  const groupEls = new Map();
+  const subgroupEls = new Map();
+  const candidateEls = new Map();
+
+  DATA.ideas.forEach(idea => {
+    const el = document.createElement("div");
+    el.className = "idea-card";
+    el.dataset.id = idea.id;
+    el.textContent = idea.text;
+    nodesLayer.appendChild(el);
+    ideaEls.set(idea.id, el);
+  });
+
+  DATA.concepts.forEach(c => {
+    const el = document.createElement("div");
+    el.className = "concept-node";
+    el.dataset.id = c.code;
+    el.innerHTML = `<span class="c-code">${c.code}</span><span class="c-name">${c.name}</span><span class="c-tag">shared foundation</span>`;
+    nodesLayer.appendChild(el);
+    conceptEls.set(c.code, el);
+  });
+
+  DATA.groups.forEach(g => {
+    const el = document.createElement("div");
+    el.className = `group-label g${g.id}`;
+    el.dataset.id = `group-${g.id}`;
+    el.textContent = `${g.id}. ${g.name}`;
+    nodesLayer.appendChild(el);
+    groupEls.set(g.id, el);
+  });
+
+  DATA.subgroups.forEach(s => {
+    const el = document.createElement("div");
+    el.className = `subgroup-label g${s.group}`;
+    el.dataset.id = `sub-${s.id}`;
+    el.textContent = `${s.id}. ${s.name}`;
+    nodesLayer.appendChild(el);
+    subgroupEls.set(s.id, el);
+  });
+
+  const treeRootEl = document.createElement("div");
+  treeRootEl.id = "tree-root-label";
+  treeRootEl.dataset.id = "tree-root";
+  treeRootEl.textContent = "39 concepts";
+  nodesLayer.appendChild(treeRootEl);
+
+  DATA.candidates.forEach((cand, idx) => {
+    const el = document.createElement("div");
+    el.className = "candidate-card";
+    el.dataset.id = `cand-${cand.id}`;
+    const targetLine = cand.target.length > 52 ? cand.target.slice(0, 52).trim() + "…" : cand.target;
+    el.innerHTML = `
+      <div class="cand-kicker">CONCEPT ${cand.id} · ${cand.members.length} BLOCKS</div>
+      <div class="cand-title">${cand.name}</div>
+      <div class="cand-target">${targetLine}</div>
+    `;
+    el.style.top = `${88 + idx * 150}px`;
+    el.addEventListener("click", (e) => {
+      e.stopPropagation();
+      if (currentScene !== 7) return;
+      selectCandidate(selectedCandId === cand.id ? null : cand.id);
+    });
+    stage.appendChild(el);
+    candidateEls.set(cand.id, el);
+  });
+
+  const dotBtns = [];
+  for (let i = 0; i < 8; i++) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "dot";
+    b.title = `${SCENE_TITLES[i][0]} · ${SCENE_TITLES[i][1]}`;
+    b.addEventListener("click", (e) => {
+      e.stopPropagation();
+      jumpToScene(i);
+    });
+    dotsWrap.appendChild(b);
+    dotBtns.push(b);
+  }
+
+  // =========================================================
+  // Precomputed Layouts (with Header 0..86 and Footer 848..900 Safe Zones)
+  // =========================================================
+
+  // 1. Word Cloud positions (AABB non-overlapping, safe header y>=112, footer y<=784)
+  const cloudPos = new Map();
+  (function computeCloud() {
+    const W = 180, H = 52;
+    const nodes = DATA.ideas.map((idea, idx) => {
+      const col = idx % 8;
+      const row = Math.floor(idx / 8);
+      return {
+        id: idea.id,
+        x: 75 + col * 186 + (row % 2) * 40,
+        y: 118 + row * 68
+      };
+    });
+
+    // Deterministic jitter + AABB relaxation so zero cards overlap
+    for (let iter = 0; iter < 180; iter++) {
+      for (let i = 0; i < nodes.length; i++) {
+        for (let j = i + 1; j < nodes.length; j++) {
+          const a = nodes[i], b = nodes[j];
+          const dx = b.x - a.x;
+          const dy = b.y - a.y;
+          const ox = W - Math.abs(dx);
+          const oy = H - Math.abs(dy);
+          if (ox > 0 && oy > 0) {
+            if (ox < oy) {
+              const push = (dx >= 0 ? 1 : -1) * (ox * 0.52);
+              a.x -= push; b.x += push;
+            } else {
+              const push = (dy >= 0 ? 1 : -1) * (oy * 0.52);
+              a.y -= push; b.y += push;
+            }
+          }
+        }
+      }
+      // Keep out of center counter box (520..1080, 385..545), header (y<110), footer (y>785), edges
+      nodes.forEach(n => {
+        if (n.x + W > 530 && n.x < 1070 && n.y + H > 390 && n.y < 540) {
+          const cy = n.y + H / 2;
+          if (cy < 465) n.y = 390 - H - 6;
+          else n.y = 546;
+        }
+        if (n.x < 330 && n.y < 120) {
+          n.y = 122;
+        }
+        n.x = Math.max(40, Math.min(1380, n.x));
+        n.y = Math.max(108, Math.min(782, n.y));
+      });
+    }
+    nodes.forEach(n => cloudPos.set(n.id, { x: Math.round(n.x), y: Math.round(n.y) }));
+  })();
+
+  // 2. Scene 2 Unsorted 3x13 Vertical Columns (480px wide per col -> full text readable!)
+  // Interleave concepts across groups in Scene 2 so Scene 3 visibly sorts mixed colors into 3 groups!
+  const mixedConcepts = (function () {
+    const g1 = DATA.concepts.filter(c => c.group === "1");
+    const g2 = DATA.concepts.filter(c => c.group === "2");
+    const g3 = DATA.concepts.filter(c => c.group === "3");
+    const out = [];
+    const maxLen = Math.max(g1.length, g2.length, g3.length);
+    for (let i = 0; i < maxLen; i++) {
+      if (g2[i]) out.push(g2[i]);
+      if (g1[i]) out.push(g1[i]);
+      if (g3[i]) out.push(g3[i]);
+    }
+    return out;
+  })();
+
+  const gridPos = new Map();
+  mixedConcepts.forEach((c, idx) => {
+    const col = Math.floor(idx / 13);
+    const row = idx % 13;
+    gridPos.set(c.code, {
+      x: 45 + col * 515,
+      y: 102 + row * 54
+    });
+  });
+
+  // 3. Scene 3 Group Clusters: 3 clean vertical columns (480px wide each, zero overlap!)
+  const clusterPos = new Map();
+  const groupColX = { "1": 45, "2": 560, "3": 1075 };
+  ["1", "2", "3"].forEach(gid => {
+    const list = DATA.concepts.filter(c => c.group === gid);
+    list.forEach((c, i) => {
+      clusterPos.set(c.code, {
+        x: groupColX[gid],
+        y: 158 + i * 39
+      });
+    });
+  });
+
+  // 4. Scene 4 Subgroup intermediate & d3.tree Mind Map layout
+  const subClusterPos = new Map();
+  const subClusterLabelPos = new Map();
+  ["1", "2", "3"].forEach(gid => {
+    const subs = DATA.subgroups.filter(s => s.group === gid);
+    const baseX = groupColX[gid];
+    let curY = 148;
+    subs.forEach(s => {
+      subClusterLabelPos.set(s.id, { x: baseX, y: curY });
+      const items = DATA.concepts.filter(c => c.subgroup === s.id);
+      items.forEach((c, idx) => {
+        subClusterPos.set(c.code, {
+          x: baseX + 12,
+          y: curY + 20 + idx * 30
+        });
+      });
+      curY += 22 + items.length * 30 + 14;
+    });
+  });
+
+  // Mind Map d3.tree layout (clean column widths so lines never cross text)
+  const treeLayout = {
+    root: { x: 40, y: 465 },
+    groups: new Map(),
+    subgroups: new Map(),
+    concepts: new Map(),
+    links: []
+  };
+
+  (function computeTree() {
+    const rootData = {
+      name: "39 concepts",
+      children: DATA.groups.map(g => ({
+        id: g.id,
+        type: "group",
+        name: g.name,
+        children: DATA.subgroups
+          .filter(s => s.group === g.id)
+          .map(s => ({
+            id: s.id,
+            group: g.id,
+            type: "subgroup",
+            name: s.name,
+            children: DATA.concepts
+              .filter(c => c.subgroup === s.id)
+              .map(c => ({
+                id: c.code,
+                group: g.id,
+                subgroup: s.id,
+                type: "concept",
+                data: c
+              }))
+          }))
+      }))
+    };
+
+    const root = d3.hierarchy(rootData);
+    const leaves = root.leaves();
+    const stepY = 17.2;
+    let curSub = null;
+    let extra = 0;
+    leaves.forEach((leaf, idx) => {
+      if (curSub !== null && leaf.data.subgroup !== curSub) {
+        extra += 6;
+      }
+      curSub = leaf.data.subgroup;
+      leaf.x = 96 + idx * stepY + extra; // 96 .. ~832 (respects header & footer!)
+    });
+
+    root.eachAfter(node => {
+      if (node.children && node.children.length) {
+        node.x = d3.mean(node.children, ch => ch.x);
+      }
+    });
+
+    // Fixed X positions: Root(45, w=110) | Groups(235, w=235) | Subgroups(560, w=360) | Leaves(1010..1570)
+    const xByDepth = [45, 235, 560, 1010];
+    root.each(node => {
+      node.y = xByDepth[node.depth];
+      if (node.depth === 0) treeLayout.root = { x: node.y, y: node.x };
+      if (node.depth === 1) treeLayout.groups.set(node.data.id, { x: node.y, y: node.x });
+      if (node.depth === 2) treeLayout.subgroups.set(node.data.id, { x: node.y, y: node.x });
+      if (node.depth === 3) treeLayout.concepts.set(node.data.id, { x: node.y, y: node.x });
+    });
+
+    const linkGen = d3.linkHorizontal().x(d => d.x).y(d => d.y);
+    root.links().forEach(l => {
+      let sx = l.source.y + 112;
+      if (l.source.depth === 1) sx = l.source.y + 240;
+      if (l.source.depth === 2) sx = l.source.y + 365;
+      const tx = l.target.y - 10;
+      const grp = l.target.data.group || l.target.data.id;
+      const isElim = l.target.data.type === "concept" && l.target.data.data.status === "eliminated";
+      treeLayout.links.push({
+        layer: l.target.depth,
+        group: grp,
+        eliminated: isElim,
+        targetCode: l.target.data.type === "concept" ? l.target.data.id : null,
+        d: linkGen({ source: { x: sx, y: l.source.x }, target: { x: tx, y: l.target.x } })
+      });
+    });
+  })();
+
+  // 5. Scene 6 & 7 List Layout (Left col x=45, y: 86..840)
+  const listPos = {
+    subgroups: new Map(),
+    concepts: new Map()
+  };
+  (function computeList() {
+    let curY = 86;
+    DATA.subgroups.forEach(s => {
+      const items = DATA.concepts.filter(c => c.subgroup === s.id && c.status !== "eliminated");
+      if (!items.length) return;
+      listPos.subgroups.set(s.id, { x: 45, y: curY });
+      curY += 15;
+      items.forEach(c => {
+        listPos.concepts.set(c.code, { x: 45, y: curY });
+        curY += 16.5;
+      });
+      curY += 4;
+    });
+  })();
+
+  // Candidate SVG connection paths (Scene 6 & 7)
+  const candLinkData = [];
+  (function computeCandLinks() {
+    const linkGen = d3.linkHorizontal().x(d => d.x).y(d => d.y);
+    DATA.candidates.forEach((cand, cIdx) => {
+      const candY = 88 + cIdx * 150 + 50;
+      const candX = 600;
+      cand.members.forEach(code => {
+        const pt = listPos.concepts.get(code);
+        const c = conceptMap.get(code);
+        candLinkData.push({
+          candId: cand.id,
+          code,
+          group: c.group,
+          d: linkGen({
+            source: { x: 545, y: pt.y + 7.5 },
+            target: { x: candX, y: candY }
+          })
+        });
+      });
+    });
+  })();
+
+  // =========================================================
+  // Helpers
+  // =========================================================
+  let activeTl = null;
+  let currentScene = 0;
+  let scene1Merged = true;
+  let scene3Step = 3;
+  let scene4Step = 1;
+  let selectedCandId = null;
+
+  function killActive() {
+    if (activeTl) {
+      activeTl.kill();
+      activeTl = null;
+    }
+    gsap.killTweensOf("*");
+    svg.selectAll("*").interrupt();
+  }
+
+  function setHint(text) {
+    hintBar.textContent = text || "";
+  }
+
+  function updateHUD(idx) {
+    currentScene = idx;
+    const [num, title] = SCENE_TITLES[idx];
+    sceneLabel.innerHTML = `<span class="step-num">${num}</span>${title}`;
+    dotBtns.forEach((b, i) => b.classList.toggle("active", i === idx));
+    skipBtn.style.display = idx === 7 ? "none" : "inline-block";
+    if (idx === 7) {
+      setHint("Click a candidate card to inspect · Hover concepts or inline codes");
+    } else {
+      setHint("Click or press → to continue");
+    }
+  }
+
+  function clearSVG() {
+    svg.selectAll("*").remove();
+  }
+
+  function resetAllElements() {
+    clearSVG();
+    terminal.style.opacity = 0;
+    terminal.style.display = "none";
+    terminalLines.innerHTML = "";
+
+    hudCounter.style.opacity = 0;
+    hudCounter.classList.remove("compact");
+    screeningSummary.style.opacity = 0;
+    groupAnnounce.style.opacity = 0;
+    groupAnnounce.textContent = "";
+
+    treeRootEl.style.opacity = 0;
+    detailPanel.style.opacity = 0;
+    detailPanel.classList.remove("interactive");
+    selectedCandId = null;
+    tooltip.style.opacity = 0;
+
+    ideaEls.forEach(el => {
+      el.style.opacity = 0;
+      el.style.filter = "none";
+      el.style.width = "170px";
+      el.classList.remove("dup-red1", "dup-red2", "batch-active");
+      const idea = DATA.ideas.find(x => x.id === el.dataset.id);
+      el.textContent = idea ? idea.text : "";
+    });
+
+    conceptEls.forEach(el => {
+      el.style.opacity = 0;
+      el.style.filter = "none";
+      el.style.pointerEvents = "none";
+      el.style.width = "";
+      el.className = "concept-node";
+      const tag = el.querySelector(".c-tag");
+      tag.style.display = "none";
+      tag.style.opacity = 0;
+    });
+
+    groupEls.forEach(el => {
+      el.style.opacity = 0;
+      el.style.fontSize = "18px";
+      el.style.maxWidth = "";
+    });
+
+    subgroupEls.forEach(el => {
+      el.style.opacity = 0;
+      el.style.maxWidth = "";
+      el.classList.remove("list-header", "is-dim-header");
+    });
+
+    candidateEls.forEach(el => {
+      el.style.opacity = 0;
+      el.classList.remove("interactive", "selected", "hover-highlight");
+    });
+  }
+
+  function applyGroupColors() {
+    conceptEls.forEach((el, code) => {
+      const c = conceptMap.get(code);
+      el.classList.add(`g${c.group}`);
+    });
+  }
+
+  function applyScreeningStyles() {
+    conceptEls.forEach((el, code) => {
+      const c = conceptMap.get(code);
+      el.classList.remove("is-red");
+      if (c.status === "eliminated") {
+        el.classList.add("is-eliminated");
+      }
+    });
+  }
+
+  function drawMindMapLinks(animate = false) {
+    clearSVG();
+    const paths = svg.selectAll("path.tree-link")
+      .data(treeLayout.links)
+      .enter()
+      .append("path")
+      .attr("class", "tree-link")
+      .attr("data-target", d => d.targetCode || "")
+      .attr("data-eliminated", d => d.eliminated ? "1" : "0")
+      .attr("fill", "none")
+      .attr("stroke", d => d.layer === 1 ? COLORS.rootLine : COLORS[d.group].border)
+      .attr("stroke-width", 1.2)
+      .attr("opacity", 0.7)
+      .attr("d", d => d.d);
+
+    if (animate) {
+      paths.each(function () {
+        const len = this.getTotalLength();
+        d3.select(this)
+          .attr("stroke-dasharray", `${len} ${len}`)
+          .attr("stroke-dashoffset", len);
+      });
+    }
+    return paths;
+  }
+
+  function drawCandidateLinks(animate = false) {
+    clearSVG();
+    const paths = svg.selectAll("path.cand-link")
+      .data(candLinkData)
+      .enter()
+      .append("path")
+      .attr("class", "cand-link")
+      .attr("data-cand", d => d.candId)
+      .attr("data-code", d => d.code)
+      .attr("fill", "none")
+      .attr("stroke", d => COLORS[d.group].border)
+      .attr("stroke-width", 1)
+      .attr("opacity", 0.35)
+      .attr("d", d => d.d);
+
+    if (animate) {
+      paths.each(function () {
+        const len = this.getTotalLength();
+        d3.select(this)
+          .attr("stroke-dasharray", `${len} ${len}`)
+          .attr("stroke-dashoffset", len);
+      });
+    }
+    return paths;
+  }
+
+  function formatTextWithRefs(text, memberSet) {
+    return text.replace(/\b([123][A-E]-\d+)\b/g, (match, code) => {
+      const cls = memberSet.has(code) ? "inline-code-ref" : "inline-code-ref not-member";
+      return `<span class="${cls}" data-code="${code}">${code}</span>`;
+    });
+  }
+
+  function bindInlineCodeHovers() {
+    detailContent.querySelectorAll(".inline-code-ref").forEach(span => {
+      const code = span.dataset.code;
+      span.addEventListener("mouseenter", () => {
+        const el = conceptEls.get(code);
+        if (el) el.classList.add("code-ref-hover");
+      });
+      span.addEventListener("mouseleave", () => {
+        const el = conceptEls.get(code);
+        if (el) el.classList.remove("code-ref-hover");
+      });
+    });
+  }
+
+  function renderDefaultDetail() {
+    detailContent.innerHTML = `
+      <h2>5 candidate concepts</h2>
+      <div class="dp-target">
+        Each candidate combines core concepts across <strong>data collection</strong>, <strong>data sharing &amp; verification</strong>, and <strong>incentives or financing</strong>. A candidate may also include other concepts without changing its core definition. Select a card on the left to inspect its building blocks.
+      </div>
+    `;
+  }
+
+  function renderCandidateDetail(candId) {
+    const cand = DATA.candidates.find(c => c.id === candId);
+    if (!cand) return renderDefaultDetail();
+
+    const memberSet = new Set(cand.members);
+    const byGroup = { 1: [], 2: [], 3: [] };
+    cand.members.forEach(code => {
+      const c = conceptMap.get(code);
+      if (c) byGroup[c.group].push(c);
+    });
+
+    const blocksHtml = [1, 2, 3].map(g => {
+      if (!byGroup[g].length) return "";
+      const gName = groupMap.get(String(g)).name;
+      const items = byGroup[g].map(c => `<li><strong>${c.code}</strong> ${c.name}</li>`).join("");
+      return `<div class="dp-group-block g${g}"><strong>Group ${g} (${gName}):</strong><ul class="dp-block-list">${items}</ul></div>`;
+    }).join("");
+
+    detailContent.innerHTML = `
+      <h2>Concept ${cand.id}: ${cand.name}</h2>
+      <div class="dp-target">${cand.target}</div>
+      <div class="dp-sec-title">Building blocks (${cand.members.length})</div>
+      ${blocksHtml}
+      <div class="dp-sec-title">How data is collected</div>
+      <div class="dp-body">${formatTextWithRefs(cand.collection, memberSet)}</div>
+      <div class="dp-sec-title">How data is shared, verified and funded</div>
+      <div class="dp-body">${formatTextWithRefs(cand.sharing_funding, memberSet)}</div>
+    `;
+    bindInlineCodeHovers();
+  }
+
+  function selectCandidate(candId) {
+    selectedCandId = candId;
+    detailContent.style.opacity = 0;
+    setTimeout(() => {
+      if (candId === null) renderDefaultDetail();
+      else renderCandidateDetail(candId);
+      detailContent.style.opacity = 1;
+    }, 150);
+
+    if (candId === null) {
+      candidateEls.forEach(el => {
+        el.classList.remove("selected");
+        gsap.to(el, { opacity: 1, duration: 0.3 });
+      });
+      conceptEls.forEach((el, code) => {
+        const c = conceptMap.get(code);
+        el.classList.remove("is-dimmed", "is-not-core");
+        if (c.status === "eliminated") {
+          el.classList.add("is-eliminated");
+          el.style.pointerEvents = "none";
+          gsap.to(el, { opacity: 0, duration: 0.25 });
+        } else if (c.status === "not_core") {
+          el.classList.add("is-not-core");
+          el.style.pointerEvents = "auto";
+          gsap.to(el, { opacity: 0.55, duration: 0.3 });
+        } else {
+          el.style.pointerEvents = "auto";
+          gsap.to(el, { opacity: 1, duration: 0.3 });
+        }
+      });
+      DATA.subgroups.forEach(s => {
+        if (!listPos.subgroups.has(s.id)) return;
+        const hasCore = DATA.concepts.some(c => c.subgroup === s.id && c.status === "core");
+        subgroupEls.get(s.id).classList.toggle("is-dim-header", !hasCore);
+      });
+      svg.selectAll("path.cand-link")
+        .transition().duration(300)
+        .attr("stroke-width", 1)
+        .attr("opacity", 0.35);
+    } else {
+      const cand = DATA.candidates.find(c => c.id === candId);
+      const memberSet = new Set(cand.members);
+      candidateEls.forEach((el, id) => {
+        el.classList.toggle("selected", id === candId);
+        gsap.to(el, { opacity: id === candId ? 1 : 0.4, duration: 0.3 });
+      });
+      conceptEls.forEach((el, code) => {
+        const c = conceptMap.get(code);
+        el.classList.remove("is-not-core");
+        if (c.status === "eliminated") {
+          el.style.pointerEvents = "none";
+          gsap.to(el, { opacity: 0, duration: 0.25 });
+        } else if (memberSet.has(code)) {
+          el.classList.remove("is-dimmed");
+          el.style.pointerEvents = "auto";
+          gsap.to(el, { opacity: 1, duration: 0.3 });
+        } else {
+          el.classList.add("is-dimmed");
+          el.style.pointerEvents = "auto";
+          gsap.to(el, { opacity: 0.45, duration: 0.3 });
+        }
+      });
+      DATA.subgroups.forEach(s => {
+        if (!listPos.subgroups.has(s.id)) return;
+        const hasMember = DATA.concepts.some(c => c.subgroup === s.id && memberSet.has(c.code));
+        subgroupEls.get(s.id).classList.toggle("is-dim-header", !hasMember);
+      });
+      svg.selectAll("path.cand-link")
+        .transition().duration(300)
+        .attr("stroke-width", d => d.candId === candId ? 2 : 1)
+        .attr("opacity", d => d.candId === candId ? 1 : 0.08);
+    }
+  }
+
+  conceptEls.forEach((el, code) => {
+    const c = conceptMap.get(code);
+    el.addEventListener("mouseenter", () => {
+      if (currentScene !== 7) return;
+      tooltip.querySelector(".tt-title").textContent = `${c.code} · ${c.name}`;
+      tooltip.querySelector(".tt-desc").textContent = c.description;
+      tooltip.querySelector(".tt-src").textContent = `Source ideas: ${c.sources.join(", ")}`;
+      const top = Math.min(760, Math.max(88, parseFloat(el.style.top) - 10));
+      tooltip.style.left = "562px";
+      tooltip.style.top = `${top}px`;
+      tooltip.style.opacity = 1;
+
+      DATA.candidates.forEach(cand => {
+        if (cand.members.includes(code)) {
+          candidateEls.get(cand.id).classList.add("hover-highlight");
+        }
+      });
+    });
+    el.addEventListener("mouseleave", () => {
+      tooltip.style.opacity = 0;
+      candidateEls.forEach(card => card.classList.remove("hover-highlight"));
+    });
+  });
+
+  // =========================================================
+  // Scenes 0 .. 7
+  // =========================================================
+  const scenes = [];
+
+  // SCENE 0: 80 ideas
+  scenes[0] = {
+    setEnd() {
+      killActive();
+      resetAllElements();
+      updateHUD(0);
+      DATA.ideas.forEach(idea => {
+        const el = ideaEls.get(idea.id);
+        const pos = cloudPos.get(idea.id);
+        el.style.left = `${pos.x}px`;
+        el.style.top = `${pos.y}px`;
+        el.style.opacity = 0.35;
+        el.style.filter = "blur(3px)";
+      });
+      hudCounter.classList.remove("compact");
+      hudCounter.style.left = "800px";
+      hudCounter.style.top = "465px";
+      hudCounter.style.transform = "translate(-50%, -50%)";
+      hudNum.textContent = "80";
+      hudLbl.textContent = "RAW IDEAS";
+      hudCounter.style.opacity = 1;
+    },
+    play() {
+      killActive();
+      resetAllElements();
+      updateHUD(0);
+      terminal.style.display = "flex";
+      const tl = gsap.timeline();
+      activeTl = tl;
+
+      tl.to(terminal, { opacity: 1, duration: 0.35 });
+
+      DATA.ideas.forEach((idea, idx) => {
+        tl.call(() => {
+          const line = document.createElement("div");
+          line.className = "term-line";
+          line.innerHTML = `<span class="term-id">${idea.id}</span>${idea.text}`;
+          terminalLines.appendChild(line);
+          if (terminalLines.children.length > 23) {
+            terminalLines.removeChild(terminalLines.firstChild);
+          }
+        }, null, 0.4 + idx * 0.055);
+      });
+
+      const afterStream = 0.4 + DATA.ideas.length * 0.055 + 0.45;
+
+      tl.call(() => {
+        const cards = Array.from(ideaEls.values());
+        cards.forEach((el, idx) => {
+          el.style.left = `${220 + (idx % 4) * 210}px`;
+          el.style.top = `${160 + (idx % 20) * 26}px`;
+          el.style.opacity = 1;
+        });
+        const state = Flip.getState(cards);
+        cards.forEach(el => {
+          const pos = cloudPos.get(el.dataset.id);
+          el.style.left = `${pos.x}px`;
+          el.style.top = `${pos.y}px`;
+        });
+        terminal.style.opacity = 0;
+        terminal.style.display = "none";
+        Flip.from(state, { duration: 1.5, ease: "power2.inOut", stagger: 0.008 });
+      }, null, afterStream);
+
+      tl.to(Array.from(ideaEls.values()), {
+        opacity: 0.35,
+        filter: "blur(3px)",
+        duration: 0.8
+      }, afterStream + 1.5);
+
+      tl.call(() => {
+        hudCounter.classList.remove("compact");
+        hudCounter.style.left = "800px";
+        hudCounter.style.top = "465px";
+        hudCounter.style.transform = "translate(-50%, -50%)";
+        hudNum.textContent = "80";
+        hudLbl.textContent = "RAW IDEAS";
+      }, null, afterStream + 1.5);
+
+      tl.to(hudCounter, { opacity: 1, duration: 0.7 }, afterStream + 1.6);
+    }
+  };
+
+  // SCENE 1: 80 -> 78 (Step 1: highlight 2 pairs in 2 reds & pause; Step 2: click to merge)
+  function mergeScene1Duplicates() {
+    scene1Merged = true;
+    updateHUD(1);
+    const tl = gsap.timeline();
+    activeTl = tl;
+
+    const p39 = ideaEls.get("P39");
+    const p40 = ideaEls.get("P40");
+    const p33Pos = cloudPos.get("P33");
+    const p29Pos = cloudPos.get("P29");
+
+    tl.to(p39, { left: p33Pos.x, top: p33Pos.y, duration: 0.9, ease: "power2.inOut" }, 0);
+    tl.to(p40, { left: p29Pos.x, top: p29Pos.y, duration: 0.9, ease: "power2.inOut" }, 0);
+    tl.to([p39, p40], { opacity: 0, duration: 0.4 }, 0.8);
+
+    tl.call(() => {
+      ["P33", "P29", "P39", "P40"].forEach(id => {
+        ideaEls.get(id).classList.remove("dup-red1", "dup-red2");
+      });
+    }, null, 1.25);
+
+    const counterObj = { val: 80 };
+    tl.to(counterObj, {
+      val: 78,
+      duration: 1.2,
+      snap: { val: 1 },
+      onUpdate: () => { hudNum.textContent = counterObj.val; }
+    }, 0.7);
+    tl.call(() => { hudLbl.textContent = "DISTINCT IDEAS"; }, null, 1.6);
+
+    tl.to(hudCounter, {
+      left: 28,
+      top: 48,
+      duration: 1.1,
+      ease: "power2.inOut",
+      onStart: () => {
+        hudCounter.style.transform = "none";
+        hudCounter.classList.add("compact");
+      }
+    }, 2.35);
+  }
+
+  scenes[1] = {
+    setEnd() {
+      scenes[0].setEnd();
+      updateHUD(1);
+      scene1Merged = true;
+      ideaEls.forEach(el => {
+        el.style.filter = "blur(0px)";
+        el.style.opacity = 1;
+        el.classList.remove("dup-red1", "dup-red2");
+      });
+      ["P39", "P40"].forEach(id => {
+        const targetId = id === "P39" ? "P33" : "P29";
+        const pos = cloudPos.get(targetId);
+        const el = ideaEls.get(id);
+        el.style.left = `${pos.x}px`;
+        el.style.top = `${pos.y}px`;
+        el.style.opacity = 0;
+      });
+      hudCounter.classList.add("compact");
+      hudCounter.style.left = "28px";
+      hudCounter.style.top = "48px";
+      hudCounter.style.transform = "translate(0, 0)";
+      hudNum.textContent = "78";
+      hudLbl.textContent = "DISTINCT IDEAS";
+    },
+    play() {
+      scenes[0].setEnd();
+      updateHUD(1);
+      scene1Merged = false;
+      setHint("Click or press → to merge 2 duplicate pairs");
+      const tl = gsap.timeline();
+      activeTl = tl;
+
+      const cards = Array.from(ideaEls.values());
+      tl.to(cards, { filter: "blur(0px)", opacity: 1, duration: 0.65 });
+
+      tl.call(() => {
+        ideaEls.get("P33").classList.add("dup-red1");
+        ideaEls.get("P39").classList.add("dup-red1");
+        ideaEls.get("P29").classList.add("dup-red2");
+        ideaEls.get("P40").classList.add("dup-red2");
+      }, null, 0.6);
+    }
+  };
+
+  // SCENE 2: 78 -> 39 concepts (3 vertical columns x 13 rows, full text readable!)
+  scenes[2] = {
+    setEnd() {
+      scenes[1].setEnd();
+      updateHUD(2);
+      ideaEls.forEach(el => { el.style.opacity = 0; });
+      mixedConcepts.forEach(c => {
+        const el = conceptEls.get(c.code);
+        const pos = gridPos.get(c.code);
+        el.style.left = `${pos.x}px`;
+        el.style.top = `${pos.y}px`;
+        el.style.opacity = 1;
+      });
+      hudNum.textContent = "39";
+      hudLbl.textContent = "CONCEPTS";
+    },
+    play() {
+      scenes[1].setEnd();
+      updateHUD(2);
+      const tl = gsap.timeline();
+      activeTl = tl;
+
+      let countVal = 78;
+      // Batch in 6 groups of ~6-7 concepts for smooth pacing
+      const batches = [];
+      for (let i = 0; i < mixedConcepts.length; i += 4) {
+        batches.push(mixedConcepts.slice(i, i + 4));
+      }
+
+      batches.forEach((batch, bIdx) => {
+        const startT = bIdx * 1.05;
+        tl.call(() => {
+          const movingCards = [];
+          batch.forEach(c => {
+            ideasByConcept.get(c.code).forEach(idea => {
+              const el = ideaEls.get(idea.id);
+              el.classList.add("batch-active");
+              movingCards.push(el);
+            });
+          });
+          const state = Flip.getState(movingCards);
+          batch.forEach(c => {
+            const gPos = gridPos.get(c.code);
+            const list = ideasByConcept.get(c.code);
+            list.forEach((idea, idx) => {
+              const el = ideaEls.get(idea.id);
+              el.style.left = `${gPos.x + idx * 4}px`;
+              el.style.top = `${gPos.y + idx * 4}px`;
+              el.style.zIndex = 30 - idx;
+            });
+          });
+          Flip.from(state, { duration: 0.55, ease: "power2.inOut" });
+        }, null, startT);
+
+        tl.call(() => {
+          batch.forEach(c => {
+            const list = ideasByConcept.get(c.code);
+            if (!list.length) return;
+            const topEl = ideaEls.get(list[0].id);
+            const restEls = list.slice(1).map(i => ideaEls.get(i.id));
+            if (restEls.length) {
+              gsap.to(restEls, { opacity: 0, duration: 0.22 });
+            }
+
+            const origText = list[0].text;
+            const cEl = conceptEls.get(c.code);
+            const gPos = gridPos.get(c.code);
+            cEl.style.left = `${gPos.x}px`;
+            cEl.style.top = `${gPos.y}px`;
+
+            const delObj = { n: origText.length };
+            gsap.to(delObj, {
+              n: 0,
+              duration: Math.min(0.24, origText.length * 0.008),
+              ease: "none",
+              onUpdate: () => {
+                topEl.textContent = origText.slice(0, Math.round(delObj.n));
+              },
+              onComplete: () => {
+                const typeObj = { n: 0 };
+                gsap.to(topEl, { width: 320, duration: 0.18 });
+                gsap.to(typeObj, {
+                  n: c.name.length,
+                  duration: Math.min(0.28, c.name.length * 0.008),
+                  ease: "none",
+                  onUpdate: () => {
+                    topEl.textContent = c.name.slice(0, Math.round(typeObj.n));
+                  },
+                  onComplete: () => {
+                    topEl.classList.remove("batch-active");
+                    topEl.style.opacity = 0;
+                    cEl.style.opacity = 1;
+                  }
+                });
+              }
+            });
+          });
+
+          const removed = batch.reduce((acc, c) => acc + Math.max(0, ideasByConcept.get(c.code).length - 1), 0);
+          countVal -= removed;
+          hudNum.textContent = countVal;
+        }, null, startT + 0.56);
+      });
+
+      const endT = batches.length * 1.05 + 0.65;
+      tl.call(() => {
+        hudNum.textContent = "39";
+        hudLbl.textContent = "CONCEPTS";
+      }, null, endT);
+    }
+  };
+
+  // SCENE 3: Step-by-step group coloring in top-right -> sort into 3 columns
+  function runScene3Step(step) {
+    scene3Step = step;
+    if (step < 3) {
+      const g = DATA.groups[step];
+      groupAnnounce.textContent = `Group ${g.id}: ${g.name}`;
+      groupAnnounce.style.color = COLORS[g.id].text;
+      gsap.to(groupAnnounce, { opacity: 1, duration: 0.25 });
+      DATA.concepts.filter(c => c.group === g.id).forEach(c => {
+        conceptEls.get(c.code).classList.add(`g${g.id}`);
+      });
+      if (step < 2) {
+        setHint(`Click or press → to color Group ${step + 2}`);
+      } else {
+        setHint("Click or press → to sort into 3 groups");
+      }
+    } else {
+      updateHUD(3);
+      const tl = gsap.timeline();
+      activeTl = tl;
+      tl.to(groupAnnounce, { opacity: 0, duration: 0.3 }, 0);
+      tl.call(() => {
+        const els = Array.from(conceptEls.values());
+        const state = Flip.getState(els);
+        DATA.concepts.forEach(c => {
+          const el = conceptEls.get(c.code);
+          const pos = clusterPos.get(c.code);
+          el.style.left = `${pos.x}px`;
+          el.style.top = `${pos.y}px`;
+        });
+        Flip.from(state, { duration: 1.25, ease: "power2.inOut", stagger: 0.012 });
+      }, null, 0.15);
+
+      tl.call(() => {
+        DATA.groups.forEach(g => {
+          const el = groupEls.get(g.id);
+          el.style.left = `${groupColX[g.id]}px`;
+          el.style.top = "108px";
+          el.style.maxWidth = "480px";
+          el.style.fontSize = "18px";
+        });
+      }, null, 1.4);
+
+      tl.to(Array.from(groupEls.values()), { opacity: 1, duration: 0.6, stagger: 0.15 }, 1.45);
+    }
+  }
+
+  scenes[3] = {
+    setEnd() {
+      scenes[2].setEnd();
+      updateHUD(3);
+      scene3Step = 3;
+      groupAnnounce.style.opacity = 0;
+      applyGroupColors();
+      DATA.concepts.forEach(c => {
+        const el = conceptEls.get(c.code);
+        const pos = clusterPos.get(c.code);
+        el.style.left = `${pos.x}px`;
+        el.style.top = `${pos.y}px`;
+      });
+      DATA.groups.forEach(g => {
+        const el = groupEls.get(g.id);
+        el.style.left = `${groupColX[g.id]}px`;
+        el.style.top = "108px";
+        el.style.maxWidth = "480px";
+        el.style.fontSize = "18px";
+        el.style.opacity = 1;
+      });
+    },
+    play() {
+      scenes[2].setEnd();
+      updateHUD(3);
+      runScene3Step(0);
+    }
+  };
+
+  // SCENE 4: Step 0 = 12 subgroups -> click -> Step 1 = Mind Map
+  function runScene4MindMap() {
+    scene4Step = 1;
+    updateHUD(4);
+    const tl = gsap.timeline();
+    activeTl = tl;
+
+    tl.call(() => {
+      const allMoving = [
+        ...Array.from(conceptEls.values()),
+        ...Array.from(subgroupEls.values()),
+        ...Array.from(groupEls.values())
+      ];
+      const state = Flip.getState(allMoving);
+
+      treeRootEl.style.left = `${treeLayout.root.x}px`;
+      treeRootEl.style.top = `${treeLayout.root.y - 15}px`;
+      gsap.to(treeRootEl, { opacity: 1, duration: 0.5 });
+
+      DATA.groups.forEach(g => {
+        const el = groupEls.get(g.id);
+        const pos = treeLayout.groups.get(g.id);
+        el.style.fontSize = "16px";
+        el.style.maxWidth = "235px";
+        el.style.left = `${pos.x}px`;
+        el.style.top = `${pos.y - 18}px`;
+      });
+      DATA.subgroups.forEach(s => {
+        const el = subgroupEls.get(s.id);
+        const pos = treeLayout.subgroups.get(s.id);
+        el.style.fontSize = "14px";
+        el.style.maxWidth = "360px";
+        el.style.left = `${pos.x}px`;
+        el.style.top = `${pos.y - 9}px`;
+      });
+      DATA.concepts.forEach(c => {
+        const el = conceptEls.get(c.code);
+        const pos = treeLayout.concepts.get(c.code);
+        el.classList.add("tree-leaf");
+        el.style.left = `${pos.x}px`;
+        el.style.top = `${pos.y - 9}px`;
+      });
+
+      Flip.from(state, { duration: 1.0, ease: "power2.inOut" });
+    }, null, 0.1);
+
+    tl.call(() => {
+      drawMindMapLinks(true);
+      [1, 2, 3].forEach((layer, idx) => {
+        svg.selectAll("path.tree-link")
+          .filter(d => d.layer === layer)
+          .transition()
+          .delay(idx * 550)
+          .duration(600)
+          .attr("stroke-dashoffset", 0);
+      });
+    }, null, 1.2);
+  }
+
+  scenes[4] = {
+    setEnd() {
+      scenes[3].setEnd();
+      updateHUD(4);
+      scene4Step = 1;
+      treeRootEl.style.left = `${treeLayout.root.x}px`;
+      treeRootEl.style.top = `${treeLayout.root.y - 15}px`;
+      treeRootEl.style.opacity = 1;
+
+      DATA.groups.forEach(g => {
+        const el = groupEls.get(g.id);
+        const pos = treeLayout.groups.get(g.id);
+        el.style.fontSize = "16px";
+        el.style.maxWidth = "235px";
+        el.style.left = `${pos.x}px`;
+        el.style.top = `${pos.y - 18}px`;
+        el.style.opacity = 1;
+      });
+
+      DATA.subgroups.forEach(s => {
+        const el = subgroupEls.get(s.id);
+        const pos = treeLayout.subgroups.get(s.id);
+        el.style.fontSize = "14px";
+        el.style.maxWidth = "360px";
+        el.style.left = `${pos.x}px`;
+        el.style.top = `${pos.y - 9}px`;
+        el.style.opacity = 1;
+      });
+
+      DATA.concepts.forEach(c => {
+        const el = conceptEls.get(c.code);
+        const pos = treeLayout.concepts.get(c.code);
+        el.classList.add("tree-leaf");
+        el.style.left = `${pos.x}px`;
+        el.style.top = `${pos.y - 9}px`;
+      });
+
+      drawMindMapLinks(false);
+    },
+    play() {
+      scenes[3].setEnd();
+      updateHUD(4);
+      scene4Step = 0;
+      sceneLabel.innerHTML = `<span class="step-num">04</span>12 sub-groups formed`;
+      setHint("Click or press → for mind map");
+      const tl = gsap.timeline();
+      activeTl = tl;
+
+      tl.call(() => {
+        DATA.subgroups.forEach(s => {
+          const el = subgroupEls.get(s.id);
+          const pos = subClusterLabelPos.get(s.id);
+          el.style.fontSize = "13px";
+          el.style.maxWidth = "460px";
+          el.style.left = `${pos.x}px`;
+          el.style.top = `${pos.y}px`;
+        });
+        gsap.to(Array.from(subgroupEls.values()), { opacity: 1, duration: 0.45 });
+
+        const els = Array.from(conceptEls.values());
+        const state = Flip.getState(els);
+        DATA.concepts.forEach(c => {
+          const el = conceptEls.get(c.code);
+          const pos = subClusterPos.get(c.code);
+          el.style.left = `${pos.x}px`;
+          el.style.top = `${pos.y}px`;
+        });
+        Flip.from(state, { duration: 0.85, ease: "power2.inOut" });
+      }, null, 0.15);
+    }
+  };
+
+  // SCENE 5: Screening (6 eliminated turn red one-by-one, then strikethrough & dim gray)
+  scenes[5] = {
+    setEnd() {
+      scenes[4].setEnd();
+      updateHUD(5);
+      applyScreeningStyles();
+      svg.selectAll("path.tree-link")
+        .filter(d => d.eliminated)
+        .attr("stroke", COLORS.dimLine)
+        .attr("opacity", 0.45);
+      hudNum.textContent = "33";
+      hudLbl.textContent = "CONCEPTS AFTER SCREENING";
+      screeningSummary.innerHTML = `<span class="hl-red">6 screened out</span>`;
+      screeningSummary.style.opacity = 1;
+    },
+    play() {
+      scenes[4].setEnd();
+      updateHUD(5);
+      const tl = gsap.timeline();
+      activeTl = tl;
+
+      const elimConcepts = DATA.concepts.filter(c => c.status === "eliminated");
+
+      elimConcepts.forEach((c, idx) => {
+        const el = conceptEls.get(c.code);
+        tl.call(() => {
+          el.classList.add("is-red");
+          svg.selectAll("path.tree-link")
+            .filter(d => d.targetCode === c.code)
+            .transition().duration(250)
+            .attr("stroke", "#A84448")
+            .attr("opacity", 0.9);
+        }, null, 0.3 + idx * 0.35);
+      });
+
+      const afterRed = 0.3 + elimConcepts.length * 0.35 + 0.55;
+
+      tl.call(() => {
+        elimConcepts.forEach(c => {
+          const el = conceptEls.get(c.code);
+          el.classList.remove("is-red");
+          el.classList.add("is-eliminated");
+        });
+        svg.selectAll("path.tree-link")
+          .filter(d => d.eliminated)
+          .transition().duration(600)
+          .attr("stroke", COLORS.dimLine)
+          .attr("opacity", 0.45);
+      }, null, afterRed);
+
+      const cntObj = { val: 39 };
+      tl.to(cntObj, {
+        val: 33,
+        duration: 0.7,
+        snap: { val: 1 },
+        onUpdate: () => { hudNum.textContent = cntObj.val; }
+      }, afterRed + 0.2);
+
+      tl.call(() => {
+        hudLbl.textContent = "CONCEPTS AFTER SCREENING";
+        screeningSummary.innerHTML = `<span class="hl-red">6 screened out</span>`;
+      }, null, afterRed + 0.5);
+
+      tl.to(screeningSummary, { opacity: 1, duration: 0.6 }, afterRed + 0.6);
+    }
+  };
+
+  // SCENE 6: Forming 5 candidate solutions (then dim 11 not_core)
+  scenes[6] = {
+    setEnd() {
+      scenes[5].setEnd();
+      updateHUD(6);
+      clearSVG();
+
+      treeRootEl.style.opacity = 0;
+      groupEls.forEach(el => { el.style.opacity = 0; });
+
+      DATA.subgroups.forEach(s => {
+        const el = subgroupEls.get(s.id);
+        const pos = listPos.subgroups.get(s.id);
+        if (!pos) {
+          el.style.opacity = 0;
+          return;
+        }
+        el.classList.add("list-header");
+        const hasCore = DATA.concepts.some(c => c.subgroup === s.id && c.status === "core");
+        el.classList.toggle("is-dim-header", !hasCore);
+        el.style.maxWidth = "500px";
+        el.style.left = `${pos.x}px`;
+        el.style.top = `${pos.y}px`;
+        el.style.opacity = 1;
+      });
+
+      DATA.concepts.forEach(c => {
+        const el = conceptEls.get(c.code);
+        if (c.status === "eliminated") {
+          el.style.opacity = 0;
+          el.style.pointerEvents = "none";
+          return;
+        }
+        const pos = listPos.concepts.get(c.code);
+        el.classList.remove("tree-leaf");
+        el.classList.add("list-item");
+        el.style.left = `${pos.x}px`;
+        el.style.top = `${pos.y}px`;
+        if (c.status === "not_core") {
+          el.classList.add("is-not-core");
+        }
+      });
+
+      candidateEls.forEach(el => { el.style.opacity = 1; });
+      drawCandidateLinks(false);
+      renderDefaultDetail();
+      detailPanel.style.opacity = 1;
+      hudNum.textContent = "5";
+      hudLbl.textContent = "CANDIDATE CONCEPTS";
+      screeningSummary.innerHTML = `<span class="hl-blocks">built from 22 core concepts</span>`;
+      screeningSummary.style.opacity = 1;
+    },
+    play() {
+      scenes[5].setEnd();
+      updateHUD(6);
+      const tl = gsap.timeline();
+      activeTl = tl;
+
+      tl.to([treeRootEl, ...Array.from(groupEls.values())], { opacity: 0, duration: 0.3 });
+      tl.call(() => { clearSVG(); }, null, 0.25);
+
+      tl.call(() => {
+        const moving = [
+          ...DATA.subgroups.filter(s => listPos.subgroups.has(s.id)).map(s => subgroupEls.get(s.id)),
+          ...DATA.concepts.filter(c => c.status !== "eliminated").map(c => conceptEls.get(c.code))
+        ];
+        const hidden = [
+          ...DATA.subgroups.filter(s => !listPos.subgroups.has(s.id)).map(s => subgroupEls.get(s.id)),
+          ...DATA.concepts.filter(c => c.status === "eliminated").map(c => conceptEls.get(c.code))
+        ];
+        gsap.to(hidden, { opacity: 0, duration: 0.3 });
+        hidden.forEach(el => { el.style.pointerEvents = "none"; });
+
+        const state = Flip.getState(moving);
+
+        DATA.subgroups.forEach(s => {
+          const pos = listPos.subgroups.get(s.id);
+          if (!pos) return;
+          const el = subgroupEls.get(s.id);
+          el.classList.add("list-header");
+          el.style.maxWidth = "500px";
+          el.style.left = `${pos.x}px`;
+          el.style.top = `${pos.y}px`;
+        });
+        DATA.concepts.forEach(c => {
+          if (c.status === "eliminated") return;
+          const el = conceptEls.get(c.code);
+          const pos = listPos.concepts.get(c.code);
+          el.classList.remove("tree-leaf");
+          el.classList.add("list-item");
+          el.style.left = `${pos.x}px`;
+          el.style.top = `${pos.y}px`;
+        });
+
+        Flip.from(state, { duration: 0.9, ease: "power2.inOut" });
+      }, null, 0.35);
+
+      tl.call(() => {
+        drawCandidateLinks(true);
+        DATA.candidates.forEach((cand, idx) => {
+          const cardEl = candidateEls.get(cand.id);
+          gsap.to(cardEl, { opacity: 1, duration: 0.4, delay: idx * 0.35 });
+          svg.selectAll("path.cand-link")
+            .filter(d => d.candId === cand.id)
+            .transition()
+            .delay(idx * 350)
+            .duration(500)
+            .attr("stroke-dashoffset", 0);
+        });
+      }, null, 1.35);
+
+      // After 5 cards appear, dim the 11 not_core concepts (no strikethrough) & update counter
+      tl.call(() => {
+        DATA.concepts.filter(c => c.status === "not_core").forEach(c => {
+          conceptEls.get(c.code).classList.add("is-not-core");
+        });
+        DATA.subgroups.forEach(s => {
+          const hasCore = DATA.concepts.some(c => c.subgroup === s.id && c.status === "core");
+          subgroupEls.get(s.id).classList.toggle("is-dim-header", !hasCore);
+        });
+        hudNum.textContent = "5";
+        hudLbl.textContent = "CANDIDATE CONCEPTS";
+        screeningSummary.innerHTML = `<span class="hl-blocks">built from 22 core concepts</span>`;
+        gsap.to(screeningSummary, { opacity: 1, duration: 0.4 });
+      }, null, 3.3);
+
+      tl.call(() => { renderDefaultDetail(); }, null, 1.4);
+      tl.to(detailPanel, { opacity: 1, duration: 0.5 }, 3.4);
+    }
+  };
+
+  // SCENE 7: Interactive Exploration
+  scenes[7] = {
+    setEnd() {
+      scenes[6].setEnd();
+      updateHUD(7);
+      candidateEls.forEach(el => el.classList.add("interactive"));
+      detailPanel.classList.add("interactive");
+      selectCandidate(null);
+    },
+    play() {
+      scenes[7].setEnd();
+    }
+  };
+
+  // =========================================================
+  // Navigation
+  // =========================================================
+  function advance() {
+    if (activeTl && activeTl.isActive()) {
+      if (currentScene === 1 && !scene1Merged) {
+        activeTl.progress(1);
+        return;
+      }
+      if (currentScene === 3 && scene3Step < 3) {
+        activeTl.progress(1);
+        return;
+      }
+      if (currentScene === 4 && scene4Step < 1) {
+        activeTl.progress(1);
+        return;
+      }
+      scenes[currentScene].setEnd();
+      return;
+    }
+    if (currentScene === 1 && !scene1Merged) {
+      if (reducedMotion) scenes[1].setEnd();
+      else mergeScene1Duplicates();
+      return;
+    }
+    if (currentScene === 3 && scene3Step < 3) {
+      if (reducedMotion) scenes[3].setEnd();
+      else runScene3Step(scene3Step + 1);
+      return;
+    }
+    if (currentScene === 4 && scene4Step < 1) {
+      if (reducedMotion) scenes[4].setEnd();
+      else runScene4MindMap();
+      return;
+    }
+    if (currentScene < 7) {
+      const next = currentScene + 1;
+      if (reducedMotion) scenes[next].setEnd();
+      else scenes[next].play();
+    }
+  }
+
+  function prevScene() {
+    if (currentScene > 0) {
+      scenes[currentScene - 1].setEnd();
+    }
+  }
+
+  function jumpToScene(idx) {
+    if (idx >= 0 && idx <= 7) {
+      scenes[idx].setEnd();
+    }
+  }
+
+  function replayAll() {
+    if (reducedMotion) scenes[0].setEnd();
+    else scenes[0].play();
+  }
+
+  stage.addEventListener("click", (e) => {
+    if (currentScene < 7) {
+      advance();
+    } else {
+      if (!e.target.closest(".candidate-card") && !e.target.closest("#detail-panel")) {
+        selectCandidate(null);
+      }
+    }
+  });
+
+  skipBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    jumpToScene(7);
+  });
+
+  replayBtn.addEventListener("click", (e) => {
+    e.stopPropagation();
+    replayAll();
+  });
+
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowRight" || e.key === " ") {
+      e.preventDefault();
+      if (currentScene < 7) advance();
+    } else if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      prevScene();
+    } else if (e.key === "End") {
+      e.preventDefault();
+      jumpToScene(7);
+    } else if (e.key === "Home") {
+      e.preventDefault();
+      jumpToScene(0);
+    } else if (e.key === "r" || e.key === "R") {
+      e.preventDefault();
+      replayAll();
+    }
+  });
+
+  // Start at Scene 0
+  if (reducedMotion) scenes[0].setEnd();
+  else scenes[0].play();
+})();
+</script>
+</body>
+</html>

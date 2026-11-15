@@ -387,6 +387,11 @@
   }
   .concept-node.is-dimmed .c-code { color: var(--dim-text) !important; }
 
+  .concept-node.is-related {
+    border-style: dashed !important;
+    opacity: 0.5;
+  }
+
   .concept-node.code-ref-hover {
     border-color: var(--text) !important;
     opacity: 1 !important;
@@ -402,6 +407,9 @@
     color: var(--text);
     cursor: pointer;
   }
+  .inline-code-ref.g1 { color: var(--g1-text); border-color: var(--g1-border); background: var(--g1-bg); }
+  .inline-code-ref.g2 { color: var(--g2-text); border-color: var(--g2-border); background: var(--g2-bg); }
+  .inline-code-ref.g3 { color: var(--g3-text); border-color: var(--g3-border); background: var(--g3-bg); }
   .inline-code-ref.not-member {
     color: var(--muted);
   }
@@ -611,6 +619,12 @@
   .dp-block-list li {
     margin-bottom: 2px;
   }
+  .dp-related {
+    font-size: 13px;
+    color: var(--muted);
+    margin-top: 18px;
+    line-height: 1.5;
+  }
   .dp-group-block.g1 { color: var(--g1-text); }
   .dp-group-block.g2 { color: var(--g2-text); }
   .dp-group-block.g3 { color: var(--g3-text); }
@@ -724,6 +738,10 @@
     rootLine: "#7D8796"
   };
 
+  const conceptMap = new Map(DATA.concepts.map(c => [c.code, c]));
+  const groupMap = new Map(DATA.groups.map(g => [g.id, g]));
+  const coreCount = DATA.concepts.filter(c => c.status === "core").length;
+
   const SCENE_TITLES = [
     ["00", "80 raw ideas streamed from brainstorming"],
     ["01", "Remove 2 exact duplicates (80 → 78 distinct ideas)"],
@@ -731,7 +749,7 @@
     ["03", "Color & group into 3 solution stages"],
     ["04", "Organize 12 sub-groups into mind map"],
     ["05", "Screen against Need Specification (39 → 33)"],
-    ["06", "Combine 22 core concepts into 5 candidate solutions"],
+    ["06", `Combine ${coreCount} core concepts into 5 candidate solutions`],
     ["07", "Interactive exploration of 5 candidate solutions"]
   ];
 
@@ -743,9 +761,6 @@
   }
   window.addEventListener("resize", resizeStage);
   resizeStage();
-
-  const conceptMap = new Map(DATA.concepts.map(c => [c.code, c]));
-  const groupMap = new Map(DATA.groups.map(g => [g.id, g]));
 
   // Map each concept to its ordered non-duplicate ideas
   const ideasByConcept = new Map();
@@ -1246,7 +1261,11 @@
 
   function formatTextWithRefs(text, memberSet) {
     return text.replace(/\b([123][A-E]-\d+)\b/g, (match, code) => {
-      const cls = memberSet.has(code) ? "inline-code-ref" : "inline-code-ref not-member";
+      let cls = "inline-code-ref not-member";
+      if (memberSet.has(code)) {
+        const c = conceptMap.get(code);
+        cls = c ? `inline-code-ref g${c.group}` : "inline-code-ref";
+      }
       return `<span class="${cls}" data-code="${code}">${code}</span>`;
     });
   }
@@ -1292,6 +1311,14 @@
       return `<div class="dp-group-block g${g}"><strong>Group ${g} (${gName}):</strong><ul class="dp-block-list">${items}</ul></div>`;
     }).join("");
 
+    const relatedNames = (cand.related || [])
+      .map(code => conceptMap.get(code))
+      .filter(Boolean)
+      .map(c => c.name);
+    const relatedHtml = relatedNames.length
+      ? `<div class="dp-related">May also draw on: ${relatedNames.join(", ")}</div>`
+      : "";
+
     detailContent.innerHTML = `
       <h2>Concept ${cand.id}: ${cand.name}</h2>
       <div class="dp-target">${cand.target}</div>
@@ -1301,6 +1328,7 @@
       <div class="dp-body">${formatTextWithRefs(cand.collection, memberSet)}</div>
       <div class="dp-sec-title">How data is shared, verified and funded</div>
       <div class="dp-body">${formatTextWithRefs(cand.sharing_funding, memberSet)}</div>
+      ${relatedHtml}
     `;
     bindInlineCodeHovers();
   }
@@ -1321,7 +1349,7 @@
       });
       conceptEls.forEach((el, code) => {
         const c = conceptMap.get(code);
-        el.classList.remove("is-dimmed", "is-not-core");
+        el.classList.remove("is-dimmed", "is-not-core", "is-related");
         if (c.status === "eliminated") {
           el.classList.add("is-eliminated");
           el.style.pointerEvents = "none";
@@ -1347,6 +1375,7 @@
     } else {
       const cand = DATA.candidates.find(c => c.id === candId);
       const memberSet = new Set(cand.members);
+      const relatedSet = new Set(cand.related || []);
       candidateEls.forEach((el, id) => {
         el.classList.toggle("selected", id === candId);
         gsap.to(el, { opacity: id === candId ? 1 : 0.4, duration: 0.3 });
@@ -1355,13 +1384,20 @@
         const c = conceptMap.get(code);
         el.classList.remove("is-not-core");
         if (c.status === "eliminated") {
+          el.classList.remove("is-related");
           el.style.pointerEvents = "none";
           gsap.to(el, { opacity: 0, duration: 0.25 });
         } else if (memberSet.has(code)) {
-          el.classList.remove("is-dimmed");
+          el.classList.remove("is-dimmed", "is-related");
           el.style.pointerEvents = "auto";
           gsap.to(el, { opacity: 1, duration: 0.3 });
+        } else if (relatedSet.has(code)) {
+          el.classList.remove("is-dimmed");
+          el.classList.add("is-related");
+          el.style.pointerEvents = "auto";
+          gsap.to(el, { opacity: 0.5, duration: 0.3 });
         } else {
+          el.classList.remove("is-related");
           el.classList.add("is-dimmed");
           el.style.pointerEvents = "auto";
           gsap.to(el, { opacity: 0.45, duration: 0.3 });
@@ -1369,7 +1405,7 @@
       });
       DATA.subgroups.forEach(s => {
         if (!listPos.subgroups.has(s.id)) return;
-        const hasMember = DATA.concepts.some(c => c.subgroup === s.id && memberSet.has(c.code));
+        const hasMember = DATA.concepts.some(c => c.subgroup === s.id && (memberSet.has(c.code) || relatedSet.has(c.code)));
         subgroupEls.get(s.id).classList.toggle("is-dim-header", !hasMember);
       });
       svg.selectAll("path.cand-link")
@@ -2014,7 +2050,7 @@
       detailPanel.style.opacity = 1;
       hudNum.textContent = "5";
       hudLbl.textContent = "CANDIDATE CONCEPTS";
-      screeningSummary.innerHTML = `<span class="hl-blocks">built from 22 core concepts</span>`;
+      screeningSummary.innerHTML = `<span class="hl-blocks">built from ${coreCount} core concepts</span>`;
       screeningSummary.style.opacity = 1;
     },
     play() {
@@ -2087,7 +2123,7 @@
         });
         hudNum.textContent = "5";
         hudLbl.textContent = "CANDIDATE CONCEPTS";
-        screeningSummary.innerHTML = `<span class="hl-blocks">built from 22 core concepts</span>`;
+        screeningSummary.innerHTML = `<span class="hl-blocks">built from ${coreCount} core concepts</span>`;
         gsap.to(screeningSummary, { opacity: 1, duration: 0.4 });
       }, null, 3.3);
 

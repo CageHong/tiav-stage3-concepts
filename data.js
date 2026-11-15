@@ -11,7 +11,7 @@ window.STAGE3_DATA = {
       "groups": 3,
       "subgroups": 12,
       "eliminated": 6,
-      "core": 22,
+      "core": 20,
       "candidates": 5
     },
     "status_values": {
@@ -119,7 +119,7 @@ window.STAGE3_DATA = {
         "P8",
         "P9"
       ],
-      "status": "core"
+      "status": "not_core"
     },
     {
       "code": "1A-3",
@@ -252,7 +252,7 @@ window.STAGE3_DATA = {
         "#8",
         "#7"
       ],
-      "status": "core"
+      "status": "not_core"
     },
     {
       "code": "2A-3",
@@ -382,7 +382,7 @@ window.STAGE3_DATA = {
         "P35",
         "#6"
       ],
-      "status": "core"
+      "status": "not_core"
     },
     {
       "code": "2D-3",
@@ -486,7 +486,7 @@ window.STAGE3_DATA = {
       "sources": [
         "#17"
       ],
-      "status": "not_core"
+      "status": "core"
     },
     {
       "code": "3B-2",
@@ -498,7 +498,7 @@ window.STAGE3_DATA = {
         "#18",
         "#24"
       ],
-      "status": "not_core"
+      "status": "core"
     },
     {
       "code": "3B-3",
@@ -532,7 +532,7 @@ window.STAGE3_DATA = {
       "sources": [
         "#23"
       ],
-      "status": "core"
+      "status": "not_core"
     },
     {
       "code": "3C-1",
@@ -580,7 +580,8 @@ window.STAGE3_DATA = {
         "3B-3"
       ],
       "collection": "Collected during workplace group events (1C-3), routine lease maintenance at partner dealers (1D-1), or lease-return inspection.",
-      "sharing_funding": "Automatically delivered via the leasing app/email (2B-2) before the lessee's buyout decision; returned bikes flow with standardized reports to refurbishers/dealers for batch bidding. Funded via lease fees, employers, or refurbishers (3B-3)."
+      "sharing_funding": "Automatically delivered via the leasing app/email (2B-2) before the lessee's buyout decision; returned bikes flow with standardized reports to refurbishers/dealers for batch bidding. Funded via lease fees, employers, or refurbishers (3B-3).",
+      "related": []
     },
     {
       "id": 2,
@@ -590,12 +591,16 @@ window.STAGE3_DATA = {
         "2B-1",
         "2E-3",
         "3A-3",
-        "2D-2",
         "1A-4",
-        "3B-4"
+        "3B-4",
+        "3B-2"
       ],
       "collection": "Sellers complete guided home diagnostic steps (1A-4) or upload existing dealer printouts translated by the AI interpreter (2D-2).",
-      "sharing_funding": "Embedded directly in online listings (2B-1) with a Verified Badge (2E-3) and cross-bike comparison (2C-2). For unlisted batteries, buyers click a 1-click request or place a micro-bounty (3A-3) to prompt seller disclosure; fee deferred until sale (3B-2) or subsidized by marketplace (3B-4)."
+      "sharing_funding": "Embedded directly in online listings (2B-1) with a Verified Badge (2E-3) and cross-bike comparison (2C-2). For unlisted batteries, buyers click a 1-click request or place a micro-bounty (3A-3) to prompt seller disclosure; fee deferred until sale (3B-2) or subsidized by marketplace (3B-4).",
+      "related": [
+        "2D-2",
+        "2C-2"
+      ]
     },
     {
       "id": 3,
@@ -605,13 +610,15 @@ window.STAGE3_DATA = {
         "2E-4",
         "1D-2",
         "2A-1",
-        "2A-2",
         "2A-3",
         "1D-1",
-        "3B-5"
+        "3B-1"
       ],
       "collection": "Aggregates partner dealer maintenance checks (1D-1), home checks, and post-2027 EU passport records into a central database (1D-2) tied to battery ID.",
-      "sharing_funding": "Tamper-evident QR code on the battery (2A-1) + owner digital wallet (2A-3). Buyers scan the QR or query the portal/SMS (2A-2) for free (3B-1); records transfer on resale. Monetized via B2B database access (1D-2) for dealers, refurbishers, and insurers."
+      "sharing_funding": "Tamper-evident QR code on the battery (2A-1) + owner digital wallet (2A-3). Buyers scan the QR or query the portal/SMS (2A-2) for free (3B-1); records transfer on resale. Monetized via B2B database access (1D-2) for dealers, refurbishers, and insurers.",
+      "related": [
+        "2A-2"
+      ]
     },
     {
       "id": 4,
@@ -619,13 +626,16 @@ window.STAGE3_DATA = {
       "target": "Targets brand-independent physical measurement, incl. older bikes",
       "members": [
         "1A-1",
-        "1A-2",
         "1B-2",
         "1A-4",
-        "2A-3"
+        "2A-3",
+        "3B-2"
       ],
       "collection": "Low-cost smart charger adapter tracks charging electrical flow (1A-1) + thermal/acoustic safety check (1A-2) via mobile app (1B-2), bypassing OEM BMS locks and covering older batteries.",
-      "sharing_funding": "One charge cycle at home (1A-4) generates an independent third-party certificate (2E-1) with battery ID and test date, shared in one click via WhatsApp/chat (2A-3). Hardware offered via deposit rental for P2P sellers or B2B subscription for dealers."
+      "sharing_funding": "One charge cycle at home (1A-4) generates a test report with battery ID and test date, shared in one click via WhatsApp/chat (2A-3). Hardware offered via deposit rental for P2P sellers or B2B subscription for dealers; the seller pays for the test, and buyers view the report for free (3B-2).",
+      "related": [
+        "1A-2"
+      ]
     },
     {
       "id": 5,
@@ -638,7 +648,8 @@ window.STAGE3_DATA = {
         "1D-1"
       ],
       "collection": "Owners log charging/usage via app, combined with shared e-bike fleet datasets (1D-1) to train cross-brand real-world degradation benchmarks.",
-      "sharing_funding": "Turns the battery into an interactive digital pet / conversational AI twin (2D-1) with peer leaderboards (3A-1). Owners earn credits by sharing data to unlock reports on other bikes (3A-2) and export a verified longitudinal care history at resale. Monetized via B2B benchmark database and replacement leads."
+      "sharing_funding": "Turns the battery into an interactive digital pet / conversational AI twin (2D-1) with peer leaderboards (3A-1). Owners earn credits by sharing data to unlock reports on other bikes (3A-2) and export a verified longitudinal care history at resale. Monetized via B2B benchmark database and replacement leads.",
+      "related": []
     }
   ],
   "ideas": [

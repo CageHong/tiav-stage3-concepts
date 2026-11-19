@@ -211,7 +211,156 @@
     border-color: var(--muted);
   }
 
-  /* Terminal (Scene 0) */
+  /* Intro Views (Scenes 0 & 1) */
+  #need-statement-view,
+  #need-spec-view {
+    position: absolute;
+    inset: 0;
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 90px 120px 80px;
+    z-index: 25;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .intro-kicker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+  .ns-sentence {
+    max-width: 1120px;
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 46px;
+    line-height: 1.48;
+    font-weight: 400;
+    text-align: center;
+    color: var(--muted);
+  }
+  .ns-part {
+    display: inline;
+  }
+  .ns-p1 { color: var(--g1-text); }
+  .ns-p2 { color: var(--g2-text); }
+  .ns-p3 { color: var(--g3-text); }
+  .ns-legend {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+    margin-top: 40px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .ns-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .ns-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  .ns-dot.p1 { background: var(--g1-text); }
+  .ns-dot.p2 { background: var(--g2-text); }
+  .ns-dot.p3 { background: var(--g3-text); }
+  .enter-prompt {
+    margin-top: 48px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--dim-text);
+    letter-spacing: 0.04em;
+  }
+  .enter-key {
+    display: inline-block;
+    padding: 2px 8px;
+    border: 1px solid var(--dim-border);
+    border-radius: 4px;
+    color: var(--muted);
+    margin: 0 4px;
+  }
+
+  /* Need Specification (Scene 1) */
+  .spec-header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+  .spec-title {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 36px;
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .spec-subtitle {
+    font-size: 15px;
+    color: var(--muted);
+  }
+  .spec-columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 36px;
+    width: 1160px;
+    max-width: 100%;
+  }
+  .spec-col {
+    background: var(--panel);
+    border: 1px solid var(--dim-border);
+    border-radius: 6px;
+    padding: 26px 30px;
+  }
+  .spec-col.must {
+    border-top: 3px solid var(--g1-border);
+  }
+  .spec-col.nice {
+    border-top: 3px solid var(--g2-border);
+  }
+  .spec-col-title {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 22px;
+    font-weight: 400;
+    margin-bottom: 18px;
+  }
+  .spec-col.must .spec-col-title { color: var(--g1-text); }
+  .spec-col.nice .spec-col-title { color: var(--g2-text); }
+  .spec-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .spec-item {
+    position: relative;
+    padding-left: 18px;
+    font-size: 15px;
+    line-height: 1.45;
+    color: var(--text);
+  }
+  .spec-item::before {
+    content: "•";
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: var(--muted);
+  }
+  .spec-col.must .spec-item::before { color: var(--g1-text); }
+  .spec-col.nice .spec-item::before { color: var(--g2-text); }
+  .spec-item-key {
+    font-weight: 600;
+    color: var(--text);
+  }
+  .spec-item-val {
+    color: var(--muted);
+  }
+
+  /* Terminal (Scene 2) */
   #terminal {
     position: absolute;
     left: 200px;
@@ -675,6 +824,57 @@
       <span class="lbl">RAW IDEAS</span>
     </div>
 
+    <div id="need-statement-view">
+      <div class="intro-kicker">Need Statement</div>
+      <div class="ns-sentence">
+        <span class="ns-part ns-p1">Verifiable battery health</span>,
+        <span class="ns-part ns-p2">for buyers, private sellers, dealers</span>,
+        <span class="ns-part ns-p3">to make better purchase (or selling) decisions and minimize risks</span>
+      </div>
+      <div class="ns-legend">
+        <span class="ns-legend-item"><span class="ns-dot p1"></span>Problem</span>
+        <span class="ns-legend-item"><span class="ns-dot p2"></span>Population</span>
+        <span class="ns-legend-item"><span class="ns-dot p3"></span>Outcome</span>
+      </div>
+      <div class="enter-prompt">Press <span class="enter-key">Enter</span> to view Need Specification</div>
+    </div>
+
+    <div id="need-spec-view">
+      <div class="spec-header">
+        <div class="spec-title">Need Specification</div>
+        <div class="spec-subtitle">Must-haves and Nice-to-haves</div>
+      </div>
+      <div class="spec-columns">
+        <div class="spec-col must">
+          <div class="spec-col-title">Must-haves</div>
+          <ul class="spec-list">
+            <li class="spec-item"><span class="spec-item-key">Accessibility:</span> <span class="spec-item-val">open access for all parties, at reasonable cost</span></li>
+            <li class="spec-item"><span class="spec-item-key">Validity:</span> <span class="spec-item-val">remaining capacity or SoH</span></li>
+            <li class="spec-item"><span class="spec-item-key">Verifiability:</span> <span class="spec-item-val">battery ID + test date</span></li>
+            <li class="spec-item"><span class="spec-item-key">Comparability:</span> <span class="spec-item-val">same metrics across brands and testers</span></li>
+            <li class="spec-item"><span class="spec-item-key">Interpretability:</span> <span class="spec-item-val">remaining range, replacement need</span></li>
+            <li class="spec-item"><span class="spec-item-key">Usable in private sales</span></li>
+            <li class="spec-item"><span class="spec-item-key">Coverage of older battery systems</span></li>
+            <li class="spec-item"><span class="spec-item-key">Compliance:</span> <span class="spec-item-val">EU Battery Regulation, GDPR</span></li>
+          </ul>
+        </div>
+        <div class="spec-col nice">
+          <div class="spec-col-title">Nice-to-haves</div>
+          <ul class="spec-list">
+            <li class="spec-item">Power and safety indicators</li>
+            <li class="spec-item">Stated test method and precision</li>
+            <li class="spec-item">Independent third-party testing</li>
+            <li class="spec-item">Battery health history</li>
+            <li class="spec-item">Independence from a single manufacturer</li>
+            <li class="spec-item">Integration into listing platforms</li>
+            <li class="spec-item">Use for insurance and financing</li>
+            <li class="spec-item">Use at lease end</li>
+          </ul>
+        </div>
+      </div>
+      <div class="enter-prompt">Press <span class="enter-key">Enter</span> to generate ideas</div>
+    </div>
+
     <div id="terminal">
       <div id="terminal-cmd">$ load ideas --session 2026-11-15<span class="cursor"></span></div>
       <div id="terminal-lines"></div>
@@ -720,6 +920,8 @@
   const hudLbl = hudCounter.querySelector(".lbl");
   const screeningSummary = document.getElementById("screening-summary");
   const groupAnnounce = document.getElementById("group-announce");
+  const needStatementView = document.getElementById("need-statement-view");
+  const needSpecView = document.getElementById("need-spec-view");
   const terminal = document.getElementById("terminal");
   const terminalLines = document.getElementById("terminal-lines");
   const detailPanel = document.getElementById("detail-panel");
@@ -743,15 +945,18 @@
   const coreCount = DATA.concepts.filter(c => c.status === "core").length;
 
   const SCENE_TITLES = [
-    ["00", "80 raw ideas streamed from brainstorming"],
-    ["01", "Remove 2 exact duplicates (80 → 78 distinct ideas)"],
-    ["02", "Merge overlapping ideas into 39 concepts"],
-    ["03", "Color & group into 3 solution stages"],
-    ["04", "Organize 12 sub-groups into mind map"],
-    ["05", "Screen against Need Specification (39 → 33)"],
-    ["06", `Combine ${coreCount} core concepts into 5 candidate solutions`],
-    ["07", "Interactive exploration of 5 candidate solutions"]
+    ["00", "Need Statement"],
+    ["01", "Need Specification (Must-haves & Nice-to-haves)"],
+    ["02", "80 raw ideas streamed from brainstorming"],
+    ["03", "Remove 2 exact duplicates (80 → 78 distinct ideas)"],
+    ["04", "Merge overlapping ideas into 39 concepts"],
+    ["05", "Color & group into 3 solution stages"],
+    ["06", "Organize 12 sub-groups into mind map"],
+    ["07", "Screen against Need Specification (39 → 33)"],
+    ["08", `Combine ${coreCount} core concepts into 5 candidate solutions`],
+    ["09", "Interactive exploration of 5 candidate solutions"]
   ];
+  const LAST_SCENE = SCENE_TITLES.length - 1;
 
   const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -833,7 +1038,7 @@
     el.style.top = `${88 + idx * 150}px`;
     el.addEventListener("click", (e) => {
       e.stopPropagation();
-      if (currentScene !== 7) return;
+      if (currentScene !== LAST_SCENE) return;
       selectCandidate(selectedCandId === cand.id ? null : cand.id);
     });
     stage.appendChild(el);
@@ -841,7 +1046,7 @@
   });
 
   const dotBtns = [];
-  for (let i = 0; i < 8; i++) {
+  for (let i = 0; i < SCENE_TITLES.length; i++) {
     const b = document.createElement("button");
     b.type = "button";
     b.className = "dot";
@@ -1122,9 +1327,11 @@
     const [num, title] = SCENE_TITLES[idx];
     sceneLabel.innerHTML = `<span class="step-num">${num}</span>${title}`;
     dotBtns.forEach((b, i) => b.classList.toggle("active", i === idx));
-    skipBtn.style.display = idx === 7 ? "none" : "inline-block";
-    if (idx === 7) {
+    skipBtn.style.display = idx === LAST_SCENE ? "none" : "inline-block";
+    if (idx === LAST_SCENE) {
       setHint("Click a candidate card to inspect · Hover concepts or inline codes");
+    } else if (idx <= 1) {
+      setHint("Click, or press Enter / Space / → to continue");
     } else {
       setHint("Click or press → to continue");
     }
@@ -1136,6 +1343,10 @@
 
   function resetAllElements() {
     clearSVG();
+    needStatementView.style.opacity = 0;
+    needStatementView.style.display = "none";
+    needSpecView.style.opacity = 0;
+    needSpecView.style.display = "none";
     terminal.style.opacity = 0;
     terminal.style.display = "none";
     terminalLines.innerHTML = "";
@@ -1418,7 +1629,7 @@
   conceptEls.forEach((el, code) => {
     const c = conceptMap.get(code);
     el.addEventListener("mouseenter", () => {
-      if (currentScene !== 7) return;
+      if (currentScene !== LAST_SCENE) return;
       tooltip.querySelector(".tt-title").textContent = `${c.code} · ${c.name}`;
       tooltip.querySelector(".tt-desc").textContent = c.description;
       tooltip.querySelector(".tt-src").textContent = `Source ideas: ${c.sources.join(", ")}`;
@@ -1440,16 +1651,83 @@
   });
 
   // =========================================================
-  // Scenes 0 .. 7
+  // Scenes 0 .. 9
   // =========================================================
   const scenes = [];
 
-  // SCENE 0: 80 ideas
+  // SCENE 0: Need Statement
   scenes[0] = {
     setEnd() {
       killActive();
       resetAllElements();
       updateHUD(0);
+      needStatementView.style.display = "flex";
+      needStatementView.style.opacity = 1;
+      gsap.set("#need-statement-view .intro-kicker, #need-statement-view .ns-part, #need-statement-view .ns-legend, #need-statement-view .enter-prompt", {
+        opacity: 1, y: 0
+      });
+    },
+    play() {
+      killActive();
+      resetAllElements();
+      updateHUD(0);
+      needStatementView.style.display = "flex";
+      needStatementView.style.opacity = 1;
+      const tl = gsap.timeline();
+      activeTl = tl;
+
+      gsap.set("#need-statement-view .intro-kicker", { opacity: 0, y: 10 });
+      gsap.set("#need-statement-view .ns-part", { opacity: 0 });
+      gsap.set("#need-statement-view .ns-legend", { opacity: 0, y: 10 });
+      gsap.set("#need-statement-view .enter-prompt", { opacity: 0 });
+
+      tl.to("#need-statement-view .intro-kicker", { opacity: 1, y: 0, duration: 0.35, ease: "power2.out" }, 0.05);
+      tl.to("#need-statement-view .ns-part", { opacity: 1, duration: 0.45, stagger: 0.32, ease: "power2.out" }, 0.25);
+      tl.to("#need-statement-view .ns-legend", { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 1.25);
+      tl.to("#need-statement-view .enter-prompt", { opacity: 1, duration: 0.4 }, 1.55);
+    }
+  };
+
+  // SCENE 1: Need Specification (Must-haves and Nice-to-haves)
+  scenes[1] = {
+    setEnd() {
+      killActive();
+      resetAllElements();
+      updateHUD(1);
+      needSpecView.style.display = "flex";
+      needSpecView.style.opacity = 1;
+      gsap.set("#need-spec-view .spec-header, #need-spec-view .spec-col, #need-spec-view .spec-item, #need-spec-view .enter-prompt", {
+        opacity: 1, y: 0
+      });
+    },
+    play() {
+      killActive();
+      resetAllElements();
+      updateHUD(1);
+      needSpecView.style.display = "flex";
+      needSpecView.style.opacity = 1;
+      const tl = gsap.timeline();
+      activeTl = tl;
+
+      gsap.set("#need-spec-view .spec-header", { opacity: 0, y: 12 });
+      gsap.set("#need-spec-view .spec-col", { opacity: 0, y: 16 });
+      gsap.set("#need-spec-view .spec-item", { opacity: 0, y: 8 });
+      gsap.set("#need-spec-view .enter-prompt", { opacity: 0 });
+
+      tl.to("#need-spec-view .spec-header", { opacity: 1, y: 0, duration: 0.4, ease: "power2.out" }, 0.05);
+      tl.to("#need-spec-view .spec-col", { opacity: 1, y: 0, duration: 0.45, stagger: 0.2, ease: "power2.out" }, 0.25);
+      tl.to("#need-spec-view .spec-col.must .spec-item", { opacity: 1, y: 0, duration: 0.25, stagger: 0.05, ease: "power2.out" }, 0.45);
+      tl.to("#need-spec-view .spec-col.nice .spec-item", { opacity: 1, y: 0, duration: 0.25, stagger: 0.05, ease: "power2.out" }, 0.65);
+      tl.to("#need-spec-view .enter-prompt", { opacity: 1, duration: 0.4 }, 1.25);
+    }
+  };
+
+  // SCENE 2: 80 ideas
+  scenes[2] = {
+    setEnd() {
+      killActive();
+      resetAllElements();
+      updateHUD(2);
       DATA.ideas.forEach(idea => {
         const el = ideaEls.get(idea.id);
         const pos = cloudPos.get(idea.id);
@@ -1469,7 +1747,7 @@
     play() {
       killActive();
       resetAllElements();
-      updateHUD(0);
+      updateHUD(2);
       terminal.style.display = "flex";
       const tl = gsap.timeline();
       activeTl = tl;
@@ -1530,7 +1808,7 @@
   // SCENE 1: 80 -> 78 (Step 1: highlight 2 pairs in 2 reds & pause; Step 2: click to merge)
   function mergeScene1Duplicates() {
     scene1Merged = true;
-    updateHUD(1);
+    updateHUD(3);
     const tl = gsap.timeline();
     activeTl = tl;
 
@@ -1570,10 +1848,10 @@
     }, 2.35);
   }
 
-  scenes[1] = {
+  scenes[3] = {
     setEnd() {
-      scenes[0].setEnd();
-      updateHUD(1);
+      scenes[2].setEnd();
+      updateHUD(3);
       scene1Merged = true;
       ideaEls.forEach(el => {
         el.style.filter = "blur(0px)";
@@ -1596,8 +1874,8 @@
       hudLbl.textContent = "DISTINCT IDEAS";
     },
     play() {
-      scenes[0].setEnd();
-      updateHUD(1);
+      scenes[2].setEnd();
+      updateHUD(3);
       scene1Merged = false;
       setHint("Click or press → to merge 2 duplicate pairs");
       const tl = gsap.timeline();
@@ -1615,11 +1893,11 @@
     }
   };
 
-  // SCENE 2: 78 -> 39 concepts (3 vertical columns x 13 rows, full text readable!)
-  scenes[2] = {
+  // SCENE 4: 78 -> 39 concepts (3 vertical columns x 13 rows, full text readable!)
+  scenes[4] = {
     setEnd() {
-      scenes[1].setEnd();
-      updateHUD(2);
+      scenes[3].setEnd();
+      updateHUD(4);
       ideaEls.forEach(el => { el.style.opacity = 0; });
       mixedConcepts.forEach(c => {
         const el = conceptEls.get(c.code);
@@ -1632,8 +1910,8 @@
       hudLbl.textContent = "CONCEPTS";
     },
     play() {
-      scenes[1].setEnd();
-      updateHUD(2);
+      scenes[3].setEnd();
+      updateHUD(4);
       const tl = gsap.timeline();
       activeTl = tl;
 
@@ -1727,7 +2005,7 @@
     }
   };
 
-  // SCENE 3: Step-by-step group coloring in top-right -> sort into 3 columns
+  // SCENE 5: Step-by-step group coloring in top-right -> sort into 3 columns
   function runScene3Step(step) {
     scene3Step = step;
     if (step < 3) {
@@ -1744,7 +2022,7 @@
         setHint("Click or press → to sort into 3 groups");
       }
     } else {
-      updateHUD(3);
+      updateHUD(5);
       const tl = gsap.timeline();
       activeTl = tl;
       tl.to(groupAnnounce, { opacity: 0, duration: 0.3 }, 0);
@@ -1774,10 +2052,10 @@
     }
   }
 
-  scenes[3] = {
+  scenes[5] = {
     setEnd() {
-      scenes[2].setEnd();
-      updateHUD(3);
+      scenes[4].setEnd();
+      updateHUD(5);
       scene3Step = 3;
       groupAnnounce.style.opacity = 0;
       applyGroupColors();
@@ -1797,16 +2075,16 @@
       });
     },
     play() {
-      scenes[2].setEnd();
-      updateHUD(3);
+      scenes[4].setEnd();
+      updateHUD(5);
       runScene3Step(0);
     }
   };
 
-  // SCENE 4: Step 0 = 12 subgroups -> click -> Step 1 = Mind Map
+  // SCENE 6: Step 0 = 12 subgroups -> click -> Step 1 = Mind Map
   function runScene4MindMap() {
     scene4Step = 1;
-    updateHUD(4);
+    updateHUD(6);
     const tl = gsap.timeline();
     activeTl = tl;
 
@@ -1862,10 +2140,10 @@
     }, null, 1.2);
   }
 
-  scenes[4] = {
+  scenes[6] = {
     setEnd() {
-      scenes[3].setEnd();
-      updateHUD(4);
+      scenes[5].setEnd();
+      updateHUD(6);
       scene4Step = 1;
       treeRootEl.style.left = `${treeLayout.root.x}px`;
       treeRootEl.style.top = `${treeLayout.root.y - 15}px`;
@@ -1902,10 +2180,10 @@
       drawMindMapLinks(false);
     },
     play() {
-      scenes[3].setEnd();
-      updateHUD(4);
+      scenes[5].setEnd();
+      updateHUD(6);
       scene4Step = 0;
-      sceneLabel.innerHTML = `<span class="step-num">04</span>12 sub-groups formed`;
+      sceneLabel.innerHTML = `<span class="step-num">06</span>12 sub-groups formed`;
       setHint("Click or press → for mind map");
       const tl = gsap.timeline();
       activeTl = tl;
@@ -1934,11 +2212,11 @@
     }
   };
 
-  // SCENE 5: Screening (6 eliminated turn red one-by-one, then strikethrough & dim gray)
-  scenes[5] = {
+  // SCENE 7: Screening (6 eliminated turn red one-by-one, then strikethrough & dim gray)
+  scenes[7] = {
     setEnd() {
-      scenes[4].setEnd();
-      updateHUD(5);
+      scenes[6].setEnd();
+      updateHUD(7);
       applyScreeningStyles();
       svg.selectAll("path.tree-link")
         .filter(d => d.eliminated)
@@ -1950,8 +2228,8 @@
       screeningSummary.style.opacity = 1;
     },
     play() {
-      scenes[4].setEnd();
-      updateHUD(5);
+      scenes[6].setEnd();
+      updateHUD(7);
       const tl = gsap.timeline();
       activeTl = tl;
 
@@ -2001,11 +2279,11 @@
     }
   };
 
-  // SCENE 6: Forming 5 candidate solutions (then dim 11 not_core)
-  scenes[6] = {
+  // SCENE 8: Forming 5 candidate solutions (then dim 11 not_core)
+  scenes[8] = {
     setEnd() {
-      scenes[5].setEnd();
-      updateHUD(6);
+      scenes[7].setEnd();
+      updateHUD(8);
       clearSVG();
 
       treeRootEl.style.opacity = 0;
@@ -2054,8 +2332,8 @@
       screeningSummary.style.opacity = 1;
     },
     play() {
-      scenes[5].setEnd();
-      updateHUD(6);
+      scenes[7].setEnd();
+      updateHUD(8);
       const tl = gsap.timeline();
       activeTl = tl;
 
@@ -2132,17 +2410,17 @@
     }
   };
 
-  // SCENE 7: Interactive Exploration
-  scenes[7] = {
+  // SCENE 9: Interactive Exploration
+  scenes[9] = {
     setEnd() {
-      scenes[6].setEnd();
-      updateHUD(7);
+      scenes[8].setEnd();
+      updateHUD(9);
       candidateEls.forEach(el => el.classList.add("interactive"));
       detailPanel.classList.add("interactive");
       selectCandidate(null);
     },
     play() {
-      scenes[7].setEnd();
+      scenes[9].setEnd();
     }
   };
 
@@ -2151,37 +2429,37 @@
   // =========================================================
   function advance() {
     if (activeTl && activeTl.isActive()) {
-      if (currentScene === 1 && !scene1Merged) {
+      if (currentScene === 3 && !scene1Merged) {
         activeTl.progress(1);
         return;
       }
-      if (currentScene === 3 && scene3Step < 3) {
+      if (currentScene === 5 && scene3Step < 3) {
         activeTl.progress(1);
         return;
       }
-      if (currentScene === 4 && scene4Step < 1) {
+      if (currentScene === 6 && scene4Step < 1) {
         activeTl.progress(1);
         return;
       }
       scenes[currentScene].setEnd();
       return;
     }
-    if (currentScene === 1 && !scene1Merged) {
-      if (reducedMotion) scenes[1].setEnd();
+    if (currentScene === 3 && !scene1Merged) {
+      if (reducedMotion) scenes[3].setEnd();
       else mergeScene1Duplicates();
       return;
     }
-    if (currentScene === 3 && scene3Step < 3) {
-      if (reducedMotion) scenes[3].setEnd();
+    if (currentScene === 5 && scene3Step < 3) {
+      if (reducedMotion) scenes[5].setEnd();
       else runScene3Step(scene3Step + 1);
       return;
     }
-    if (currentScene === 4 && scene4Step < 1) {
-      if (reducedMotion) scenes[4].setEnd();
+    if (currentScene === 6 && scene4Step < 1) {
+      if (reducedMotion) scenes[6].setEnd();
       else runScene4MindMap();
       return;
     }
-    if (currentScene < 7) {
+    if (currentScene < LAST_SCENE) {
       const next = currentScene + 1;
       if (reducedMotion) scenes[next].setEnd();
       else scenes[next].play();
@@ -2195,7 +2473,7 @@
   }
 
   function jumpToScene(idx) {
-    if (idx >= 0 && idx <= 7) {
+    if (idx >= 0 && idx <= LAST_SCENE) {
       scenes[idx].setEnd();
     }
   }
@@ -2206,7 +2484,7 @@
   }
 
   stage.addEventListener("click", (e) => {
-    if (currentScene < 7) {
+    if (currentScene < LAST_SCENE) {
       advance();
     } else {
       if (!e.target.closest(".candidate-card") && !e.target.closest("#detail-panel")) {
@@ -2217,7 +2495,7 @@
 
   skipBtn.addEventListener("click", (e) => {
     e.stopPropagation();
-    jumpToScene(7);
+    jumpToScene(LAST_SCENE);
   });
 
   replayBtn.addEventListener("click", (e) => {
@@ -2226,15 +2504,15 @@
   });
 
   window.addEventListener("keydown", (e) => {
-    if (e.key === "ArrowRight" || e.key === " ") {
+    if (e.key === "ArrowRight" || e.key === " " || e.key === "Enter") {
       e.preventDefault();
-      if (currentScene < 7) advance();
+      if (currentScene < LAST_SCENE) advance();
     } else if (e.key === "ArrowLeft") {
       e.preventDefault();
       prevScene();
     } else if (e.key === "End") {
       e.preventDefault();
-      jumpToScene(7);
+      jumpToScene(LAST_SCENE);
     } else if (e.key === "Home") {
       e.preventDefault();
       jumpToScene(0);

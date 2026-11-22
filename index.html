@@ -815,12 +815,12 @@
   <div id="stage">
     <svg id="edges-svg" viewBox="0 0 1600 900"></svg>
 
-    <div id="scene-label"><span class="step-num">00</span>80 raw ideas</div>
+    <div id="scene-label"></div>
     <div id="screening-summary"></div>
     <div id="group-announce"></div>
 
     <div id="hud-counter">
-      <span class="num">80</span>
+      <span class="num"></span>
       <span class="lbl">RAW IDEAS</span>
     </div>
 
@@ -942,19 +942,31 @@
 
   const conceptMap = new Map(DATA.concepts.map(c => [c.code, c]));
   const groupMap = new Map(DATA.groups.map(g => [g.id, g]));
+  const rawCount = DATA.ideas.length;
+  const duplicateIdeas = DATA.ideas.filter(i => i.duplicate_of);
+  const dupCount = duplicateIdeas.length;
+  const distinctCount = rawCount - dupCount;
+  const conceptCount = DATA.concepts.length;
+  const groupCount = DATA.groups.length;
+  const subgroupCount = DATA.subgroups.length;
+  const elimCount = DATA.concepts.filter(c => c.status === "eliminated").length;
+  const keptCount = conceptCount - elimCount;
   const coreCount = DATA.concepts.filter(c => c.status === "core").length;
+  const notCoreCount = DATA.concepts.filter(c => c.status === "not_core").length;
+  const sortedCandidates = DATA.candidates.slice().sort((a, b) => a.id - b.id);
+  const candCount = sortedCandidates.length;
 
   const SCENE_TITLES = [
     ["00", "Need Statement"],
     ["01", "Need Specification (Must-haves & Nice-to-haves)"],
-    ["02", "80 raw ideas streamed from brainstorming"],
-    ["03", "Remove 2 exact duplicates (80 → 78 distinct ideas)"],
-    ["04", "Merge overlapping ideas into 39 concepts"],
-    ["05", "Color & group into 3 solution stages"],
-    ["06", "Organize 12 sub-groups into mind map"],
-    ["07", "Screen against Need Specification (39 → 33)"],
-    ["08", `Combine ${coreCount} core concepts into 5 candidate solutions`],
-    ["09", "Interactive exploration of 5 candidate solutions"]
+    ["02", `${rawCount} raw ideas streamed from brainstorming`],
+    ["03", `Remove ${dupCount} exact duplicates (${rawCount} → ${distinctCount} distinct ideas)`],
+    ["04", `Merge overlapping ideas into ${conceptCount} concepts`],
+    ["05", `Color & group into ${groupCount} solution stages`],
+    ["06", `Organize ${subgroupCount} sub-branches into mind map`],
+    ["07", `Screen against Need Specification (${conceptCount} → ${keptCount})`],
+    ["08", `Combine ${coreCount} core concepts into ${candCount} candidate concepts`],
+    ["09", `Interactive exploration of ${candCount} candidate concepts`]
   ];
   const LAST_SCENE = SCENE_TITLES.length - 1;
 
@@ -1022,10 +1034,17 @@
   const treeRootEl = document.createElement("div");
   treeRootEl.id = "tree-root-label";
   treeRootEl.dataset.id = "tree-root";
-  treeRootEl.textContent = "39 concepts";
+  treeRootEl.textContent = `${conceptCount} concepts`;
   nodesLayer.appendChild(treeRootEl);
 
-  DATA.candidates.forEach((cand, idx) => {
+  const CAND_CARD_H = 100;
+  const CAND_COL_TOP = 86;
+  const CAND_COL_H = 750;
+  const candStepY = candCount > 1 ? Math.min(180, Math.floor((CAND_COL_H - CAND_CARD_H) / (candCount - 1))) : 0;
+  const candTotalH = CAND_CARD_H + (candCount - 1) * candStepY;
+  const candStartY = Math.round(CAND_COL_TOP + (CAND_COL_H - candTotalH) / 2);
+
+  sortedCandidates.forEach((cand, idx) => {
     const el = document.createElement("div");
     el.className = "candidate-card";
     el.dataset.id = `cand-${cand.id}`;
@@ -1035,7 +1054,7 @@
       <div class="cand-title">${cand.name}</div>
       <div class="cand-target">${targetLine}</div>
     `;
-    el.style.top = `${88 + idx * 150}px`;
+    el.style.top = `${candStartY + idx * candStepY}px`;
     el.addEventListener("click", (e) => {
       e.stopPropagation();
       if (currentScene !== LAST_SCENE) return;
@@ -1131,9 +1150,10 @@
   })();
 
   const gridPos = new Map();
+  const gridRows = Math.ceil(conceptCount / groupCount);
   mixedConcepts.forEach((c, idx) => {
-    const col = Math.floor(idx / 13);
-    const row = idx % 13;
+    const col = Math.floor(idx / gridRows);
+    const row = idx % gridRows;
     gridPos.set(c.code, {
       x: 45 + col * 515,
       y: 102 + row * 54
@@ -1184,7 +1204,7 @@
 
   (function computeTree() {
     const rootData = {
-      name: "39 concepts",
+      name: `${conceptCount} concepts`,
       children: DATA.groups.map(g => ({
         id: g.id,
         type: "group",
@@ -1211,7 +1231,7 @@
 
     const root = d3.hierarchy(rootData);
     const leaves = root.leaves();
-    const stepY = 17.2;
+    const stepY = 17.5;
     let curSub = null;
     let extra = 0;
     leaves.forEach((leaf, idx) => {
@@ -1272,7 +1292,7 @@
         listPos.concepts.set(c.code, { x: 45, y: curY });
         curY += 16.5;
       });
-      curY += 4;
+      curY += 5;
     });
   })();
 
@@ -1280,8 +1300,8 @@
   const candLinkData = [];
   (function computeCandLinks() {
     const linkGen = d3.linkHorizontal().x(d => d.x).y(d => d.y);
-    DATA.candidates.forEach((cand, cIdx) => {
-      const candY = 88 + cIdx * 150 + 50;
+    sortedCandidates.forEach((cand, cIdx) => {
+      const candY = candStartY + cIdx * candStepY + Math.round(CAND_CARD_H / 2);
       const candX = 600;
       cand.members.forEach(code => {
         const pt = listPos.concepts.get(code);
@@ -1497,9 +1517,9 @@
 
   function renderDefaultDetail() {
     detailContent.innerHTML = `
-      <h2>5 candidate concepts</h2>
+      <h2>${candCount} candidate concepts</h2>
       <div class="dp-target">
-        Each candidate combines core concepts across <strong>data collection</strong>, <strong>data sharing &amp; verification</strong>, and <strong>incentives or financing</strong>. A candidate may also include other concepts without changing its core definition. Select a card on the left to inspect its building blocks.
+        Each candidate combines core concepts across <strong>data collection</strong>, <strong>data processing &amp; delivery</strong>, and <strong>incentives or financing</strong>. A candidate may also include other concepts without changing its core definition. Select a card on the left to inspect its building blocks.
       </div>
     `;
   }
@@ -1722,7 +1742,7 @@
     }
   };
 
-  // SCENE 2: 80 ideas
+  // SCENE 2: stream raw ideas
   scenes[2] = {
     setEnd() {
       killActive();
@@ -1740,7 +1760,7 @@
       hudCounter.style.left = "800px";
       hudCounter.style.top = "465px";
       hudCounter.style.transform = "translate(-50%, -50%)";
-      hudNum.textContent = "80";
+      hudNum.textContent = String(rawCount);
       hudLbl.textContent = "RAW IDEAS";
       hudCounter.style.opacity = 1;
     },
@@ -1797,7 +1817,7 @@
         hudCounter.style.left = "800px";
         hudCounter.style.top = "465px";
         hudCounter.style.transform = "translate(-50%, -50%)";
-        hudNum.textContent = "80";
+        hudNum.textContent = String(rawCount);
         hudLbl.textContent = "RAW IDEAS";
       }, null, afterStream + 1.5);
 
@@ -1805,7 +1825,7 @@
     }
   };
 
-  // SCENE 1: 80 -> 78 (Step 1: highlight 2 pairs in 2 reds & pause; Step 2: click to merge)
+  // SCENE 1: raw -> distinct (Step 1: highlight duplicate pairs in reds & pause; Step 2: click to merge)
   function mergeScene1Duplicates() {
     scene1Merged = true;
     updateHUD(3);
@@ -1827,9 +1847,9 @@
       });
     }, null, 1.25);
 
-    const counterObj = { val: 80 };
+    const counterObj = { val: rawCount };
     tl.to(counterObj, {
-      val: 78,
+      val: distinctCount,
       duration: 1.2,
       snap: { val: 1 },
       onUpdate: () => { hudNum.textContent = counterObj.val; }
@@ -1870,14 +1890,14 @@
       hudCounter.style.left = "28px";
       hudCounter.style.top = "48px";
       hudCounter.style.transform = "translate(0, 0)";
-      hudNum.textContent = "78";
+      hudNum.textContent = String(distinctCount);
       hudLbl.textContent = "DISTINCT IDEAS";
     },
     play() {
       scenes[2].setEnd();
       updateHUD(3);
       scene1Merged = false;
-      setHint("Click or press → to merge 2 duplicate pairs");
+      setHint(`Click or press → to merge ${dupCount} duplicate pairs`);
       const tl = gsap.timeline();
       activeTl = tl;
 
@@ -1893,7 +1913,7 @@
     }
   };
 
-  // SCENE 4: 78 -> 39 concepts (3 vertical columns x 13 rows, full text readable!)
+  // SCENE 4: distinct -> concepts (3 vertical columns x 13 rows, full text readable!)
   scenes[4] = {
     setEnd() {
       scenes[3].setEnd();
@@ -1906,7 +1926,7 @@
         el.style.top = `${pos.y}px`;
         el.style.opacity = 1;
       });
-      hudNum.textContent = "39";
+      hudNum.textContent = String(conceptCount);
       hudLbl.textContent = "CONCEPTS";
     },
     play() {
@@ -1915,8 +1935,8 @@
       const tl = gsap.timeline();
       activeTl = tl;
 
-      let countVal = 78;
-      // Batch in 6 groups of ~6-7 concepts for smooth pacing
+      let countVal = distinctCount;
+      // Batch in groups of 4 concepts for smooth pacing
       const batches = [];
       for (let i = 0; i < mixedConcepts.length; i += 4) {
         batches.push(mixedConcepts.slice(i, i + 4));
@@ -1999,7 +2019,7 @@
 
       const endT = batches.length * 1.05 + 0.65;
       tl.call(() => {
-        hudNum.textContent = "39";
+        hudNum.textContent = String(conceptCount);
         hudLbl.textContent = "CONCEPTS";
       }, null, endT);
     }
@@ -2081,7 +2101,7 @@
     }
   };
 
-  // SCENE 6: Step 0 = 12 subgroups -> click -> Step 1 = Mind Map
+  // SCENE 6: Step 0 = subgroups -> click -> Step 1 = Mind Map
   function runScene4MindMap() {
     scene4Step = 1;
     updateHUD(6);
@@ -2183,7 +2203,7 @@
       scenes[5].setEnd();
       updateHUD(6);
       scene4Step = 0;
-      sceneLabel.innerHTML = `<span class="step-num">06</span>12 sub-groups formed`;
+      sceneLabel.innerHTML = `<span class="step-num">06</span>${subgroupCount} sub-branches formed`;
       setHint("Click or press → for mind map");
       const tl = gsap.timeline();
       activeTl = tl;
@@ -2212,7 +2232,7 @@
     }
   };
 
-  // SCENE 7: Screening (6 eliminated turn red one-by-one, then strikethrough & dim gray)
+  // SCENE 7: Screening (eliminated concepts turn red one-by-one, then strikethrough & dim gray)
   scenes[7] = {
     setEnd() {
       scenes[6].setEnd();
@@ -2222,9 +2242,9 @@
         .filter(d => d.eliminated)
         .attr("stroke", COLORS.dimLine)
         .attr("opacity", 0.45);
-      hudNum.textContent = "33";
+      hudNum.textContent = String(keptCount);
       hudLbl.textContent = "CONCEPTS AFTER SCREENING";
-      screeningSummary.innerHTML = `<span class="hl-red">6 screened out</span>`;
+      screeningSummary.innerHTML = `<span class="hl-red">${elimCount} screened out</span>`;
       screeningSummary.style.opacity = 1;
     },
     play() {
@@ -2262,9 +2282,9 @@
           .attr("opacity", 0.45);
       }, null, afterRed);
 
-      const cntObj = { val: 39 };
+      const cntObj = { val: conceptCount };
       tl.to(cntObj, {
-        val: 33,
+        val: keptCount,
         duration: 0.7,
         snap: { val: 1 },
         onUpdate: () => { hudNum.textContent = cntObj.val; }
@@ -2272,14 +2292,14 @@
 
       tl.call(() => {
         hudLbl.textContent = "CONCEPTS AFTER SCREENING";
-        screeningSummary.innerHTML = `<span class="hl-red">6 screened out</span>`;
+        screeningSummary.innerHTML = `<span class="hl-red">${elimCount} screened out</span>`;
       }, null, afterRed + 0.5);
 
       tl.to(screeningSummary, { opacity: 1, duration: 0.6 }, afterRed + 0.6);
     }
   };
 
-  // SCENE 8: Forming 5 candidate solutions (then dim 11 not_core)
+  // SCENE 8: Forming candidate concepts (then dim not_core)
   scenes[8] = {
     setEnd() {
       scenes[7].setEnd();
@@ -2326,7 +2346,7 @@
       drawCandidateLinks(false);
       renderDefaultDetail();
       detailPanel.style.opacity = 1;
-      hudNum.textContent = "5";
+      hudNum.textContent = String(candCount);
       hudLbl.textContent = "CANDIDATE CONCEPTS";
       screeningSummary.innerHTML = `<span class="hl-blocks">built from ${coreCount} core concepts</span>`;
       screeningSummary.style.opacity = 1;
@@ -2378,7 +2398,7 @@
 
       tl.call(() => {
         drawCandidateLinks(true);
-        DATA.candidates.forEach((cand, idx) => {
+        sortedCandidates.forEach((cand, idx) => {
           const cardEl = candidateEls.get(cand.id);
           gsap.to(cardEl, { opacity: 1, duration: 0.4, delay: idx * 0.35 });
           svg.selectAll("path.cand-link")
@@ -2390,7 +2410,9 @@
         });
       }, null, 1.35);
 
-      // After 5 cards appear, dim the 11 not_core concepts (no strikethrough) & update counter
+      const afterCards = 1.35 + sortedCandidates.length * 0.35 + 0.25;
+
+      // After all cards appear, dim the not_core concepts (no strikethrough) & update counter
       tl.call(() => {
         DATA.concepts.filter(c => c.status === "not_core").forEach(c => {
           conceptEls.get(c.code).classList.add("is-not-core");
@@ -2399,14 +2421,14 @@
           const hasCore = DATA.concepts.some(c => c.subgroup === s.id && c.status === "core");
           subgroupEls.get(s.id).classList.toggle("is-dim-header", !hasCore);
         });
-        hudNum.textContent = "5";
+        hudNum.textContent = String(candCount);
         hudLbl.textContent = "CANDIDATE CONCEPTS";
         screeningSummary.innerHTML = `<span class="hl-blocks">built from ${coreCount} core concepts</span>`;
         gsap.to(screeningSummary, { opacity: 1, duration: 0.4 });
-      }, null, 3.3);
+      }, null, afterCards);
 
       tl.call(() => { renderDefaultDetail(); }, null, 1.4);
-      tl.to(detailPanel, { opacity: 1, duration: 0.5 }, 3.4);
+      tl.to(detailPanel, { opacity: 1, duration: 0.5 }, afterCards + 0.1);
     }
   };
 

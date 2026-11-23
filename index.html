@@ -26,6 +26,9 @@
     --red1-text: #E57373; --red1-border: #C64949; --red1-bg: #2E1618;
     --red2-text: #F08CAE; --red2-border: #C24E78; --red2-bg: #2E1623;
     --red-text: #E57373; --red-border: #A84448; --red-bg: #2B171A;
+    --cand1: #E0A07A;
+    --cand2: #A9BF7A;
+    --cand3: #D08A9A;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -128,10 +131,9 @@
 
   #screening-summary {
     position: absolute;
-    top: 52px;
-    left: 365px;
-    font-family: Georgia, 'Times New Roman', serif;
-    font-size: 15px;
+    top: 76px;
+    left: 28px;
+    font-size: 12.5px;
     color: var(--muted);
     z-index: 50;
     opacity: 0;
@@ -520,26 +522,13 @@
   .concept-node.is-eliminated .c-code { color: var(--dim-text) !important; }
   .concept-node.is-eliminated .c-name { text-decoration: line-through; }
 
-  .concept-node.is-not-core {
-    color: var(--dim-text) !important;
-    border-color: var(--dim-border) !important;
-    background: var(--dim-bg) !important;
-    opacity: 0.55;
-  }
-  .concept-node.is-not-core .c-code { color: var(--dim-text) !important; }
-
   .concept-node.is-dimmed {
     color: var(--dim-text) !important;
     border-color: var(--dim-border) !important;
     background: var(--dim-bg) !important;
-    opacity: 0.45;
+    opacity: 0.3 !important;
   }
   .concept-node.is-dimmed .c-code { color: var(--dim-text) !important; }
-
-  .concept-node.is-related {
-    border-style: dashed !important;
-    opacity: 0.5;
-  }
 
   .concept-node.code-ref-hover {
     border-color: var(--text) !important;
@@ -652,136 +641,516 @@
     white-space: nowrap;
   }
 
-  /* Candidate Cards (Scenes 6 & 7) */
+  /* Candidate Cards (Scenes 08 & 09) */
   .candidate-card {
     position: absolute;
-    left: 600px;
-    width: 365px;
+    left: 1040px;
+    width: 460px;
     background: var(--panel);
     border: 1px solid var(--dim-border);
+    border-left: 4px solid var(--dim-border);
     border-radius: 6px;
     padding: 13px 16px;
     opacity: 0;
     pointer-events: none;
     cursor: pointer;
-    transition: border-color 0.25s, opacity 0.25s;
+    transition: border-color 0.25s, opacity 0.25s, background-color 0.25s;
     z-index: 15;
+    display: flex;
+    flex-direction: column;
   }
+  .candidate-card.cand-1 { border-left-color: var(--cand1); }
+  .candidate-card.cand-2 { border-left-color: var(--cand2); }
+  .candidate-card.cand-3 { border-left-color: var(--cand3); }
   .candidate-card.interactive {
     pointer-events: auto;
   }
   .candidate-card:hover {
-    border-color: var(--muted);
+    border-top-color: var(--muted);
+    border-right-color: var(--muted);
+    border-bottom-color: var(--muted);
   }
-  .candidate-card.selected {
-    border-color: var(--text);
-  }
+  .candidate-card.selected,
   .candidate-card.hover-highlight {
-    border-color: var(--text);
+    border-top-color: var(--text) !important;
+    border-right-color: var(--text) !important;
+    border-bottom-color: var(--text) !important;
+  }
+  .candidate-card.is-dimmed {
+    opacity: 0.3 !important;
   }
   .candidate-card .cand-kicker {
     font-family: 'JetBrains Mono', monospace;
-    font-size: 11px;
+    font-size: 12px;
+    letter-spacing: 0.04em;
     color: var(--muted);
-    margin-bottom: 3px;
+    margin-bottom: 6px;
   }
   .candidate-card .cand-title {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 6px;
+    line-height: 1.25;
+  }
+  .candidate-card .cand-target {
+    font-size: 13.5px;
+    color: var(--muted);
+    line-height: 1.38;
+  }
+  .candidate-card .cand-highlight {
+    display: none;
+    font-size: 14px;
+    color: var(--text);
+    line-height: 1.48;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--dim-border);
+  }
+  .candidate-card.show-highlight .cand-highlight {
+    display: block;
+  }
+  .candidate-card.s9-left .cand-title {
+    font-size: 16.5px;
+    margin-bottom: 4px;
+  }
+  .candidate-card.s9-left .cand-target {
+    font-size: 12px;
+    line-height: 1.32;
+  }
+  .candidate-card.s9-left .cand-highlight {
+    font-size: 12px;
+    line-height: 1.38;
+    margin-top: 8px;
+    padding-top: 8px;
+  }
+
+  /* Elimination Reason Cards in Scene 07 middle */
+  .elim-reason-card {
+    position: absolute;
+    left: 485px;
+    width: 490px;
+    background: var(--red-bg);
+    border: 1px solid var(--red-border);
+    border-left: 4px solid var(--red-text);
+    border-radius: 6px;
+    padding: 16px 20px;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 16;
+  }
+  .elim-reason-card .er-kicker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--red-text);
+    margin-bottom: 6px;
+  }
+  .elim-reason-card .er-title {
     font-size: 15.5px;
     font-weight: 500;
     color: var(--text);
-    margin-bottom: 5px;
-    line-height: 1.28;
-  }
-  .candidate-card .cand-target {
-    font-size: 12.5px;
-    color: var(--muted);
-    line-height: 1.3;
+    line-height: 1.38;
   }
 
-  /* Right Detail Panel (Scenes 6 & 7) */
-  #detail-panel {
+  /* Criteria Cards & Section Headers (Scenes 07 & 08) */
+  .crit-section-header {
     position: absolute;
-    left: 1000px;
-    top: 86px;
-    width: 550px;
-    height: 750px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 14;
+  }
+  .crit-section-header.must-hdr { color: var(--g1-text); }
+  .crit-section-header.nice-hdr { color: var(--g2-text); }
+  .criterion-card {
+    position: absolute;
     background: var(--panel);
-    border: 1px solid var(--dim-border);
-    border-radius: 6px;
-    padding: 26px 28px;
+    border: 1px solid var(--g1-border);
+    border-radius: 5px;
+    padding: 8px 12px;
+    opacity: 0;
+    pointer-events: none;
+    cursor: pointer;
+    z-index: 14;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    transition: border-color 0.25s, background-color 0.25s, color 0.25s, opacity 0.25s;
+  }
+  .criterion-card.interactive {
+    pointer-events: auto;
+  }
+  .criterion-card.must {
+    color: var(--g1-text);
+    border-color: var(--g1-border);
+    background: var(--g1-bg);
+  }
+  .criterion-card.nice {
+    color: var(--g2-text);
+    border-color: var(--g2-border);
+    background: var(--g2-bg);
+  }
+  .criterion-card:hover {
+    border-color: var(--text);
+  }
+  .criterion-card.selected {
+    border-color: var(--text) !important;
+  }
+  .criterion-card.is-dimmed {
+    color: var(--dim-text) !important;
+    border-color: var(--dim-border) !important;
+    background: var(--dim-bg) !important;
+    opacity: 0.3 !important;
+  }
+  .criterion-card .crit-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+  }
+  .criterion-card .crit-name {
+    font-size: 13.5px;
+    font-weight: 500;
+    line-height: 1.2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .criterion-card.compact .crit-name {
+    font-size: 12px;
+  }
+  .criterion-card.compact {
+    padding: 4px 10px;
+    border-radius: 4px;
+  }
+  .criterion-card .crit-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+  }
+  .criterion-card .crit-count {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .criterion-card.compact .crit-count {
+    font-size: 10px;
+  }
+  .criterion-card .crit-status {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 0 4px;
+    border-radius: 3px;
+    display: none;
+  }
+  .criterion-card .crit-status.show {
+    display: inline-block;
+  }
+  .criterion-card .crit-status.st-met {
+    color: var(--g1-text);
+  }
+  .criterion-card .crit-status.st-partial {
+    color: var(--g3-text);
+  }
+  .criterion-card .crit-status.st-no_conflict {
+    color: var(--muted);
+    font-weight: 400;
+    font-size: 10px;
+  }
+  .criterion-card .crit-constraint {
+    font-size: 10.5px;
+    color: var(--muted);
+    margin-top: 2px;
+    line-height: 1.2;
+  }
+  .criterion-card.compact .crit-constraint {
+    font-size: 9.5px;
+    margin-top: 1px;
+  }
+
+  /* Scene 09 Right Area: Ecosystem & BMC */
+  #scene9-right {
+    position: absolute;
+    left: 360px;
+    top: 70px;
+    width: 1200px;
+    height: 800px;
     opacity: 0;
     pointer-events: none;
     z-index: 15;
-    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
   }
-  #detail-panel.interactive {
+  #scene9-right.interactive {
     pointer-events: auto;
   }
-  #detail-content {
-    transition: opacity 0.3s ease;
+  #s9-tabs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+    flex-shrink: 0;
   }
-  #detail-panel h2 {
-    font-size: 22px;
+  .s9-tab {
+    background: var(--panel);
+    border: 1px solid var(--dim-border);
+    color: var(--muted);
+    font-family: inherit;
+    font-size: 13px;
     font-weight: 500;
+    padding: 7px 16px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s, background-color 0.2s;
+  }
+  .s9-tab:hover {
+    color: var(--text);
+    border-color: var(--muted);
+  }
+  .s9-tab.active {
+    color: var(--text);
+    border-color: var(--text);
+    background: #232A35;
+  }
+  #s9-body {
+    position: relative;
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--dim-border);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  #eco-pane, #bmc-pane {
+    position: absolute;
+    inset: 0;
+  }
+  #bmc-pane {
+    display: none;
+    flex-direction: column;
+    padding: 14px 18px;
+    background: var(--panel);
+  }
+  #eco-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 5;
+  }
+  #eco-nodes {
+    position: absolute;
+    inset: 0;
+  }
+  .eco-zone-hdr {
+    position: absolute;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 4px 10px;
+    border-radius: 4px;
+    background: rgba(26, 31, 39, 0.85);
+    border: 1px solid var(--dim-border);
+    pointer-events: none;
+    z-index: 2;
+  }
+  .eco-db-hub {
+    position: absolute;
+    background: #181E27;
+    border: 2px solid var(--muted);
+    border-radius: 10px;
+    padding: 16px 20px;
+    z-index: 4;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    cursor: default;
+    transition: border-color 0.25s;
+  }
+  .eco-db-hub:hover {
+    border-color: var(--text) !important;
+  }
+  .eco-db-kicker {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+  .eco-db-title {
+    font-size: 16px;
+    font-weight: 600;
     color: var(--text);
     margin-bottom: 10px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--dim-border);
+  }
+  .eco-db-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .eco-db-list li {
+    position: relative;
+    padding-left: 14px;
+    font-size: 12.5px;
     line-height: 1.3;
+    color: var(--text);
   }
-  #detail-panel .dp-target {
-    font-size: 14px;
+  .eco-db-list li::before {
+    content: "▸";
+    position: absolute;
+    left: 0;
+    top: 0;
     color: var(--muted);
-    margin-bottom: 20px;
-    line-height: 1.5;
   }
-  #detail-panel .dp-sec-title {
-    font-size: 12px;
+  .eco-node {
+    position: absolute;
+    background: var(--panel);
+    border: 1.5px solid var(--dim-border);
+    border-radius: 6px;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 13.5px;
+    font-weight: 500;
+    line-height: 1.25;
+    color: var(--text);
+    z-index: 4;
+    cursor: default;
+    transition: opacity 0.25s, border-color 0.25s, background-color 0.25s;
+  }
+  .eco-node:hover {
+    border-color: var(--text);
+  }
+
+  #eco-legend {
+    position: absolute;
+    right: 12px;
+    bottom: 10px;
+    background: rgba(18, 22, 28, 0.92);
+    border: 1px solid var(--dim-border);
+    border-radius: 5px;
+    padding: 7px 11px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    z-index: 6;
+    font-size: 11px;
+    color: var(--muted);
+    pointer-events: none;
+  }
+  .eco-leg-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .eco-leg-line {
+    width: 22px;
+    height: 0;
+    border-top: 2px solid var(--muted);
+  }
+  .eco-leg-line.report { border-top-width: 3px; }
+  .eco-leg-line.money { border-top-style: dashed; }
+  .eco-leg-line.device { border-top-style: dotted; }
+  .eco-leg-line.service { border-top-width: 1px; }
+
+  /* BMC Grid */
+  #bmc-empty {
+    margin: auto;
+    font-size: 15px;
+    color: var(--muted);
+  }
+  #bmc-header {
+    font-size: 13.5px;
+    color: var(--muted);
+    margin-bottom: 10px;
+    line-height: 1.35;
+    flex-shrink: 0;
+  }
+  #bmc-header strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+  #bmc-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    grid-template-rows: 1fr 1fr 0.72fr;
+    gap: 8px;
+    min-height: 0;
+  }
+  .bmc-cell {
+    background: var(--bg);
+    border: 1px solid var(--dim-border);
+    border-radius: 5px;
+    padding: 9px 11px;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  .bmc-cell-title {
+    font-size: 11px;
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     color: var(--muted);
-    margin-top: 16px;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
+    flex-shrink: 0;
   }
-  #detail-panel .dp-body {
-    font-size: 14px;
+  .bmc-cell-list {
+    list-style: disc;
+    padding-left: 16px;
+    font-size: 12px;
+    line-height: 1.42;
     color: var(--text);
-    line-height: 1.55;
+    overflow-y: auto;
+    flex: 1;
+    scrollbar-width: thin;
+    scrollbar-color: var(--dim-border) transparent;
   }
-  #detail-panel .dp-foundation {
-    font-size: 13px;
-    color: var(--muted);
-    line-height: 1.5;
-    padding: 12px 14px;
-    border: 1px dashed var(--dim-border);
-    border-radius: 4px;
-    margin-top: 8px;
+  .bmc-cell-list::-webkit-scrollbar {
+    width: 5px;
   }
-  .dp-group-block {
-    margin-bottom: 10px;
-    font-size: 13px;
-    line-height: 1.45;
+  .bmc-cell-list::-webkit-scrollbar-track {
+    background: transparent;
   }
-  .dp-block-list {
-    margin: 3px 0 0 18px;
-    padding: 0;
+  .bmc-cell-list::-webkit-scrollbar-thumb {
+    background: var(--dim-border);
+    border-radius: 3px;
   }
-  .dp-block-list li {
-    margin-bottom: 2px;
+  .bmc-cell-list li {
+    margin-bottom: 4px;
   }
-  .dp-related {
-    font-size: 13px;
-    color: var(--muted);
-    margin-top: 18px;
-    line-height: 1.5;
-  }
-  .dp-group-block.g1 { color: var(--g1-text); }
-  .dp-group-block.g2 { color: var(--g2-text); }
-  .dp-group-block.g3 { color: var(--g3-text); }
+  .bmc-kp { grid-column: 1 / 3; grid-row: 1 / 3; }
+  .bmc-ka { grid-column: 3 / 5; grid-row: 1 / 2; }
+  .bmc-kr { grid-column: 3 / 5; grid-row: 2 / 3; }
+  .bmc-vp { grid-column: 5 / 7; grid-row: 1 / 3; }
+  .bmc-cr { grid-column: 7 / 9; grid-row: 1 / 2; }
+  .bmc-ch { grid-column: 7 / 9; grid-row: 2 / 3; }
+  .bmc-cs { grid-column: 9 / 11; grid-row: 1 / 3; }
+  .bmc-cost { grid-column: 1 / 6; grid-row: 3 / 4; }
+  .bmc-rev { grid-column: 6 / 11; grid-row: 3 / 4; }
 
   /* Tooltip */
   #tooltip {
     position: absolute;
-    max-width: 360px;
+    max-width: 380px;
     background: var(--panel);
     border: 1px solid var(--muted);
     border-radius: 5px;
@@ -801,12 +1170,28 @@
     font-size: 12px;
     color: var(--muted);
     line-height: 1.4;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
   }
   #tooltip .tt-src {
     font-family: 'JetBrains Mono', monospace;
     font-size: 11px;
     color: var(--g1-text);
+  }
+  #tooltip .tt-note-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    font-size: 11.5px;
+    color: var(--text);
+    line-height: 1.35;
+    margin-top: 4px;
+  }
+  #tooltip .tt-note-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    margin-top: 4px;
+    flex-shrink: 0;
   }
 </style>
 </head>
@@ -882,14 +1267,26 @@
 
     <div id="nodes-layer"></div>
 
-    <div id="detail-panel">
-      <div id="detail-content"></div>
+    <div id="scene9-right">
+      <div id="s9-tabs">
+        <button type="button" class="s9-tab active" data-tab="eco">Ecosystem</button>
+        <button type="button" class="s9-tab" data-tab="bmc">Business Model Canvas</button>
+      </div>
+      <div id="s9-body">
+        <div id="eco-pane">
+          <div id="eco-nodes"></div>
+          <svg id="eco-svg" viewBox="0 0 1200 760"></svg>
+          <div id="eco-legend"></div>
+        </div>
+        <div id="bmc-pane"></div>
+      </div>
     </div>
 
     <div id="tooltip">
       <div class="tt-title"></div>
       <div class="tt-desc"></div>
       <div class="tt-src"></div>
+      <div class="tt-notes"></div>
     </div>
 
     <div id="hint-bar"></div>
@@ -924,8 +1321,12 @@
   const needSpecView = document.getElementById("need-spec-view");
   const terminal = document.getElementById("terminal");
   const terminalLines = document.getElementById("terminal-lines");
-  const detailPanel = document.getElementById("detail-panel");
-  const detailContent = document.getElementById("detail-content");
+  const scene9Right = document.getElementById("scene9-right");
+  const ecoPane = document.getElementById("eco-pane");
+  const ecoNodesWrap = document.getElementById("eco-nodes");
+  const ecoSvg = d3.select("#eco-svg");
+  const ecoLegend = document.getElementById("eco-legend");
+  const bmcPane = document.getElementById("bmc-pane");
   const tooltip = document.getElementById("tooltip");
   const hintBar = document.getElementById("hint-bar");
   const dotsWrap = document.getElementById("dots");
@@ -936,12 +1337,19 @@
     1: { text: "#8CC4BC", border: "#4F8780", bg: "#17262A" },
     2: { text: "#9DAEDB", border: "#5C6E9E", bg: "#1A2030" },
     3: { text: "#DDB874", border: "#9A7A3C", bg: "#2A2418" },
+    cand: { 1: "#E0A07A", 2: "#A9BF7A", 3: "#D08A9A" },
     dimLine: "#2C333D",
     rootLine: "#7D8796"
   };
 
   const conceptMap = new Map(DATA.concepts.map(c => [c.code, c]));
   const groupMap = new Map(DATA.groups.map(g => [g.id, g]));
+  const criteriaList = DATA.criteria || [];
+  const mustCriteria = criteriaList.filter(cr => cr.type === "must");
+  const niceCriteria = criteriaList.filter(cr => cr.type === "nice");
+  const criteriaMap = new Map(criteriaList.map(cr => [cr.id, cr]));
+  const validCriteriaIds = new Set(criteriaList.map(cr => cr.id));
+
   const rawCount = DATA.ideas.length;
   const duplicateIdeas = DATA.ideas.filter(i => i.duplicate_of);
   const dupCount = duplicateIdeas.length;
@@ -950,11 +1358,22 @@
   const groupCount = DATA.groups.length;
   const subgroupCount = DATA.subgroups.length;
   const elimCount = DATA.concepts.filter(c => c.status === "eliminated").length;
-  const keptCount = conceptCount - elimCount;
-  const coreCount = DATA.concepts.filter(c => c.status === "core").length;
-  const notCoreCount = DATA.concepts.filter(c => c.status === "not_core").length;
+  const keptConcepts = DATA.concepts.filter(c => c.status !== "eliminated");
+  const keptCount = keptConcepts.length;
+  const mustCount = mustCriteria.length;
   const sortedCandidates = DATA.candidates.slice().sort((a, b) => a.id - b.id);
   const candCount = sortedCandidates.length;
+
+  // Map criterion -> kept concepts that link to it
+  const conceptsByCriterion = new Map();
+  criteriaList.forEach(cr => conceptsByCriterion.set(cr.id, []));
+  keptConcepts.forEach(c => {
+    (c.criteria || []).forEach(cid => {
+      if (conceptsByCriterion.has(cid)) {
+        conceptsByCriterion.get(cid).push(c.code);
+      }
+    });
+  });
 
   const SCENE_TITLES = [
     ["00", "Need Statement"],
@@ -964,9 +1383,9 @@
     ["04", `Merge overlapping ideas into ${conceptCount} concepts`],
     ["05", `Color & group into ${groupCount} solution stages`],
     ["06", `Organize ${subgroupCount} sub-branches into mind map`],
-    ["07", `Screen against Need Specification (${conceptCount} → ${keptCount})`],
-    ["08", `Combine ${coreCount} core concepts into ${candCount} candidate concepts`],
-    ["09", `Interactive exploration of ${candCount} candidate concepts`]
+    ["07", `Screen (${conceptCount} → ${keptCount}) and link concepts to the must-haves`],
+    ["08", `Combine concepts into ${candCount} candidate concepts`],
+    ["09", `${candCount} candidate concepts: ecosystem & business model`]
   ];
   const LAST_SCENE = SCENE_TITLES.length - 1;
 
@@ -994,6 +1413,7 @@
   const groupEls = new Map();
   const subgroupEls = new Map();
   const candidateEls = new Map();
+  const criterionEls = new Map();
 
   DATA.ideas.forEach(idea => {
     const el = document.createElement("div");
@@ -1009,6 +1429,15 @@
     el.className = "concept-node";
     el.dataset.id = c.code;
     el.innerHTML = `<span class="c-code">${c.code}</span><span class="c-name">${c.name}</span><span class="c-tag">shared foundation</span>`;
+    el.addEventListener("click", (e) => {
+      if (currentScene === 7 && scene7Step === 5) {
+        e.stopPropagation();
+        handleScene7ConceptClick(c.code);
+      } else if (currentScene === 8) {
+        e.stopPropagation();
+        handleScene8ConceptClick(c.code);
+      }
+    });
     nodesLayer.appendChild(el);
     conceptEls.set(c.code, el);
   });
@@ -1037,28 +1466,131 @@
   treeRootEl.textContent = `${conceptCount} concepts`;
   nodesLayer.appendChild(treeRootEl);
 
-  const CAND_CARD_H = 100;
-  const CAND_COL_TOP = 86;
-  const CAND_COL_H = 750;
-  const candStepY = candCount > 1 ? Math.min(180, Math.floor((CAND_COL_H - CAND_CARD_H) / (candCount - 1))) : 0;
-  const candTotalH = CAND_CARD_H + (candCount - 1) * candStepY;
-  const candStartY = Math.round(CAND_COL_TOP + (CAND_COL_H - candTotalH) / 2);
+  const mustSectionHdrEl = document.createElement("div");
+  mustSectionHdrEl.className = "crit-section-header must-hdr";
+  mustSectionHdrEl.textContent = "Must-haves";
+  stage.appendChild(mustSectionHdrEl);
 
-  sortedCandidates.forEach((cand, idx) => {
+  const niceSectionHdrEl = document.createElement("div");
+  niceSectionHdrEl.className = "crit-section-header nice-hdr";
+  niceSectionHdrEl.textContent = "Nice-to-haves";
+  stage.appendChild(niceSectionHdrEl);
+
+  // 3 Elimination Reason cards for Scene 07 middle area (no concept codes inside the card; click triggers each reason + strikes matching concepts)
+  const ELIM_REASONS = [
+    {
+      id: "r1",
+      title: "Provides no battery information (only shifts risk) or addresses no criterion",
+      codes: ["2B-7", "3C-1", "3C-2"],
+      y: 235
+    },
+    {
+      id: "r2",
+      title: "Requires mandatory manufacturer cooperation or new legislation",
+      codes: ["1B-1", "3C-3"],
+      y: 365
+    },
+    {
+      id: "r3",
+      title: "Requires heavy physical infrastructure",
+      codes: ["1A-3"],
+      y: 495
+    }
+  ];
+  const elimReasonEls = [];
+  ELIM_REASONS.forEach((er, idx) => {
     const el = document.createElement("div");
-    el.className = "candidate-card";
-    el.dataset.id = `cand-${cand.id}`;
-    const targetLine = cand.target.length > 52 ? cand.target.slice(0, 52).trim() + "…" : cand.target;
+    el.className = "elim-reason-card";
+    el.style.top = `${er.y}px`;
     el.innerHTML = `
-      <div class="cand-kicker">CONCEPT ${cand.id} · ${cand.members.length} BLOCKS</div>
-      <div class="cand-title">${cand.name}</div>
-      <div class="cand-target">${targetLine}</div>
+      <div class="er-kicker">Screening Criterion ${idx + 1}</div>
+      <div class="er-title">${er.title}</div>
     `;
-    el.style.top = `${candStartY + idx * candStepY}px`;
+    stage.appendChild(el);
+    elimReasonEls.push(el);
+  });
+
+  criteriaList.forEach(cr => {
+    const el = document.createElement("div");
+    el.className = `criterion-card ${cr.type}`;
+    el.dataset.id = cr.id;
+    const linkedCount = (conceptsByCriterion.get(cr.id) || []).length;
+    const isConstraint = cr.id === "M8" || cr.id === "M9";
+    el.innerHTML = `
+      <div class="crit-row">
+        <span class="crit-name">${cr.name}</span>
+        <span class="crit-right">
+          <span class="crit-status"></span>
+          <span class="crit-count">${linkedCount}</span>
+        </span>
+      </div>
+      ${isConstraint ? `<div class="crit-constraint">Constraint: no conflict is enough</div>` : ""}
+    `;
     el.addEventListener("click", (e) => {
-      e.stopPropagation();
-      if (currentScene !== LAST_SCENE) return;
-      selectCandidate(selectedCandId === cand.id ? null : cand.id);
+      if (currentScene === 7 && scene7Step === 5) {
+        e.stopPropagation();
+        if (cr.type === "must") handleScene7CriterionClick(cr.id);
+      } else if (currentScene === 8) {
+        e.stopPropagation();
+        handleScene8CriterionClick(cr.id);
+      }
+    });
+    el.addEventListener("mouseenter", () => {
+      if ((currentScene === 7 && cr.type === "must") || currentScene === 8) {
+        showCriterionTooltip(cr, el);
+      }
+    });
+    el.addEventListener("mouseleave", () => {
+      hideTooltip();
+    });
+    stage.appendChild(el);
+    criterionEls.set(cr.id, el);
+  });
+
+  // Candidate card vertical positions for Scene 08 & Scene 09
+  const s8CandPos = new Map();
+  const s9CandPos = new Map();
+  (function computeCandPositions() {
+    // Scene 08: Right column x=1040, width=500, full column height 86..826 equally divided into 3 cards
+    const top8 = 86, totalH8 = 740, gap8 = 14;
+    const cardH8 = Math.floor((totalH8 - gap8 * (candCount - 1)) / candCount); // 237px each
+    sortedCandidates.forEach((cand, idx) => {
+      const y = top8 + idx * (cardH8 + gap8);
+      s8CandPos.set(cand.id, { x: 1040, y, w: 500, h: cardH8, cy: y + Math.round(cardH8 / 2) });
+    });
+
+    // Scene 09: Left column x=40, width=290, top to bottom
+    const top9 = 86, totalH9 = 740, gap9 = 14;
+    const cardH9 = Math.floor((totalH9 - gap9 * (candCount - 1)) / candCount);
+    sortedCandidates.forEach((cand, idx) => {
+      const y = top9 + idx * (cardH9 + gap9);
+      s9CandPos.set(cand.id, { x: 40, y, w: 290, h: cardH9 });
+    });
+  })();
+
+  sortedCandidates.forEach((cand) => {
+    const el = document.createElement("div");
+    el.className = `candidate-card cand-${cand.id}`;
+    el.dataset.id = `cand-${cand.id}`;
+    el.innerHTML = `
+      <div class="cand-kicker">CANDIDATE ${cand.id} · ${cand.members.length} CONCEPTS</div>
+      <div class="cand-title">${cand.name}</div>
+      <div class="cand-target">${cand.target}</div>
+      <div class="cand-highlight">${cand.highlight || ""}</div>
+    `;
+    const p8 = s8CandPos.get(cand.id);
+    el.style.left = `${p8.x}px`;
+    el.style.top = `${p8.y}px`;
+    el.style.width = `${p8.w}px`;
+    el.style.height = `${p8.h}px`;
+    el.addEventListener("click", (e) => {
+      if (currentScene === 8) {
+        e.stopPropagation();
+        handleScene8CandClick(cand.id);
+      } else if (currentScene === 9) {
+        e.stopPropagation();
+        handleScene9CandClick(cand.id);
+      }
     });
     stage.appendChild(el);
     candidateEls.set(cand.id, el);
@@ -1276,58 +1808,86 @@
     });
   })();
 
-  // 5. Scene 6 & 7 List Layout (Left col x=45, y: 86..840)
-  const listPos = {
-    subgroups: new Map(),
-    concepts: new Map()
-  };
-  (function computeList() {
-    let curY = 86;
+  // 5. Scene 07 & 08 Layouts
+  // Scene 07 Step 1: All 39 concepts in right column (x=1040, w=500)
+  // Scene 07 Step 2: 33 kept concepts in right column (x=1040, w=500) & 9 must cards in left column (x=60, w=360)
+  // Scene 08: 33 kept concepts in middle column (x=420, w=480)
+  const s7AllListPos = { subgroups: new Map(), concepts: new Map() };
+  const s7ListPos = { subgroups: new Map(), concepts: new Map() };
+  const s8ListPos = { subgroups: new Map(), concepts: new Map() };
+  (function computeConceptLists() {
+    let y7all = 86;
+    DATA.subgroups.forEach(s => {
+      const allItems = DATA.concepts.filter(c => c.subgroup === s.id);
+      if (!allItems.length) return;
+      s7AllListPos.subgroups.set(s.id, { x: 1040, y: y7all, w: 500 });
+      y7all += 13.5;
+      allItems.forEach(c => {
+        s7AllListPos.concepts.set(c.code, { x: 1040, y: y7all, w: 500, cy: y7all + 7.5 });
+        y7all += 15;
+      });
+      y7all += 3.5;
+    });
+
+    let y7 = 86, y8 = 86;
     DATA.subgroups.forEach(s => {
       const items = DATA.concepts.filter(c => c.subgroup === s.id && c.status !== "eliminated");
       if (!items.length) return;
-      listPos.subgroups.set(s.id, { x: 45, y: curY });
-      curY += 15;
+      s7ListPos.subgroups.set(s.id, { x: 1040, y: y7, w: 500 });
+      s8ListPos.subgroups.set(s.id, { x: 420, y: y8, w: 480 });
+      y7 += 15; y8 += 15;
       items.forEach(c => {
-        listPos.concepts.set(c.code, { x: 45, y: curY });
-        curY += 16.5;
+        s7ListPos.concepts.set(c.code, { x: 1040, y: y7, w: 500, cy: y7 + 8 });
+        s8ListPos.concepts.set(c.code, { x: 420, y: y8, w: 480, cy: y8 + 8 });
+        y7 += 16.5; y8 += 16.5;
       });
-      curY += 5;
+      y7 += 5; y8 += 5;
     });
   })();
 
-  // Candidate SVG connection paths (Scene 6 & 7)
-  const candLinkData = [];
-  (function computeCandLinks() {
-    const linkGen = d3.linkHorizontal().x(d => d.x).y(d => d.y);
-    sortedCandidates.forEach((cand, cIdx) => {
-      const candY = candStartY + cIdx * candStepY + Math.round(CAND_CARD_H / 2);
-      const candX = 600;
-      cand.members.forEach(code => {
-        const pt = listPos.concepts.get(code);
-        const c = conceptMap.get(code);
-        candLinkData.push({
-          candId: cand.id,
-          code,
-          group: c.group,
-          d: linkGen({
-            source: { x: 545, y: pt.y + 7.5 },
-            target: { x: candX, y: candY }
-          })
-        });
-      });
+  const s7MustPos = new Map();
+  const s8CritPos = new Map();
+  const s8HeaderPos = { must: { x: 40, y: 84 }, nice: { x: 40, y: 472 } };
+  (function computeCriteriaLayouts() {
+    // Scene 07: 9 must cards in left col (x=60, w=360, y: 92..820)
+    let y7 = 92;
+    mustCriteria.forEach(cr => {
+      const h = (cr.id === "M8" || cr.id === "M9") ? 56 : 48;
+      s7MustPos.set(cr.id, { x: 60, y: y7, w: 360, h, cy: y7 + Math.round(h / 2) });
+      y7 += h + 30;
+    });
+
+    // Scene 08: 9 must cards (top half) + 9 nice cards (bottom half) in left col (x=40, w=290)
+    let y8m = 102;
+    mustCriteria.forEach(cr => {
+      const h = (cr.id === "M8" || cr.id === "M9") ? 42 : 31;
+      s8CritPos.set(cr.id, { x: 40, y: y8m, w: 290, h, cy: y8m + Math.round(h / 2) });
+      y8m += h + 6;
+    });
+    s8HeaderPos.nice.y = y8m + 10;
+    let y8n = s8HeaderPos.nice.y + 18;
+    niceCriteria.forEach(cr => {
+      const h = 30;
+      s8CritPos.set(cr.id, { x: 40, y: y8n, w: 290, h, cy: y8n + Math.round(h / 2) });
+      y8n += h + 6;
     });
   })();
+
+  const linkGenH = d3.linkHorizontal().x(d => d.x).y(d => d.y);
 
   // =========================================================
-  // Helpers
+  // Helpers & Interactive State
   // =========================================================
   let activeTl = null;
   let currentScene = 0;
   let scene1Merged = true;
   let scene3Step = 3;
   let scene4Step = 1;
-  let selectedCandId = null;
+  let scene7Step = 5; // 0 = 39 concepts + 9 musts; 1..3 = 3 screening criteria; 4 = 33 concepts after removal; 5 = must-have links drawn
+  let s7Selection = null; // { type: 'concept'|'must', id: string }
+  let s8Selection = null; // { type: 'cand'|'concept'|'crit', id: string|number }
+  let s9CandId = null; // 1 | 2 | 3 | null
+  let s9ActiveTab = "eco"; // 'eco' | 'bmc'
 
   function killActive() {
     if (activeTl) {
@@ -1336,6 +1896,7 @@
     }
     gsap.killTweensOf("*");
     svg.selectAll("*").interrupt();
+    ecoSvg.selectAll("*").interrupt();
   }
 
   function setHint(text) {
@@ -1348,8 +1909,17 @@
     sceneLabel.innerHTML = `<span class="step-num">${num}</span>${title}`;
     dotBtns.forEach((b, i) => b.classList.toggle("active", i === idx));
     skipBtn.style.display = idx === LAST_SCENE ? "none" : "inline-block";
-    if (idx === LAST_SCENE) {
-      setHint("Click a candidate card to inspect · Hover concepts or inline codes");
+    if (idx === 9) {
+      setHint("Click a candidate card on the left · Switch tabs between Ecosystem and Business Model Canvas · Hover boxes for notes");
+    } else if (idx === 8) {
+      setHint("Click a candidate, concept, or criterion to inspect links · Press → or Space to continue");
+    } else if (idx === 7) {
+      if (scene7Step === 0) setHint("Click or press → to screen concepts (1/3)");
+      else if (scene7Step === 1) setHint("Click or press → for next screening criterion (2/3)");
+      else if (scene7Step === 2) setHint("Click or press → for next screening criterion (3/3)");
+      else if (scene7Step === 3) setHint("Click or press → to remove screened-out concepts");
+      else if (scene7Step === 4) setHint("Click or press → to link must-haves to concepts");
+      else setHint("Click a concept or must-have to see links · Press → or Space to continue");
     } else if (idx <= 1) {
       setHint("Click, or press Enter / Space / → to continue");
     } else {
@@ -1359,6 +1929,57 @@
 
   function clearSVG() {
     svg.selectAll("*").remove();
+  }
+
+  function hideTooltip() {
+    tooltip.style.opacity = 0;
+  }
+
+  function positionTooltipNear(rect, preferRight = true) {
+    const stageRect = stage.getBoundingClientRect();
+    const scale = stageRect.width / 1600;
+    const relLeft = (rect.left - stageRect.left) / scale;
+    const relRight = (rect.right - stageRect.left) / scale;
+    const relTop = (rect.top - stageRect.top) / scale;
+    let x = preferRight ? relRight + 14 : relLeft - 394;
+    if (x + 385 > 1580) x = Math.max(20, relLeft - 394);
+    if (x < 20) x = relRight + 14;
+    const y = Math.min(730, Math.max(76, relTop - 6));
+    tooltip.style.left = `${Math.round(x)}px`;
+    tooltip.style.top = `${Math.round(y)}px`;
+  }
+
+  function showConceptTooltip(c, el) {
+    tooltip.querySelector(".tt-title").textContent = `${c.code} · ${c.name}`;
+    tooltip.querySelector(".tt-desc").textContent = c.description;
+    tooltip.querySelector(".tt-src").textContent = `Source ideas: ${c.sources.join(", ")}`;
+    tooltip.querySelector(".tt-notes").innerHTML = "";
+    positionTooltipNear(el.getBoundingClientRect(), currentScene === 8);
+    tooltip.style.opacity = 1;
+  }
+
+  function showCriterionTooltip(cr, el) {
+    tooltip.querySelector(".tt-title").textContent = cr.name;
+    tooltip.querySelector(".tt-desc").textContent = cr.description;
+    tooltip.querySelector(".tt-src").textContent = "";
+    const notesWrap = tooltip.querySelector(".tt-notes");
+    notesWrap.innerHTML = "";
+    if (currentScene === 8 && s8Selection && s8Selection.type === "cand" && cr.type === "must") {
+      const cand = DATA.candidates.find(x => x.id === s8Selection.id);
+      const st = cand && cand.must_status && cand.must_status[cr.id];
+      if (st && st.note) {
+        const sym = st.status === "met" ? "✓" : (st.status === "partial" ? "±" : "no conflict");
+        const color = COLORS.cand[cand.id];
+        notesWrap.innerHTML = `
+          <div class="tt-note-row">
+            <span class="tt-note-dot" style="background:${color}"></span>
+            <span><strong>${sym}</strong> — ${st.note}</span>
+          </div>
+        `;
+      }
+    }
+    positionTooltipNear(el.getBoundingClientRect(), true);
+    tooltip.style.opacity = 1;
   }
 
   function resetAllElements() {
@@ -1378,10 +1999,26 @@
     groupAnnounce.textContent = "";
 
     treeRootEl.style.opacity = 0;
-    detailPanel.style.opacity = 0;
-    detailPanel.classList.remove("interactive");
-    selectedCandId = null;
-    tooltip.style.opacity = 0;
+    scene9Right.style.opacity = 0;
+    scene9Right.classList.remove("interactive");
+    s7Selection = null;
+    s8Selection = null;
+    s9CandId = null;
+    hideTooltip();
+
+    mustSectionHdrEl.style.opacity = 0;
+    niceSectionHdrEl.style.opacity = 0;
+    elimReasonEls.forEach(el => { el.style.opacity = 0; });
+
+    criterionEls.forEach(el => {
+      el.style.opacity = 0;
+      el.classList.remove("interactive", "compact", "selected", "is-dimmed");
+      const stEl = el.querySelector(".crit-status");
+      if (stEl) {
+        stEl.className = "crit-status";
+        stEl.textContent = "";
+      }
+    });
 
     ideaEls.forEach(el => {
       el.style.opacity = 0;
@@ -1397,6 +2034,8 @@
       el.style.filter = "none";
       el.style.pointerEvents = "none";
       el.style.width = "";
+      el.style.height = "";
+      el.style.fontSize = "";
       el.className = "concept-node";
       const tag = el.querySelector(".c-tag");
       tag.style.display = "none";
@@ -1415,9 +2054,16 @@
       el.classList.remove("list-header", "is-dim-header");
     });
 
-    candidateEls.forEach(el => {
+    candidateEls.forEach((el, id) => {
       el.style.opacity = 0;
-      el.classList.remove("interactive", "selected", "hover-highlight");
+      el.classList.remove("interactive", "selected", "hover-highlight", "is-dimmed", "show-highlight", "show-members");
+      const p8 = s8CandPos.get(id);
+      if (p8) {
+        el.style.left = `${p8.x}px`;
+        el.style.top = `${p8.y}px`;
+        el.style.width = `${p8.w}px`;
+        el.style.height = `${p8.h}px`;
+      }
     });
   }
 
@@ -1425,16 +2071,6 @@
     conceptEls.forEach((el, code) => {
       const c = conceptMap.get(code);
       el.classList.add(`g${c.group}`);
-    });
-  }
-
-  function applyScreeningStyles() {
-    conceptEls.forEach((el, code) => {
-      const c = conceptMap.get(code);
-      el.classList.remove("is-red");
-      if (c.status === "eliminated") {
-        el.classList.add("is-eliminated");
-      }
     });
   }
 
@@ -1464,209 +2100,883 @@
     return paths;
   }
 
-  function drawCandidateLinks(animate = false) {
+  // =========================================================
+  // Scene 07 Interactive Logic (Must-haves vs 33 Concepts)
+  // =========================================================
+  function getAllScene7MustLinks() {
+    const allLinks = [];
+    mustCriteria.forEach((cr, mIdx) => {
+      const mPos = s7MustPos.get(cr.id);
+      const codes = conceptsByCriterion.get(cr.id) || [];
+      codes.forEach(code => {
+        const c = conceptMap.get(code);
+        const cPos = s7ListPos.concepts.get(code);
+        if (c && cPos && mPos) {
+          allLinks.push({
+            mustId: cr.id,
+            mustIdx: mIdx,
+            code,
+            d: linkGenH({ source: { x: mPos.x + mPos.w, y: mPos.cy }, target: { x: cPos.x, y: cPos.cy } }),
+            color: COLORS[c.group].border
+          });
+        }
+      });
+    });
+    return allLinks;
+  }
+
+  function applyScene7Interaction(animateMustSequence = false) {
     clearSVG();
-    const paths = svg.selectAll("path.cand-link")
-      .data(candLinkData)
+    if (!s7Selection) {
+      mustCriteria.forEach(cr => {
+        const el = criterionEls.get(cr.id);
+        el.classList.remove("selected", "is-dimmed");
+        gsap.to(el, { opacity: 1, duration: 0.25 });
+      });
+      keptConcepts.forEach(c => {
+        const el = conceptEls.get(c.code);
+        el.classList.remove("is-dimmed", "code-ref-hover");
+        gsap.to(el, { opacity: 1, duration: 0.25 });
+      });
+      DATA.subgroups.forEach(s => {
+        if (!s7ListPos.subgroups.has(s.id)) return;
+        subgroupEls.get(s.id).classList.remove("is-dim-header");
+      });
+
+      const allLinks = getAllScene7MustLinks();
+      const paths = svg.selectAll("path.s7-link")
+        .data(allLinks)
+        .enter()
+        .append("path")
+        .attr("class", "s7-link")
+        .attr("fill", "none")
+        .attr("stroke", d => d.color)
+        .attr("stroke-width", 1.2)
+        .attr("d", d => d.d);
+
+      if (animateMustSequence) {
+        paths.each(function () {
+          const len = this.getTotalLength();
+          d3.select(this)
+            .attr("opacity", 0.55)
+            .attr("stroke-dasharray", `${len} ${len}`)
+            .attr("stroke-dashoffset", len);
+        });
+        paths.transition()
+          .delay(d => d.mustIdx * 100)
+          .duration(220)
+          .attr("stroke-dashoffset", 0);
+      } else {
+        paths.attr("opacity", 0.5);
+      }
+      return;
+    }
+
+    const activeConcepts = new Set();
+    const activeMusts = new Set();
+    const linksToDraw = [];
+
+    if (s7Selection.type === "concept") {
+      const c = conceptMap.get(s7Selection.id);
+      if (c) {
+        activeConcepts.add(c.code);
+        (c.criteria || []).forEach(cid => {
+          const cr = criteriaMap.get(cid);
+          if (cr && cr.type === "must") {
+            activeMusts.add(cid);
+            const cPos = s7ListPos.concepts.get(c.code);
+            const mPos = s7MustPos.get(cid);
+            if (cPos && mPos) {
+              linksToDraw.push({
+                d: linkGenH({ source: { x: cPos.x, y: cPos.cy }, target: { x: mPos.x + mPos.w, y: mPos.cy } }),
+                color: COLORS[c.group].border
+              });
+            }
+          }
+        });
+      }
+    } else if (s7Selection.type === "must") {
+      const cid = s7Selection.id;
+      activeMusts.add(cid);
+      const codes = conceptsByCriterion.get(cid) || [];
+      const mPos = s7MustPos.get(cid);
+      codes.forEach(code => {
+        const c = conceptMap.get(code);
+        const cPos = s7ListPos.concepts.get(code);
+        if (c && cPos && mPos) {
+          activeConcepts.add(code);
+          linksToDraw.push({
+            d: linkGenH({ source: { x: mPos.x + mPos.w, y: mPos.cy }, target: { x: cPos.x, y: cPos.cy } }),
+            color: COLORS[c.group].border
+          });
+        }
+      });
+    }
+
+    mustCriteria.forEach(cr => {
+      const el = criterionEls.get(cr.id);
+      const isAct = activeMusts.has(cr.id);
+      el.classList.toggle("selected", s7Selection.type === "must" && s7Selection.id === cr.id);
+      el.classList.toggle("is-dimmed", !isAct);
+      gsap.to(el, { opacity: isAct ? 1 : 0.3, duration: 0.25 });
+    });
+
+    keptConcepts.forEach(c => {
+      const el = conceptEls.get(c.code);
+      const isAct = activeConcepts.has(c.code);
+      el.classList.toggle("code-ref-hover", s7Selection.type === "concept" && s7Selection.id === c.code);
+      el.classList.toggle("is-dimmed", !isAct);
+      gsap.to(el, { opacity: isAct ? 1 : 0.3, duration: 0.25 });
+    });
+
+    DATA.subgroups.forEach(s => {
+      if (!s7ListPos.subgroups.has(s.id)) return;
+      const hasAct = keptConcepts.some(c => c.subgroup === s.id && activeConcepts.has(c.code));
+      subgroupEls.get(s.id).classList.toggle("is-dim-header", !hasAct);
+    });
+
+    svg.selectAll("path.s7-link")
+      .data(linksToDraw)
       .enter()
       .append("path")
-      .attr("class", "cand-link")
-      .attr("data-cand", d => d.candId)
-      .attr("data-code", d => d.code)
+      .attr("class", "s7-link")
       .attr("fill", "none")
-      .attr("stroke", d => COLORS[d.group].border)
-      .attr("stroke-width", 1)
-      .attr("opacity", 0.35)
-      .attr("d", d => d.d);
+      .attr("stroke", d => d.color)
+      .attr("stroke-width", 1.6)
+      .attr("opacity", 0)
+      .attr("d", d => d.d)
+      .transition()
+      .duration(220)
+      .attr("opacity", 0.92);
+  }
 
-    if (animate) {
-      paths.each(function () {
-        const len = this.getTotalLength();
-        d3.select(this)
-          .attr("stroke-dasharray", `${len} ${len}`)
-          .attr("stroke-dashoffset", len);
-      });
+  function handleScene7ConceptClick(code) {
+    if (s7Selection && s7Selection.type === "concept" && s7Selection.id === code) {
+      s7Selection = null;
+    } else {
+      s7Selection = { type: "concept", id: code };
     }
-    return paths;
+    applyScene7Interaction();
   }
 
-  function formatTextWithRefs(text, memberSet) {
-    return text.replace(/\b([123][A-E]-\d+)\b/g, (match, code) => {
-      let cls = "inline-code-ref not-member";
-      if (memberSet.has(code)) {
-        const c = conceptMap.get(code);
-        cls = c ? `inline-code-ref g${c.group}` : "inline-code-ref";
+  function handleScene7CriterionClick(cid) {
+    if (s7Selection && s7Selection.type === "must" && s7Selection.id === cid) {
+      s7Selection = null;
+    } else {
+      s7Selection = { type: "must", id: cid };
+    }
+    applyScene7Interaction();
+  }
+
+  // =========================================================
+  // Scene 08 Interactive Logic (Criteria - 33 Concepts - 3 Candidates)
+  // =========================================================
+  function updateMustStatusBadges(candId) {
+    const cand = candId ? DATA.candidates.find(x => x.id === candId) : null;
+    mustCriteria.forEach(cr => {
+      const el = criterionEls.get(cr.id);
+      const stEl = el.querySelector(".crit-status");
+      if (!stEl) return;
+      if (!cand || !cand.must_status || !cand.must_status[cr.id]) {
+        stEl.className = "crit-status";
+        stEl.textContent = "";
+      } else {
+        const st = cand.must_status[cr.id].status;
+        const txt = st === "met" ? "✓" : (st === "partial" ? "±" : "no conflict");
+        stEl.className = `crit-status show st-${st}`;
+        stEl.textContent = txt;
       }
-      return `<span class="${cls}" data-code="${code}">${code}</span>`;
     });
   }
 
-  function bindInlineCodeHovers() {
-    detailContent.querySelectorAll(".inline-code-ref").forEach(span => {
-      const code = span.dataset.code;
-      span.addEventListener("mouseenter", () => {
-        const el = conceptEls.get(code);
-        if (el) el.classList.add("code-ref-hover");
-      });
-      span.addEventListener("mouseleave", () => {
-        const el = conceptEls.get(code);
-        if (el) el.classList.remove("code-ref-hover");
-      });
-    });
-  }
-
-  function renderDefaultDetail() {
-    detailContent.innerHTML = `
-      <h2>${candCount} candidate concepts</h2>
-      <div class="dp-target">
-        Each candidate combines core concepts across <strong>data collection</strong>, <strong>data processing &amp; delivery</strong>, and <strong>incentives or financing</strong>. A candidate may also include other concepts without changing its core definition. Select a card on the left to inspect its building blocks.
-      </div>
-    `;
-  }
-
-  function renderCandidateDetail(candId) {
-    const cand = DATA.candidates.find(c => c.id === candId);
-    if (!cand) return renderDefaultDetail();
-
-    const memberSet = new Set(cand.members);
-    const byGroup = { 1: [], 2: [], 3: [] };
-    cand.members.forEach(code => {
-      const c = conceptMap.get(code);
-      if (c) byGroup[c.group].push(c);
-    });
-
-    const blocksHtml = [1, 2, 3].map(g => {
-      if (!byGroup[g].length) return "";
-      const gName = groupMap.get(String(g)).name;
-      const items = byGroup[g].map(c => `<li><strong>${c.code}</strong> ${c.name}</li>`).join("");
-      return `<div class="dp-group-block g${g}"><strong>Group ${g} (${gName}):</strong><ul class="dp-block-list">${items}</ul></div>`;
-    }).join("");
-
-    const relatedNames = (cand.related || [])
-      .map(code => conceptMap.get(code))
-      .filter(Boolean)
-      .map(c => c.name);
-    const relatedHtml = relatedNames.length
-      ? `<div class="dp-related">May also draw on: ${relatedNames.join(", ")}</div>`
-      : "";
-
-    detailContent.innerHTML = `
-      <h2>Concept ${cand.id}: ${cand.name}</h2>
-      <div class="dp-target">${cand.target}</div>
-      <div class="dp-sec-title">Building blocks (${cand.members.length})</div>
-      ${blocksHtml}
-      <div class="dp-sec-title">How data is collected</div>
-      <div class="dp-body">${formatTextWithRefs(cand.collection, memberSet)}</div>
-      <div class="dp-sec-title">How data is shared, verified and funded</div>
-      <div class="dp-body">${formatTextWithRefs(cand.sharing_funding, memberSet)}</div>
-      ${relatedHtml}
-    `;
-    bindInlineCodeHovers();
-  }
-
-  function selectCandidate(candId) {
-    selectedCandId = candId;
-    detailContent.style.opacity = 0;
-    setTimeout(() => {
-      if (candId === null) renderDefaultDetail();
-      else renderCandidateDetail(candId);
-      detailContent.style.opacity = 1;
-    }, 150);
-
-    if (candId === null) {
-      candidateEls.forEach(el => {
-        el.classList.remove("selected");
+  function applyScene8Interaction() {
+    clearSVG();
+    if (!s8Selection) {
+      updateMustStatusBadges(null);
+      criteriaList.forEach(cr => {
+        const el = criterionEls.get(cr.id);
+        el.classList.remove("selected", "is-dimmed");
         gsap.to(el, { opacity: 1, duration: 0.3 });
       });
-      conceptEls.forEach((el, code) => {
-        const c = conceptMap.get(code);
-        el.classList.remove("is-dimmed", "is-not-core", "is-related");
-        if (c.status === "eliminated") {
-          el.classList.add("is-eliminated");
-          el.style.pointerEvents = "none";
-          gsap.to(el, { opacity: 0, duration: 0.25 });
-        } else if (c.status === "not_core") {
-          el.classList.add("is-not-core");
-          el.style.pointerEvents = "auto";
-          gsap.to(el, { opacity: 0.55, duration: 0.3 });
-        } else {
-          el.style.pointerEvents = "auto";
-          gsap.to(el, { opacity: 1, duration: 0.3 });
-        }
+      keptConcepts.forEach(c => {
+        const el = conceptEls.get(c.code);
+        el.classList.remove("is-dimmed", "code-ref-hover");
+        gsap.to(el, { opacity: 1, duration: 0.3 });
       });
       DATA.subgroups.forEach(s => {
-        if (!listPos.subgroups.has(s.id)) return;
-        const hasCore = DATA.concepts.some(c => c.subgroup === s.id && c.status === "core");
-        subgroupEls.get(s.id).classList.toggle("is-dim-header", !hasCore);
+        if (!s8ListPos.subgroups.has(s.id)) return;
+        subgroupEls.get(s.id).classList.remove("is-dim-header");
       });
-      svg.selectAll("path.cand-link")
-        .transition().duration(300)
-        .attr("stroke-width", 1)
-        .attr("opacity", 0.35);
-    } else {
-      const cand = DATA.candidates.find(c => c.id === candId);
-      const memberSet = new Set(cand.members);
-      const relatedSet = new Set(cand.related || []);
-      candidateEls.forEach((el, id) => {
-        el.classList.toggle("selected", id === candId);
-        gsap.to(el, { opacity: id === candId ? 1 : 0.4, duration: 0.3 });
+      candidateEls.forEach(el => {
+        el.classList.remove("selected", "hover-highlight", "is-dimmed");
+        gsap.to(el, { opacity: 1, duration: 0.3 });
       });
-      conceptEls.forEach((el, code) => {
-        const c = conceptMap.get(code);
-        el.classList.remove("is-not-core");
-        if (c.status === "eliminated") {
-          el.classList.remove("is-related");
-          el.style.pointerEvents = "none";
-          gsap.to(el, { opacity: 0, duration: 0.25 });
-        } else if (memberSet.has(code)) {
-          el.classList.remove("is-dimmed", "is-related");
-          el.style.pointerEvents = "auto";
-          gsap.to(el, { opacity: 1, duration: 0.3 });
-        } else if (relatedSet.has(code)) {
-          el.classList.remove("is-dimmed");
-          el.classList.add("is-related");
-          el.style.pointerEvents = "auto";
-          gsap.to(el, { opacity: 0.5, duration: 0.3 });
-        } else {
-          el.classList.remove("is-related");
-          el.classList.add("is-dimmed");
-          el.style.pointerEvents = "auto";
-          gsap.to(el, { opacity: 0.45, duration: 0.3 });
-        }
-      });
-      DATA.subgroups.forEach(s => {
-        if (!listPos.subgroups.has(s.id)) return;
-        const hasMember = DATA.concepts.some(c => c.subgroup === s.id && (memberSet.has(c.code) || relatedSet.has(c.code)));
-        subgroupEls.get(s.id).classList.toggle("is-dim-header", !hasMember);
-      });
-      svg.selectAll("path.cand-link")
-        .transition().duration(300)
-        .attr("stroke-width", d => d.candId === candId ? 2 : 1)
-        .attr("opacity", d => d.candId === candId ? 1 : 0.08);
+      return;
     }
+
+    const activeConcepts = new Set();
+    const activeCrits = new Set();
+    const activeCands = new Set();
+    const linksToDraw = [];
+
+    if (s8Selection.type === "cand") {
+      const cand = DATA.candidates.find(x => x.id === s8Selection.id);
+      if (cand) {
+        activeCands.add(cand.id);
+        updateMustStatusBadges(cand.id);
+        const candPos = s8CandPos.get(cand.id);
+        const candColor = COLORS.cand[cand.id];
+
+        cand.members.forEach(code => {
+          const c = conceptMap.get(code);
+          const cPos = s8ListPos.concepts.get(code);
+          if (!c || !cPos) return;
+          activeConcepts.add(code);
+          linksToDraw.push({
+            d: linkGenH({ source: { x: candPos.x, y: candPos.cy }, target: { x: cPos.x + cPos.w, y: cPos.cy } }),
+            color: candColor,
+            width: 1.7
+          });
+
+          (c.criteria || []).forEach(cid => {
+            if (!validCriteriaIds.has(cid)) return;
+            activeCrits.add(cid);
+            const crPos = s8CritPos.get(cid);
+            if (crPos) {
+              linksToDraw.push({
+                d: linkGenH({ source: { x: cPos.x, y: cPos.cy }, target: { x: crPos.x + crPos.w, y: crPos.cy } }),
+                color: COLORS[c.group].border,
+                width: 1.3
+              });
+            }
+          });
+        });
+
+        // All must cards with a status also stay legible so the ✓/±/no conflict badge is readable
+        mustCriteria.forEach(cr => {
+          if (cand.must_status && cand.must_status[cr.id]) {
+            activeCrits.add(cr.id);
+          }
+        });
+      }
+    } else if (s8Selection.type === "concept") {
+      updateMustStatusBadges(null);
+      const c = conceptMap.get(s8Selection.id);
+      const cPos = s8ListPos.concepts.get(s8Selection.id);
+      if (c && cPos) {
+        activeConcepts.add(c.code);
+        (c.criteria || []).forEach(cid => {
+          if (!validCriteriaIds.has(cid)) return;
+          activeCrits.add(cid);
+          const crPos = s8CritPos.get(cid);
+          if (crPos) {
+            linksToDraw.push({
+              d: linkGenH({ source: { x: cPos.x, y: cPos.cy }, target: { x: crPos.x + crPos.w, y: crPos.cy } }),
+              color: COLORS[c.group].border,
+              width: 1.5
+            });
+          }
+        });
+        sortedCandidates.forEach(cand => {
+          if (cand.members.includes(c.code)) activeCands.add(cand.id);
+        });
+      }
+    } else if (s8Selection.type === "crit") {
+      updateMustStatusBadges(null);
+      const cid = s8Selection.id;
+      activeCrits.add(cid);
+      const crPos = s8CritPos.get(cid);
+      const codes = conceptsByCriterion.get(cid) || [];
+      codes.forEach(code => {
+        const c = conceptMap.get(code);
+        const cPos = s8ListPos.concepts.get(code);
+        if (c && cPos && crPos) {
+          activeConcepts.add(code);
+          linksToDraw.push({
+            d: linkGenH({ source: { x: crPos.x + crPos.w, y: crPos.cy }, target: { x: cPos.x, y: cPos.cy } }),
+            color: COLORS[c.group].border,
+            width: 1.5
+          });
+          sortedCandidates.forEach(cand => {
+            if (cand.members.includes(code)) activeCands.add(cand.id);
+          });
+        }
+      });
+    }
+
+    criteriaList.forEach(cr => {
+      const el = criterionEls.get(cr.id);
+      const isAct = activeCrits.has(cr.id);
+      el.classList.toggle("selected", s8Selection.type === "crit" && s8Selection.id === cr.id);
+      el.classList.toggle("is-dimmed", !isAct);
+      gsap.to(el, { opacity: isAct ? 1 : 0.3, duration: 0.3 });
+    });
+
+    keptConcepts.forEach(c => {
+      const el = conceptEls.get(c.code);
+      const isAct = activeConcepts.has(c.code);
+      el.classList.toggle("code-ref-hover", s8Selection.type === "concept" && s8Selection.id === c.code);
+      el.classList.toggle("is-dimmed", !isAct);
+      gsap.to(el, { opacity: isAct ? 1 : 0.3, duration: 0.3 });
+    });
+
+    DATA.subgroups.forEach(s => {
+      if (!s8ListPos.subgroups.has(s.id)) return;
+      const hasAct = keptConcepts.some(c => c.subgroup === s.id && activeConcepts.has(c.code));
+      subgroupEls.get(s.id).classList.toggle("is-dim-header", !hasAct);
+    });
+
+    candidateEls.forEach((el, id) => {
+      const isAct = activeCands.has(id);
+      el.classList.toggle("selected", s8Selection.type === "cand" && s8Selection.id === id);
+      el.classList.toggle("hover-highlight", s8Selection.type !== "cand" && isAct);
+      el.classList.toggle("is-dimmed", !isAct);
+      gsap.to(el, { opacity: isAct ? 1 : 0.3, duration: 0.3 });
+    });
+
+    svg.selectAll("path.s8-link")
+      .data(linksToDraw)
+      .enter()
+      .append("path")
+      .attr("class", "s8-link")
+      .attr("fill", "none")
+      .attr("stroke", d => d.color)
+      .attr("stroke-width", d => d.width || 1.5)
+      .attr("opacity", 0)
+      .attr("d", d => d.d)
+      .transition()
+      .duration(300)
+      .attr("opacity", 0.9);
+  }
+
+  function handleScene8CandClick(candId) {
+    if (s8Selection && s8Selection.type === "cand" && s8Selection.id === candId) {
+      s8Selection = null;
+    } else {
+      s8Selection = { type: "cand", id: candId };
+    }
+    applyScene8Interaction();
+  }
+
+  function handleScene8ConceptClick(code) {
+    if (s8Selection && s8Selection.type === "concept" && s8Selection.id === code) {
+      s8Selection = null;
+    } else {
+      s8Selection = { type: "concept", id: code };
+    }
+    applyScene8Interaction();
+  }
+
+  function handleScene8CriterionClick(cid) {
+    if (s8Selection && s8Selection.type === "crit" && s8Selection.id === cid) {
+      s8Selection = null;
+    } else {
+      s8Selection = { type: "crit", id: cid };
+    }
+    applyScene8Interaction();
   }
 
   conceptEls.forEach((el, code) => {
     const c = conceptMap.get(code);
     el.addEventListener("mouseenter", () => {
-      if (currentScene !== LAST_SCENE) return;
-      tooltip.querySelector(".tt-title").textContent = `${c.code} · ${c.name}`;
-      tooltip.querySelector(".tt-desc").textContent = c.description;
-      tooltip.querySelector(".tt-src").textContent = `Source ideas: ${c.sources.join(", ")}`;
-      const top = Math.min(760, Math.max(88, parseFloat(el.style.top) - 10));
-      tooltip.style.left = "562px";
-      tooltip.style.top = `${top}px`;
-      tooltip.style.opacity = 1;
-
-      DATA.candidates.forEach(cand => {
-        if (cand.members.includes(code)) {
-          candidateEls.get(cand.id).classList.add("hover-highlight");
-        }
-      });
+      if ((currentScene === 7 && scene7Step >= 0) || currentScene === 8) {
+        showConceptTooltip(c, el);
+      }
     });
     el.addEventListener("mouseleave", () => {
-      tooltip.style.opacity = 0;
-      candidateEls.forEach(card => card.classList.remove("hover-highlight"));
+      hideTooltip();
+    });
+  });
+
+  // =========================================================
+  // Scene 09: Ecosystem & Business Model Canvas (Single Central Database Hub + In/Out/Interactions)
+  // =========================================================
+  const ECO_W = 1200;
+  const ECO_H = 758;
+  const ecoBoxGeom = new Map(); // id -> { x, y, w, h, cx, cy, data }
+  const ecoDomEls = new Map();
+  const ecoZoneEls = {};
+
+  const HUB_MODULES_TEXT = {
+    1: [
+      "Battery database (reference charging curves & efficiency)",
+      "Same-method SoH (socket power curve vs database)",
+      "Report verification (digital signature + lease serial)"
+    ],
+    2: [
+      "Same-method SoH (meter + entered charge level)",
+      "Credits & refunds (viewing credits, meter refunds)",
+      "Report verification (layered binding + final check)"
+    ],
+    3: [
+      "Central battery history database (cross-brand)",
+      "Report normalisation (uploads + calibrated plug trends)",
+      "AI assistant (plain-language tracking, advice & Q&A)",
+      "Report verification (unverified vs dealer-verified)"
+    ]
+  };
+
+  // Dedicated coordinates for each candidate around the central hub (hub sits at x=0.50, y=0.50)
+  // Left = Inputs (hardware, fleets, groups, LLM), Right = Outputs (buyer, marketplace, companies), Top/Bottom = Lease / Owner / Dealers
+  const CAND_ACTOR_POS = {
+    1: {
+      hw:      { x: 0.14, y: 0.34 },
+      fleet:   { x: 0.14, y: 0.68 },
+      leasing: { x: 0.34, y: 0.12 },
+      lessee:  { x: 0.66, y: 0.12 },
+      dealer:  { x: 0.50, y: 0.88 },
+      buyer:   { x: 0.87, y: 0.50 }
+    },
+    2: {
+      hw:      { x: 0.14, y: 0.34 },
+      groups:  { x: 0.14, y: 0.68 },
+      owner:   { x: 0.50, y: 0.12 },
+      dealer:  { x: 0.50, y: 0.88 },
+      buyer:   { x: 0.87, y: 0.34 },
+      market:  { x: 0.87, y: 0.68 }
+    },
+    3: {
+      plug:      { x: 0.14, y: 0.24 },
+      llm:       { x: 0.14, y: 0.50 },
+      fleet:     { x: 0.14, y: 0.76 },
+      owner:     { x: 0.50, y: 0.12 },
+      dealer:    { x: 0.50, y: 0.88 },
+      buyer:     { x: 0.87, y: 0.24 },
+      market:    { x: 0.87, y: 0.52 },
+      companies: { x: 0.87, y: 0.78 }
+    }
+  };
+
+  (function buildEcosystemDOM() {
+    if (!DATA.ecosystem) return;
+    const nodes = DATA.ecosystem.nodes || [];
+    const usNode = nodes.find(n => n.kind === "platform");
+    const actors = nodes.filter(n => n.kind === "actor");
+
+    // Directional zone headers
+    const zones = [
+      { key: "in", text: "← Inputs (Data & Hardware)", x: 24, y: 14 },
+      { key: "top", text: "↕ Channels, Testing & Peer Interactions", x: 445, y: 14 },
+      { key: "out", text: "Outputs (Reports & Data) →", x: 955, y: 14 }
+    ];
+    zones.forEach(z => {
+      const zEl = document.createElement("div");
+      zEl.className = "eco-zone-hdr";
+      zEl.style.left = `${z.x}px`;
+      zEl.style.top = `${z.y}px`;
+      zEl.textContent = z.text;
+      ecoNodesWrap.appendChild(zEl);
+      ecoZoneEls[z.key] = zEl;
+    });
+
+    // 1. Single Central Hub ('us') representing Our Platform & Central Battery Database
+    if (usNode) {
+      const pEl = document.createElement("div");
+      pEl.className = "eco-db-hub";
+      pEl.dataset.id = "us";
+      pEl.innerHTML = `
+        <div class="eco-db-kicker">Core Hub</div>
+        <div class="eco-db-title">Our Platform &amp; Battery Database</div>
+        <ul class="eco-db-list"></ul>
+      `;
+      pEl.addEventListener("mouseenter", () => showEcoNodeTooltip(usNode, pEl));
+      pEl.addEventListener("mouseleave", () => hideTooltip());
+      ecoNodesWrap.appendChild(pEl);
+      ecoDomEls.set("us", pEl);
+    }
+
+    // 2. Actor boxes
+    actors.forEach(a => {
+      const aEl = document.createElement("div");
+      aEl.className = "eco-node actor";
+      aEl.dataset.id = a.id;
+      aEl.innerHTML = `<span>${a.label}</span>`;
+      aEl.addEventListener("mouseenter", () => showEcoNodeTooltip(a, aEl));
+      aEl.addEventListener("mouseleave", () => hideTooltip());
+      ecoNodesWrap.appendChild(aEl);
+      ecoDomEls.set(a.id, aEl);
+    });
+
+    // 3. Ecosystem legend from flow_types
+    const ft = DATA.ecosystem.flow_types || {};
+    const order = ["data", "report", "money", "device", "service"];
+    ecoLegend.innerHTML = order
+      .filter(k => ft[k])
+      .map(k => `
+        <div class="eco-leg-item">
+          <span class="eco-leg-line ${k}"></span>
+          <span>${ft[k]}</span>
+        </div>
+      `).join("");
+  })();
+
+  function layoutEcosystemForCandidate(candId) {
+    if (!DATA.ecosystem) return;
+    ecoBoxGeom.clear();
+    const cid = candId || 1;
+    const nodes = DATA.ecosystem.nodes || [];
+    const usNode = nodes.find(n => n.kind === "platform");
+    const allModules = nodes.filter(n => n.kind === "module");
+    const allActors = nodes.filter(n => n.kind === "actor");
+
+    // 1. Central Database Hub ('us') at center (0.50, 0.50)
+    if (usNode) {
+      const pw = 350;
+      const ph = cid === 3 ? 210 : 185;
+      const pcx = Math.round(0.50 * ECO_W);
+      const pcy = Math.round(0.50 * ECO_H);
+      const px = pcx - Math.round(pw / 2);
+      const py = pcy - Math.round(ph / 2);
+
+      const pEl = ecoDomEls.get("us");
+      if (pEl) {
+        pEl.style.display = "flex";
+        pEl.style.left = `${px}px`;
+        pEl.style.top = `${py}px`;
+        pEl.style.width = `${pw}px`;
+        pEl.style.height = `${ph}px`;
+        pEl.style.borderColor = COLORS.cand[cid];
+        const ul = pEl.querySelector(".eco-db-list");
+        if (ul) {
+          ul.innerHTML = (HUB_MODULES_TEXT[cid] || []).map(t => `<li>${t}</li>`).join("");
+        }
+      }
+      const hubGeom = { x: px, y: py, w: pw, h: ph, cx: pcx, cy: pcy, data: usNode };
+      ecoBoxGeom.set("us", hubGeom);
+      // Map all internal module ids to the central hub so flows connect cleanly to the single hub box
+      allModules.forEach(m => {
+        ecoBoxGeom.set(m.id, hubGeom);
+      });
+    }
+
+    // 2. Only show actors used by this candidate
+    const aw = 186, ah = 58;
+    const posMap = CAND_ACTOR_POS[cid] || {};
+    allActors.forEach(a => {
+      const el = ecoDomEls.get(a.id);
+      const used = (a.candidates || []).includes(cid);
+      if (!used) {
+        if (el) el.style.display = "none";
+        return;
+      }
+      const p = posMap[a.id] || { x: a.x, y: a.y };
+      const acx = Math.round(p.x * ECO_W);
+      const acy = Math.round(p.y * ECO_H);
+      const ax = acx - Math.round(aw / 2);
+      const ay = acy - Math.round(ah / 2);
+      if (el) {
+        el.style.display = "flex";
+        el.style.left = `${ax}px`;
+        el.style.top = `${ay}px`;
+        el.style.width = `${aw}px`;
+        el.style.height = `${ah}px`;
+      }
+      ecoBoxGeom.set(a.id, { x: ax, y: ay, w: aw, h: ah, cx: acx, cy: acy, data: a });
+    });
+  }
+
+  function showEcoNodeTooltip(node, el) {
+    tooltip.querySelector(".tt-title").textContent = node.label;
+    tooltip.querySelector(".tt-desc").textContent = node.description || "";
+    tooltip.querySelector(".tt-src").textContent = "";
+    const notesWrap = tooltip.querySelector(".tt-notes");
+    notesWrap.innerHTML = "";
+
+    if (node.notes && s9CandId && node.notes[String(s9CandId)]) {
+      const color = COLORS.cand[s9CandId];
+      notesWrap.innerHTML = `
+        <div class="tt-note-row">
+          <span class="tt-note-dot" style="background:${color}"></span>
+          <span>${node.notes[String(s9CandId)]}</span>
+        </div>
+      `;
+    }
+    positionTooltipNear(el.getBoundingClientRect(), true);
+    tooltip.style.opacity = 1;
+  }
+
+  function rectEdgePoint(box, targetX, targetY) {
+    const dx = targetX - box.cx;
+    const dy = targetY - box.cy;
+    if (dx === 0 && dy === 0) return { x: box.cx, y: box.cy };
+    const hw = box.w / 2 + 3;
+    const hh = box.h / 2 + 3;
+    const tx = dx !== 0 ? hw / Math.abs(dx) : Infinity;
+    const ty = dy !== 0 ? hh / Math.abs(dy) : Infinity;
+    const t = Math.min(tx, ty);
+    return { x: box.cx + dx * t, y: box.cy + dy * t };
+  }
+
+  const MODULE_IDS = new Set(["db", "soh", "norm", "ai", "credits", "verify"]);
+  function normHubId(id) {
+    return MODULE_IDS.has(id) ? "us" : id;
+  }
+
+  function renderEcosystemFlows(candId) {
+    ecoSvg.selectAll("*").remove();
+    if (!candId || !DATA.ecosystem) return;
+
+    const color = COLORS.cand[candId];
+    const defs = ecoSvg.append("defs");
+    defs.append("marker")
+      .attr("id", `eco-arrow-${candId}`)
+      .attr("viewBox", "0 -4 8 8")
+      .attr("refX", 7)
+      .attr("refY", 0)
+      .attr("markerWidth", 6)
+      .attr("markerHeight", 6)
+      .attr("orient", "auto")
+      .append("path")
+      .attr("d", "M0,-3.5L8,0L0,3.5Z")
+      .attr("fill", color);
+
+    const activeFlows = (DATA.ecosystem.flows || []).filter(f => (f.candidates || []).includes(candId));
+
+    // Group flows by normalized endpoint pair (since all modules map to 'us') so multi-flows between an actor and the hub fan out cleanly
+    const pairListMap = new Map();
+    activeFlows.forEach(f => {
+      const u = normHubId(f.from);
+      const v = normHubId(f.to);
+      const key = u < v ? `${u}|${v}` : `${v}|${u}`;
+      if (!pairListMap.has(key)) pairListMap.set(key, []);
+      pairListMap.get(key).push(f);
+    });
+
+    const flowVisuals = [];
+    pairListMap.forEach((flowsInPair) => {
+      const total = flowsInPair.length;
+      flowsInPair.forEach((f, idx) => {
+        const u = normHubId(f.from);
+        const v = normHubId(f.to);
+        const b1 = ecoBoxGeom.get(u);
+        const b2 = ecoBoxGeom.get(v);
+        if (!b1 || !b2) return;
+
+        const cdx = b2.cx - b1.cx;
+        const cdy = b2.cy - b1.cy;
+        const dist = Math.hypot(cdx, cdy) || 1;
+        const canonSign = u < v ? 1 : -1;
+
+        // Fan offsets symmetrically: e.g. for 1 -> 0; for 2 -> -36, +36; for 3 -> -56, 0, +56
+        let bend = 0;
+        if (total === 1) {
+          // Slight curve for peer-to-peer interactions, straight/gentle for hub links
+          bend = (u !== "us" && v !== "us") ? -24 : 10 * canonSign;
+        } else if (total === 2) {
+          bend = (idx === 0 ? -38 : 38) * canonSign;
+        } else {
+          bend = ((idx - (total - 1) / 2) * 52) * canonSign;
+        }
+
+        const nx = -cdy / dist;
+        const ny = cdx / dist;
+        const ctrlCenter = {
+          x: (b1.cx + b2.cx) / 2 + nx * bend,
+          y: (b1.cy + b2.cy) / 2 + ny * bend
+        };
+
+        const pStart = rectEdgePoint(b1, ctrlCenter.x, ctrlCenter.y);
+        const pEnd = rectEdgePoint(b2, ctrlCenter.x, ctrlCenter.y);
+
+        const mx = (pStart.x + pEnd.x) / 2 + nx * bend;
+        const my = (pStart.y + pEnd.y) / 2 + ny * bend;
+
+        // Stagger t slightly when multiple lines connect the same pair so labels don't sit on the same radius
+        let t = 0.5;
+        if (total === 3) {
+          t = idx === 0 ? 0.38 : (idx === 1 ? 0.52 : 0.64);
+        } else if (total === 2) {
+          t = idx === 0 ? 0.44 : 0.56;
+        }
+        const omt = 1 - t;
+        const labelX = omt * omt * pStart.x + 2 * omt * t * mx + t * t * pEnd.x;
+        const labelY = omt * omt * pStart.y + 2 * omt * t * my + t * t * pEnd.y;
+
+        const labelText = (f.labels && f.labels[String(candId)]) ? f.labels[String(candId)] : (f.label || "");
+
+        flowVisuals.push({
+          id: f.id,
+          type: f.type,
+          d: `M${pStart.x.toFixed(1)},${pStart.y.toFixed(1)} Q${mx.toFixed(1)},${my.toFixed(1)} ${pEnd.x.toFixed(1)},${pEnd.y.toFixed(1)}`,
+          lx: labelX,
+          ly: labelY,
+          label: labelText
+        });
+      });
+    });
+
+    // De-overlap flow labels against all visible boxes (including the central hub!) and against each other
+    const uniqueBoxes = [];
+    const seenIds = new Set();
+    ecoBoxGeom.forEach((b, id) => {
+      if (MODULE_IDS.has(id)) return;
+      if (!seenIds.has(b.data.id)) {
+        seenIds.add(b.data.id);
+        uniqueBoxes.push(b);
+      }
+    });
+
+    for (let iter = 0; iter < 36; iter++) {
+      flowVisuals.forEach(fv => {
+        const lw = fv.label.length * 6.2 + 26;
+        const lh = 26;
+        uniqueBoxes.forEach(b => {
+          const padW = b.data.id === "us" ? b.w + 18 : b.w + 10;
+          const padH = b.data.id === "us" ? b.h + 18 : b.h + 10;
+          const ox = (lw + padW) / 2 - Math.abs(fv.lx - b.cx);
+          const oy = (lh + padH) / 2 - Math.abs(fv.ly - b.cy);
+          if (ox > 0 && oy > 0) {
+            if (oy < ox) {
+              fv.ly += (fv.ly >= b.cy ? 1 : -1) * (oy + 4);
+            } else {
+              fv.lx += (fv.lx >= b.cx ? 1 : -1) * (ox * 0.55);
+            }
+          }
+        });
+        fv.lx = Math.max(95, Math.min(ECO_W - 95, fv.lx));
+        fv.ly = Math.max(44, Math.min(ECO_H - 46, fv.ly));
+      });
+      for (let i = 0; i < flowVisuals.length; i++) {
+        for (let j = i + 1; j < flowVisuals.length; j++) {
+          const a = flowVisuals[i], b = flowVisuals[j];
+          const aw = a.label.length * 6.2 + 24;
+          const bw = b.label.length * 6.2 + 24;
+          const ox = (aw + bw) / 2 - Math.abs(b.lx - a.lx);
+          const oy = 25 - Math.abs(b.ly - a.ly);
+          if (ox > 0 && oy > 0) {
+            const pushY = (b.ly >= a.ly ? 1 : -1) * (oy * 0.55);
+            a.ly -= pushY;
+            b.ly += pushY;
+          }
+        }
+      }
+    }
+
+    const gPaths = ecoSvg.append("g");
+    const gLabels = ecoSvg.append("g");
+
+    flowVisuals.forEach(fv => {
+      let sw = 2;
+      let dash = null;
+      if (fv.type === "report") sw = 3;
+      else if (fv.type === "service") sw = 1.4;
+      else if (fv.type === "money") { sw = 2; dash = "6,4"; }
+      else if (fv.type === "device") { sw = 2; dash = "2,4"; }
+
+      const p = gPaths.append("path")
+        .attr("class", "eco-flow-path")
+        .attr("d", fv.d)
+        .attr("fill", "none")
+        .attr("stroke", color)
+        .attr("stroke-width", sw)
+        .attr("marker-end", `url(#eco-arrow-${candId})`)
+        .attr("opacity", 0);
+
+      if (dash) p.attr("stroke-dasharray", dash);
+      p.transition().duration(250).attr("opacity", 0.92);
+
+      if (fv.label) {
+        const lg = gLabels.append("g")
+          .attr("transform", `translate(${fv.lx.toFixed(1)}, ${fv.ly.toFixed(1)})`)
+          .attr("opacity", 0);
+
+        const estW = Math.round(fv.label.length * 5.9 + 14);
+        lg.append("rect")
+          .attr("x", -Math.round(estW / 2))
+          .attr("y", -9)
+          .attr("width", estW)
+          .attr("height", 18)
+          .attr("rx", 4)
+          .attr("fill", "#12161C")
+          .attr("stroke", "#2C333D")
+          .attr("stroke-width", 1)
+          .attr("opacity", 0.96);
+
+        lg.append("text")
+          .attr("text-anchor", "middle")
+          .attr("dominant-baseline", "central")
+          .attr("fill", "#E3E7EE")
+          .attr("font-size", "11px")
+          .attr("font-family", "Inter, sans-serif")
+          .text(fv.label);
+
+        lg.transition().duration(250).attr("opacity", 1);
+      }
+    });
+  }
+
+  function renderBMC(candId) {
+    const cid = candId || 1;
+    const cand = DATA.candidates.find(x => x.id === cid);
+    if (!cand || !cand.bmc) {
+      bmcPane.innerHTML = `<div id="bmc-empty">Select a candidate concept on the left</div>`;
+      return;
+    }
+    const b = cand.bmc;
+    const cells = [
+      { cls: "bmc-kp", title: "Key Partners", items: b.key_partners },
+      { cls: "bmc-ka", title: "Key Activities", items: b.key_activities },
+      { cls: "bmc-kr", title: "Key Resources", items: b.key_resources },
+      { cls: "bmc-vp", title: "Value Propositions", items: b.value_propositions },
+      { cls: "bmc-cr", title: "Customer Relationships", items: b.customer_relationships },
+      { cls: "bmc-ch", title: "Channels", items: b.channels },
+      { cls: "bmc-cs", title: "Customer Segments", items: b.customer_segments },
+      { cls: "bmc-cost", title: "Cost Structure", items: b.cost_structure },
+      { cls: "bmc-rev", title: "Revenue Streams", items: b.revenue_streams }
+    ];
+
+    const gridHtml = cells.map(cell => {
+      const liHtml = (cell.items || []).map(item => `<li>${item}</li>`).join("");
+      return `
+        <div class="bmc-cell ${cell.cls}">
+          <div class="bmc-cell-title">${cell.title}</div>
+          <ul class="bmc-cell-list">${liHtml}</ul>
+        </div>
+      `;
+    }).join("");
+
+    const color = COLORS.cand[cand.id];
+    bmcPane.innerHTML = `
+      <div id="bmc-header">
+        <strong style="color:${color}">Candidate ${cand.id}: ${cand.name}</strong> — ${cand.highlight || ""}
+      </div>
+      <div id="bmc-grid">${gridHtml}</div>
+    `;
+  }
+
+  function applyScene9Interaction() {
+    if (!s9CandId) s9CandId = 1;
+    candidateEls.forEach((el, id) => {
+      const isSel = s9CandId === id;
+      el.classList.toggle("selected", isSel);
+      el.classList.toggle("is-dimmed", !isSel);
+      gsap.to(el, { opacity: isSel ? 1 : 0.4, duration: 0.25 });
+    });
+
+    layoutEcosystemForCandidate(s9CandId);
+    renderEcosystemFlows(s9CandId);
+    renderBMC(s9CandId);
+  }
+
+  function handleScene9CandClick(candId) {
+    s9CandId = candId;
+    applyScene9Interaction();
+  }
+
+  document.querySelectorAll(".s9-tab").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const tab = btn.dataset.tab;
+      s9ActiveTab = tab;
+      document.querySelectorAll(".s9-tab").forEach(b => b.classList.toggle("active", b.dataset.tab === tab));
+      if (tab === "eco") {
+        ecoPane.style.display = "block";
+        bmcPane.style.display = "none";
+      } else {
+        ecoPane.style.display = "none";
+        bmcPane.style.display = "flex";
+        renderBMC(s9CandId);
+      }
     });
   });
 
@@ -2232,94 +3542,157 @@
     }
   };
 
-  // SCENE 7: Screening (eliminated concepts turn red one-by-one, then strikethrough & dim gray)
+  // SCENE 7: Screen (39 -> 33) and link concepts to the must-haves
+  // Flow (interactive click/advance steps):
+  // Step 0 (play): All 39 concepts Flip into right column (x=1040) + 9 must-haves fade in on left column (x=60).
+  // Step 1..3: Each click reveals one of the 3 elimination reason cards in the middle and strikes through its matching concepts.
+  // Step 4: Next click fades out the 3 reason cards + 6 eliminated concepts, and the remaining 33 concepts close the gaps (pauses before linking).
+  // Step 5: Next click connects Must-haves to concepts rapidly one by one (M1 -> M9) and enables interactive filtering.
+  const SCREENING_SUMMARY_TEXT = `${elimCount} screened out: needs a law change, mandatory manufacturer cooperation, or heavy assets`;
+
+  function runScene7Step(step) {
+    killActive();
+    scene7Step = step;
+    updateHUD(7);
+    const tl = gsap.timeline();
+    activeTl = tl;
+
+    if (step >= 1 && step <= 3) {
+      const idx = step - 1;
+      const er = ELIM_REASONS[idx];
+      const cardEl = elimReasonEls[idx];
+      // Ensure previous reasons are visible and struck through
+      for (let i = 0; i < idx; i++) {
+        elimReasonEls[i].style.opacity = 1;
+        ELIM_REASONS[i].codes.forEach(code => {
+          const cEl = conceptEls.get(code);
+          if (cEl) cEl.classList.add("is-red");
+        });
+      }
+      tl.fromTo(cardEl, { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }, 0);
+      tl.call(() => {
+        er.codes.forEach(code => {
+          const cEl = conceptEls.get(code);
+          if (cEl) cEl.classList.add("is-red");
+        });
+        let removedSoFar = 0;
+        for (let i = 0; i <= idx; i++) removedSoFar += ELIM_REASONS[i].codes.length;
+        hudNum.textContent = String(conceptCount - removedSoFar);
+        hudLbl.textContent = "CONCEPTS AFTER SCREENING";
+      }, null, 0.14);
+    } else if (step === 4) {
+      const elimConceptEls = DATA.concepts.filter(c => c.status === "eliminated").map(c => conceptEls.get(c.code));
+      const emptySubEls = DATA.subgroups.filter(s => !s7ListPos.subgroups.has(s.id)).map(s => subgroupEls.get(s.id));
+
+      tl.to([...elimReasonEls, ...elimConceptEls, ...emptySubEls], {
+        opacity: 0,
+        duration: 0.35,
+        onComplete: () => {
+          elimConceptEls.forEach(el => {
+            el.classList.remove("is-red");
+            el.classList.add("is-eliminated");
+            el.style.pointerEvents = "none";
+          });
+        }
+      }, 0);
+
+      tl.call(() => {
+        hudNum.textContent = String(keptCount);
+        hudLbl.textContent = "CONCEPTS AFTER SCREENING";
+        screeningSummary.textContent = SCREENING_SUMMARY_TEXT;
+        gsap.to(screeningSummary, { opacity: 1, duration: 0.35 });
+
+        const keptMoving = [
+          ...DATA.subgroups.filter(s => s7ListPos.subgroups.has(s.id)).map(s => subgroupEls.get(s.id)),
+          ...keptConcepts.map(c => conceptEls.get(c.code))
+        ];
+        const state = Flip.getState(keptMoving);
+
+        DATA.subgroups.forEach(s => {
+          const pos = s7ListPos.subgroups.get(s.id);
+          if (!pos) return;
+          const el = subgroupEls.get(s.id);
+          el.style.left = `${pos.x}px`;
+          el.style.top = `${pos.y}px`;
+        });
+
+        keptConcepts.forEach(c => {
+          const el = conceptEls.get(c.code);
+          const pos = s7ListPos.concepts.get(c.code);
+          el.style.height = "";
+          el.style.fontSize = "";
+          el.style.left = `${pos.x}px`;
+          el.style.top = `${pos.y}px`;
+          el.style.pointerEvents = "auto";
+          el.style.cursor = "pointer";
+        });
+
+        Flip.from(state, { duration: 0.55, ease: "power2.inOut" });
+      }, null, 0.32);
+    } else if (step === 5) {
+      // Ensure 33 concepts are in their compacted s7ListPos before drawing links
+      elimReasonEls.forEach(el => { el.style.opacity = 0; });
+      DATA.subgroups.forEach(s => {
+        const el = subgroupEls.get(s.id);
+        const pos = s7ListPos.subgroups.get(s.id);
+        if (!pos) {
+          el.style.opacity = 0;
+          return;
+        }
+        el.style.left = `${pos.x}px`;
+        el.style.top = `${pos.y}px`;
+        el.style.opacity = 1;
+      });
+      DATA.concepts.forEach(c => {
+        const el = conceptEls.get(c.code);
+        el.classList.remove("is-red");
+        el.style.height = "";
+        el.style.fontSize = "";
+        if (c.status === "eliminated") {
+          el.classList.add("is-eliminated");
+          el.style.opacity = 0;
+          el.style.pointerEvents = "none";
+          return;
+        }
+        const pos = s7ListPos.concepts.get(c.code);
+        el.style.left = `${pos.x}px`;
+        el.style.top = `${pos.y}px`;
+        el.style.opacity = 1;
+        el.style.pointerEvents = "auto";
+        el.style.cursor = "pointer";
+      });
+      screeningSummary.textContent = SCREENING_SUMMARY_TEXT;
+      screeningSummary.style.opacity = 1;
+      hudNum.textContent = String(keptCount);
+      hudLbl.textContent = "CONCEPTS AFTER SCREENING";
+      applyScene7Interaction(true);
+    }
+  }
+
   scenes[7] = {
     setEnd() {
       scenes[6].setEnd();
+      scene7Step = 5;
+      s7Selection = null;
       updateHUD(7);
-      applyScreeningStyles();
-      svg.selectAll("path.tree-link")
-        .filter(d => d.eliminated)
-        .attr("stroke", COLORS.dimLine)
-        .attr("opacity", 0.45);
-      hudNum.textContent = String(keptCount);
-      hudLbl.textContent = "CONCEPTS AFTER SCREENING";
-      screeningSummary.innerHTML = `<span class="hl-red">${elimCount} screened out</span>`;
-      screeningSummary.style.opacity = 1;
-    },
-    play() {
-      scenes[6].setEnd();
-      updateHUD(7);
-      const tl = gsap.timeline();
-      activeTl = tl;
-
-      const elimConcepts = DATA.concepts.filter(c => c.status === "eliminated");
-
-      elimConcepts.forEach((c, idx) => {
-        const el = conceptEls.get(c.code);
-        tl.call(() => {
-          el.classList.add("is-red");
-          svg.selectAll("path.tree-link")
-            .filter(d => d.targetCode === c.code)
-            .transition().duration(250)
-            .attr("stroke", "#A84448")
-            .attr("opacity", 0.9);
-        }, null, 0.3 + idx * 0.35);
-      });
-
-      const afterRed = 0.3 + elimConcepts.length * 0.35 + 0.55;
-
-      tl.call(() => {
-        elimConcepts.forEach(c => {
-          const el = conceptEls.get(c.code);
-          el.classList.remove("is-red");
-          el.classList.add("is-eliminated");
-        });
-        svg.selectAll("path.tree-link")
-          .filter(d => d.eliminated)
-          .transition().duration(600)
-          .attr("stroke", COLORS.dimLine)
-          .attr("opacity", 0.45);
-      }, null, afterRed);
-
-      const cntObj = { val: conceptCount };
-      tl.to(cntObj, {
-        val: keptCount,
-        duration: 0.7,
-        snap: { val: 1 },
-        onUpdate: () => { hudNum.textContent = cntObj.val; }
-      }, afterRed + 0.2);
-
-      tl.call(() => {
-        hudLbl.textContent = "CONCEPTS AFTER SCREENING";
-        screeningSummary.innerHTML = `<span class="hl-red">${elimCount} screened out</span>`;
-      }, null, afterRed + 0.5);
-
-      tl.to(screeningSummary, { opacity: 1, duration: 0.6 }, afterRed + 0.6);
-    }
-  };
-
-  // SCENE 8: Forming candidate concepts (then dim not_core)
-  scenes[8] = {
-    setEnd() {
-      scenes[7].setEnd();
-      updateHUD(8);
       clearSVG();
 
       treeRootEl.style.opacity = 0;
+      screeningSummary.textContent = SCREENING_SUMMARY_TEXT;
+      screeningSummary.style.opacity = 1;
       groupEls.forEach(el => { el.style.opacity = 0; });
+      elimReasonEls.forEach(el => { el.style.opacity = 0; });
 
       DATA.subgroups.forEach(s => {
         const el = subgroupEls.get(s.id);
-        const pos = listPos.subgroups.get(s.id);
+        const pos = s7ListPos.subgroups.get(s.id);
         if (!pos) {
           el.style.opacity = 0;
           return;
         }
         el.classList.add("list-header");
-        const hasCore = DATA.concepts.some(c => c.subgroup === s.id && c.status === "core");
-        el.classList.toggle("is-dim-header", !hasCore);
-        el.style.maxWidth = "500px";
+        el.classList.remove("is-dim-header");
+        el.style.maxWidth = `${pos.w}px`;
         el.style.left = `${pos.x}px`;
         el.style.top = `${pos.y}px`;
         el.style.opacity = 1;
@@ -2327,122 +3700,387 @@
 
       DATA.concepts.forEach(c => {
         const el = conceptEls.get(c.code);
+        el.classList.remove("is-red", "is-dimmed", "is-not-core", "code-ref-hover");
+        el.style.height = "";
+        el.style.fontSize = "";
+        if (c.status === "eliminated") {
+          el.classList.add("is-eliminated");
+          el.style.opacity = 0;
+          el.style.pointerEvents = "none";
+          return;
+        }
+        const pos = s7ListPos.concepts.get(c.code);
+        el.classList.remove("tree-leaf");
+        el.classList.add("list-item");
+        el.style.width = `${pos.w}px`;
+        el.style.left = `${pos.x}px`;
+        el.style.top = `${pos.y}px`;
+        el.style.opacity = 1;
+        el.style.pointerEvents = "auto";
+        el.style.cursor = "pointer";
+      });
+
+      mustCriteria.forEach(cr => {
+        const el = criterionEls.get(cr.id);
+        const pos = s7MustPos.get(cr.id);
+        el.classList.remove("compact", "selected", "is-dimmed");
+        el.classList.add("interactive");
+        el.style.left = `${pos.x}px`;
+        el.style.top = `${pos.y}px`;
+        el.style.width = `${pos.w}px`;
+        el.style.height = `${pos.h}px`;
+        el.style.opacity = 1;
+      });
+
+      hudNum.textContent = String(keptCount);
+      hudLbl.textContent = "CONCEPTS AFTER SCREENING";
+      applyScene7Interaction(false);
+    },
+    play() {
+      scenes[6].setEnd();
+      scene7Step = 0;
+      s7Selection = null;
+      updateHUD(7);
+      const tl = gsap.timeline();
+      activeTl = tl;
+
+      hudNum.textContent = String(conceptCount);
+      hudLbl.textContent = "CONCEPTS";
+      screeningSummary.style.opacity = 0;
+      elimReasonEls.forEach(el => { el.style.opacity = 0; });
+
+      // Step 0: Fade out mind map links & root/group labels; Flip all 39 concepts to right column & fade in 9 must-haves on left
+      tl.to([treeRootEl, ...Array.from(groupEls.values())], { opacity: 0, duration: 0.3 }, 0);
+      tl.call(() => {
+        svg.selectAll("path.tree-link")
+          .transition().duration(280)
+          .attr("opacity", 0)
+          .remove();
+      }, null, 0);
+
+      tl.call(() => {
+        const moving = [
+          ...DATA.subgroups.map(s => subgroupEls.get(s.id)),
+          ...DATA.concepts.map(c => conceptEls.get(c.code))
+        ];
+        const state = Flip.getState(moving);
+
+        DATA.subgroups.forEach(s => {
+          const pos = s7AllListPos.subgroups.get(s.id);
+          if (!pos) return;
+          const el = subgroupEls.get(s.id);
+          el.classList.add("list-header");
+          el.style.maxWidth = `${pos.w}px`;
+          el.style.left = `${pos.x}px`;
+          el.style.top = `${pos.y}px`;
+        });
+
+        DATA.concepts.forEach(c => {
+          const el = conceptEls.get(c.code);
+          const pos = s7AllListPos.concepts.get(c.code);
+          el.classList.remove("tree-leaf", "is-red", "is-eliminated");
+          el.classList.add("list-item");
+          el.style.width = `${pos.w}px`;
+          el.style.height = "14.5px";
+          el.style.fontSize = "12px";
+          el.style.left = `${pos.x}px`;
+          el.style.top = `${pos.y}px`;
+        });
+
+        Flip.from(state, { duration: 0.85, ease: "power2.inOut" });
+      }, null, 0.1);
+
+      tl.call(() => {
+        mustCriteria.forEach(cr => {
+          const el = criterionEls.get(cr.id);
+          const pos = s7MustPos.get(cr.id);
+          el.classList.remove("compact", "selected", "is-dimmed");
+          el.classList.add("interactive");
+          el.style.left = `${pos.x}px`;
+          el.style.top = `${pos.y}px`;
+          el.style.width = `${pos.w}px`;
+          el.style.height = `${pos.h}px`;
+        });
+      }, null, 0.35);
+
+      tl.to(mustCriteria.map(cr => criterionEls.get(cr.id)), {
+        opacity: 1,
+        duration: 0.35,
+        stagger: 0.04,
+        ease: "power2.out"
+      }, 0.4);
+    }
+  };
+
+  // SCENE 8: Combine concepts into 3 candidate concepts (3 columns: Criteria | 33 Concepts | 3 Candidates)
+  // Default state has NO lines; lines appear only when clicking a candidate (or concept/criterion).
+  scenes[8] = {
+    setEnd() {
+      scenes[7].setEnd();
+      s8Selection = null;
+      updateHUD(8);
+      clearSVG();
+
+      mustSectionHdrEl.style.left = `${s8HeaderPos.must.x}px`;
+      mustSectionHdrEl.style.top = `${s8HeaderPos.must.y}px`;
+      mustSectionHdrEl.style.opacity = 1;
+
+      niceSectionHdrEl.style.left = `${s8HeaderPos.nice.x}px`;
+      niceSectionHdrEl.style.top = `${s8HeaderPos.nice.y}px`;
+      niceSectionHdrEl.style.opacity = 1;
+
+      criteriaList.forEach(cr => {
+        const el = criterionEls.get(cr.id);
+        const pos = s8CritPos.get(cr.id);
+        el.classList.add("compact", "interactive");
+        el.classList.remove("selected", "is-dimmed");
+        el.style.left = `${pos.x}px`;
+        el.style.top = `${pos.y}px`;
+        el.style.width = `${pos.w}px`;
+        el.style.height = `${pos.h}px`;
+        el.style.opacity = 1;
+      });
+      updateMustStatusBadges(null);
+
+      DATA.subgroups.forEach(s => {
+        const el = subgroupEls.get(s.id);
+        const pos = s8ListPos.subgroups.get(s.id);
+        if (!pos) {
+          el.style.opacity = 0;
+          return;
+        }
+        el.classList.add("list-header");
+        el.classList.remove("is-dim-header");
+        el.style.maxWidth = `${pos.w}px`;
+        el.style.left = `${pos.x}px`;
+        el.style.top = `${pos.y}px`;
+        el.style.opacity = 1;
+      });
+
+      DATA.concepts.forEach(c => {
+        const el = conceptEls.get(c.code);
+        el.classList.remove("is-dimmed", "is-not-core", "code-ref-hover");
         if (c.status === "eliminated") {
           el.style.opacity = 0;
           el.style.pointerEvents = "none";
           return;
         }
-        const pos = listPos.concepts.get(c.code);
+        const pos = s8ListPos.concepts.get(c.code);
         el.classList.remove("tree-leaf");
         el.classList.add("list-item");
+        el.style.width = `${pos.w}px`;
         el.style.left = `${pos.x}px`;
         el.style.top = `${pos.y}px`;
-        if (c.status === "not_core") {
-          el.classList.add("is-not-core");
-        }
+        el.style.opacity = 1;
+        el.style.pointerEvents = "auto";
+        el.style.cursor = "pointer";
       });
 
-      candidateEls.forEach(el => { el.style.opacity = 1; });
-      drawCandidateLinks(false);
-      renderDefaultDetail();
-      detailPanel.style.opacity = 1;
+      candidateEls.forEach((el, id) => {
+        const p8 = s8CandPos.get(id);
+        el.classList.remove("selected", "hover-highlight", "is-dimmed", "s9-left");
+        el.classList.add("interactive", "show-highlight");
+        el.style.left = `${p8.x}px`;
+        el.style.top = `${p8.y}px`;
+        el.style.width = `${p8.w}px`;
+        el.style.height = `${p8.h}px`;
+        el.style.opacity = 1;
+      });
+
       hudNum.textContent = String(candCount);
       hudLbl.textContent = "CANDIDATE CONCEPTS";
-      screeningSummary.innerHTML = `<span class="hl-blocks">built from ${coreCount} core concepts</span>`;
-      screeningSummary.style.opacity = 1;
+      screeningSummary.style.opacity = 0;
     },
     play() {
       scenes[7].setEnd();
+      s8Selection = null;
       updateHUD(8);
       const tl = gsap.timeline();
       activeTl = tl;
 
-      tl.to([treeRootEl, ...Array.from(groupEls.values())], { opacity: 0, duration: 0.3 });
-      tl.call(() => { clearSVG(); }, null, 0.25);
+      // Fade out Scene 07 lines immediately on entering Scene 08
+      tl.call(() => {
+        svg.selectAll("path")
+          .transition().duration(250)
+          .attr("opacity", 0)
+          .remove();
+        gsap.to(screeningSummary, { opacity: 0, duration: 0.25 });
+      }, null, 0);
 
+      // 1. Flip must cards to upper-left & Flip concept list from right to middle
       tl.call(() => {
         const moving = [
-          ...DATA.subgroups.filter(s => listPos.subgroups.has(s.id)).map(s => subgroupEls.get(s.id)),
-          ...DATA.concepts.filter(c => c.status !== "eliminated").map(c => conceptEls.get(c.code))
+          ...mustCriteria.map(cr => criterionEls.get(cr.id)),
+          ...DATA.subgroups.filter(s => s8ListPos.subgroups.has(s.id)).map(s => subgroupEls.get(s.id)),
+          ...keptConcepts.map(c => conceptEls.get(c.code))
         ];
-        const hidden = [
-          ...DATA.subgroups.filter(s => !listPos.subgroups.has(s.id)).map(s => subgroupEls.get(s.id)),
-          ...DATA.concepts.filter(c => c.status === "eliminated").map(c => conceptEls.get(c.code))
-        ];
-        gsap.to(hidden, { opacity: 0, duration: 0.3 });
-        hidden.forEach(el => { el.style.pointerEvents = "none"; });
-
         const state = Flip.getState(moving);
 
+        mustCriteria.forEach(cr => {
+          const el = criterionEls.get(cr.id);
+          const pos = s8CritPos.get(cr.id);
+          el.classList.add("compact", "interactive");
+          el.style.left = `${pos.x}px`;
+          el.style.top = `${pos.y}px`;
+          el.style.width = `${pos.w}px`;
+          el.style.height = `${pos.h}px`;
+        });
+
         DATA.subgroups.forEach(s => {
-          const pos = listPos.subgroups.get(s.id);
+          const pos = s8ListPos.subgroups.get(s.id);
           if (!pos) return;
           const el = subgroupEls.get(s.id);
-          el.classList.add("list-header");
-          el.style.maxWidth = "500px";
+          el.style.maxWidth = `${pos.w}px`;
           el.style.left = `${pos.x}px`;
           el.style.top = `${pos.y}px`;
         });
-        DATA.concepts.forEach(c => {
-          if (c.status === "eliminated") return;
+
+        keptConcepts.forEach(c => {
           const el = conceptEls.get(c.code);
-          const pos = listPos.concepts.get(c.code);
-          el.classList.remove("tree-leaf");
-          el.classList.add("list-item");
+          const pos = s8ListPos.concepts.get(c.code);
+          el.style.width = `${pos.w}px`;
           el.style.left = `${pos.x}px`;
           el.style.top = `${pos.y}px`;
         });
 
-        Flip.from(state, { duration: 0.9, ease: "power2.inOut" });
-      }, null, 0.35);
+        Flip.from(state, { duration: 0.8, ease: "power2.inOut" });
+      }, null, 0.1);
 
+      // Fade in section headers & nice-to-have cards
       tl.call(() => {
-        drawCandidateLinks(true);
+        mustSectionHdrEl.style.left = `${s8HeaderPos.must.x}px`;
+        mustSectionHdrEl.style.top = `${s8HeaderPos.must.y}px`;
+        niceSectionHdrEl.style.left = `${s8HeaderPos.nice.x}px`;
+        niceSectionHdrEl.style.top = `${s8HeaderPos.nice.y}px`;
+        niceCriteria.forEach(cr => {
+          const el = criterionEls.get(cr.id);
+          const pos = s8CritPos.get(cr.id);
+          el.classList.add("compact", "interactive");
+          el.style.left = `${pos.x}px`;
+          el.style.top = `${pos.y}px`;
+          el.style.width = `${pos.w}px`;
+          el.style.height = `${pos.h}px`;
+        });
+      }, null, 0.55);
+
+      tl.to([mustSectionHdrEl, niceSectionHdrEl], { opacity: 1, duration: 0.35 }, 0.6);
+      tl.to(niceCriteria.map(cr => criterionEls.get(cr.id)), {
+        opacity: 1,
+        duration: 0.35,
+        stagger: 0.035,
+        ease: "power2.out"
+      }, 0.65);
+
+      // 3. Fade in 3 full-height candidate cards on the right (no lines drawn until user clicks a candidate)
+      tl.call(() => {
         sortedCandidates.forEach((cand, idx) => {
           const cardEl = candidateEls.get(cand.id);
-          gsap.to(cardEl, { opacity: 1, duration: 0.4, delay: idx * 0.35 });
-          svg.selectAll("path.cand-link")
-            .filter(d => d.candId === cand.id)
-            .transition()
-            .delay(idx * 350)
-            .duration(500)
-            .attr("stroke-dashoffset", 0);
-        });
-      }, null, 1.35);
-
-      const afterCards = 1.35 + sortedCandidates.length * 0.35 + 0.25;
-
-      // After all cards appear, dim the not_core concepts (no strikethrough) & update counter
-      tl.call(() => {
-        DATA.concepts.filter(c => c.status === "not_core").forEach(c => {
-          conceptEls.get(c.code).classList.add("is-not-core");
-        });
-        DATA.subgroups.forEach(s => {
-          const hasCore = DATA.concepts.some(c => c.subgroup === s.id && c.status === "core");
-          subgroupEls.get(s.id).classList.toggle("is-dim-header", !hasCore);
+          const p8 = s8CandPos.get(cand.id);
+          cardEl.classList.remove("s9-left");
+          cardEl.classList.add("interactive", "show-highlight");
+          cardEl.style.left = `${p8.x}px`;
+          cardEl.style.top = `${p8.y}px`;
+          cardEl.style.width = `${p8.w}px`;
+          cardEl.style.height = `${p8.h}px`;
+          gsap.to(cardEl, { opacity: 1, duration: 0.4, delay: idx * 0.18 });
         });
         hudNum.textContent = String(candCount);
         hudLbl.textContent = "CANDIDATE CONCEPTS";
-        screeningSummary.innerHTML = `<span class="hl-blocks">built from ${coreCount} core concepts</span>`;
-        gsap.to(screeningSummary, { opacity: 1, duration: 0.4 });
-      }, null, afterCards);
-
-      tl.call(() => { renderDefaultDetail(); }, null, 1.4);
-      tl.to(detailPanel, { opacity: 1, duration: 0.5 }, afterCards + 0.1);
+      }, null, 0.95);
     }
   };
 
-  // SCENE 9: Interactive Exploration
+  // SCENE 9: 3 candidate concepts: ecosystem & business model
   scenes[9] = {
     setEnd() {
       scenes[8].setEnd();
+      s9CandId = 1;
       updateHUD(9);
-      candidateEls.forEach(el => el.classList.add("interactive"));
-      detailPanel.classList.add("interactive");
-      selectCandidate(null);
+      clearSVG();
+
+      mustSectionHdrEl.style.opacity = 0;
+      niceSectionHdrEl.style.opacity = 0;
+      criterionEls.forEach(el => {
+        el.style.opacity = 0;
+        el.classList.remove("interactive");
+      });
+      subgroupEls.forEach(el => { el.style.opacity = 0; });
+      conceptEls.forEach(el => {
+        el.style.opacity = 0;
+        el.style.pointerEvents = "none";
+      });
+
+      candidateEls.forEach((el, id) => {
+        const p9 = s9CandPos.get(id);
+        el.classList.add("interactive", "show-highlight", "s9-left");
+        el.classList.remove("selected", "hover-highlight", "is-dimmed");
+        el.style.left = `${p9.x}px`;
+        el.style.top = `${p9.y}px`;
+        el.style.width = `${p9.w}px`;
+        el.style.height = `${p9.h}px`;
+        el.style.opacity = 1;
+      });
+
+      s9ActiveTab = "eco";
+      document.querySelectorAll(".s9-tab").forEach(b => b.classList.toggle("active", b.dataset.tab === "eco"));
+      ecoPane.style.display = "block";
+      bmcPane.style.display = "none";
+
+      scene9Right.style.opacity = 1;
+      scene9Right.classList.add("interactive");
+      applyScene9Interaction();
     },
     play() {
-      scenes[9].setEnd();
+      scenes[8].setEnd();
+      s9CandId = 1;
+      updateHUD(9);
+      clearSVG();
+      const tl = gsap.timeline();
+      activeTl = tl;
+
+      // Fade out criteria & concept list
+      const fadingOut = [
+        mustSectionHdrEl,
+        niceSectionHdrEl,
+        ...Array.from(criterionEls.values()),
+        ...Array.from(subgroupEls.values()),
+        ...keptConcepts.map(c => conceptEls.get(c.code))
+      ];
+      tl.to(fadingOut, {
+        opacity: 0,
+        duration: 0.35,
+        onComplete: () => {
+          criterionEls.forEach(el => el.classList.remove("interactive"));
+          keptConcepts.forEach(c => { conceptEls.get(c.code).style.pointerEvents = "none"; });
+        }
+      }, 0);
+
+      // Flip candidate cards to left column
+      tl.call(() => {
+        const cards = Array.from(candidateEls.values());
+        const state = Flip.getState(cards);
+        candidateEls.forEach((el, id) => {
+          const p9 = s9CandPos.get(id);
+          el.classList.add("interactive", "show-highlight", "s9-left");
+          el.classList.remove("selected", "hover-highlight", "is-dimmed");
+          el.style.left = `${p9.x}px`;
+          el.style.top = `${p9.y}px`;
+          el.style.width = `${p9.w}px`;
+          el.style.height = `${p9.h}px`;
+        });
+        Flip.from(state, { duration: 0.75, ease: "power2.inOut" });
+      }, null, 0.2);
+
+      tl.call(() => {
+        s9ActiveTab = "eco";
+        document.querySelectorAll(".s9-tab").forEach(b => b.classList.toggle("active", b.dataset.tab === "eco"));
+        ecoPane.style.display = "block";
+        bmcPane.style.display = "none";
+        scene9Right.classList.add("interactive");
+        applyScene9Interaction();
+      }, null, 0.55);
+
+      tl.to(scene9Right, { opacity: 1, duration: 0.45 }, 0.6);
     }
   };
 
@@ -2463,6 +4101,10 @@
         activeTl.progress(1);
         return;
       }
+      if (currentScene === 7 && scene7Step < 5) {
+        activeTl.progress(1);
+        return;
+      }
       scenes[currentScene].setEnd();
       return;
     }
@@ -2479,6 +4121,11 @@
     if (currentScene === 6 && scene4Step < 1) {
       if (reducedMotion) scenes[6].setEnd();
       else runScene4MindMap();
+      return;
+    }
+    if (currentScene === 7 && scene7Step < 5) {
+      if (reducedMotion) scenes[7].setEnd();
+      else runScene7Step(scene7Step + 1);
       return;
     }
     if (currentScene < LAST_SCENE) {
@@ -2506,11 +4153,36 @@
   }
 
   stage.addEventListener("click", (e) => {
-    if (currentScene < LAST_SCENE) {
+    if (e.target.closest("#controls")) return;
+    if (currentScene < 7) {
       advance();
-    } else {
-      if (!e.target.closest(".candidate-card") && !e.target.closest("#detail-panel")) {
-        selectCandidate(null);
+    } else if (currentScene === 7) {
+      if (scene7Step < 5) {
+        advance();
+        return;
+      }
+      if (activeTl && activeTl.isActive()) {
+        scenes[7].setEnd();
+        return;
+      }
+      // Blank click resets selection (does not advance)
+      if (!e.target.closest(".concept-node") && !e.target.closest(".criterion-card")) {
+        if (s7Selection) {
+          s7Selection = null;
+          applyScene7Interaction(false);
+        }
+      }
+    } else if (currentScene === 8) {
+      if (activeTl && activeTl.isActive()) {
+        scenes[8].setEnd();
+        return;
+      }
+      // Blank click resets selection (does not advance)
+      if (!e.target.closest(".candidate-card") && !e.target.closest(".concept-node") && !e.target.closest(".criterion-card")) {
+        if (s8Selection) {
+          s8Selection = null;
+          applyScene8Interaction();
+        }
       }
     }
   });

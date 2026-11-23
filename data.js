@@ -13,8 +13,8 @@ window.STAGE3_DATA = {
       "groups": 3,
       "subgroups": 10,
       "eliminated": 6,
-      "core": 20,
-      "not_core": 13,
+      "core": 23,
+      "not_core": 10,
       "candidates": 3
     },
     "status_values": {
@@ -197,7 +197,7 @@ window.STAGE3_DATA = {
         "N8"
       ],
       "eliminated": null,
-      "status": "core"
+      "status": "not_core"
     },
     {
       "code": "1B-1",
@@ -266,7 +266,7 @@ window.STAGE3_DATA = {
         "T3"
       ],
       "eliminated": null,
-      "status": "not_core"
+      "status": "core"
     },
     {
       "code": "1C-2",
@@ -378,7 +378,7 @@ window.STAGE3_DATA = {
         "M3"
       ],
       "eliminated": null,
-      "status": "core"
+      "status": "not_core"
     },
     {
       "code": "2A-2",
@@ -494,7 +494,7 @@ window.STAGE3_DATA = {
         "N2"
       ],
       "eliminated": null,
-      "status": "not_core"
+      "status": "core"
     },
     {
       "code": "2B-2",
@@ -515,7 +515,7 @@ window.STAGE3_DATA = {
         "N8"
       ],
       "eliminated": null,
-      "status": "not_core"
+      "status": "core"
     },
     {
       "code": "2B-3",
@@ -535,7 +535,7 @@ window.STAGE3_DATA = {
         "M5"
       ],
       "eliminated": null,
-      "status": "not_core"
+      "status": "core"
     },
     {
       "code": "2B-4",
@@ -553,7 +553,7 @@ window.STAGE3_DATA = {
         "M5"
       ],
       "eliminated": null,
-      "status": "not_core"
+      "status": "core"
     },
     {
       "code": "2B-5",
@@ -578,7 +578,7 @@ window.STAGE3_DATA = {
         "N8"
       ],
       "eliminated": null,
-      "status": "not_core"
+      "status": "core"
     },
     {
       "code": "2B-6",
@@ -598,7 +598,7 @@ window.STAGE3_DATA = {
         "N2"
       ],
       "eliminated": null,
-      "status": "not_core"
+      "status": "core"
     },
     {
       "code": "2B-7",
@@ -680,7 +680,7 @@ window.STAGE3_DATA = {
         "N7"
       ],
       "eliminated": null,
-      "status": "core"
+      "status": "not_core"
     },
     {
       "code": "2C-4",
@@ -699,7 +699,7 @@ window.STAGE3_DATA = {
         "T1"
       ],
       "eliminated": null,
-      "status": "core"
+      "status": "not_core"
     },
     {
       "code": "3A-1",
@@ -739,7 +739,7 @@ window.STAGE3_DATA = {
         "M1"
       ],
       "eliminated": null,
-      "status": "not_core"
+      "status": "core"
     },
     {
       "code": "3A-3",
@@ -760,7 +760,7 @@ window.STAGE3_DATA = {
         "M6"
       ],
       "eliminated": null,
-      "status": "core"
+      "status": "not_core"
     },
     {
       "code": "3A-4",
@@ -820,7 +820,7 @@ window.STAGE3_DATA = {
         "M6"
       ],
       "eliminated": null,
-      "status": "core"
+      "status": "not_core"
     },
     {
       "code": "3B-3",
@@ -880,7 +880,7 @@ window.STAGE3_DATA = {
         "M1"
       ],
       "eliminated": null,
-      "status": "not_core"
+      "status": "core"
     },
     {
       "code": "3C-1",
@@ -968,47 +968,338 @@ window.STAGE3_DATA = {
         "3B-3"
       ],
       "related": [],
-      "collection": "Employees in a bike-leasing scheme get a measurement adapter that works with the original charger (1A-1, 1B-2), with testing organised through the employer (1C-3). Every battery is measured with the same method (SoH = measured capacity ÷ rated capacity), which makes reports comparable across brands. Dealer diagnostics from routine maintenance (1D-1) serve as a cross-check.",
-      "sharing_funding": "Lessees receive the report before the lease-end buyout decision (2A-5) and can carry it to the next owner through owner-controlled sharing and transfer (2A-3); buyers check a report's authenticity online (2C-2). An internal game with a battery pet keeps employees measuring and builds a health history (3A-1, 3A-4). Leasing companies and employers fund the testing (3B-3). Expansion path: leasing companies → other closed fleets (logistics, sharing) → delivery couriers → the private market."
+      "bmc": {
+        "key_partners": [
+          "Hardware manufacturers (socket-side meter; we specify the model and calibrate each unit)",
+          "Logistics & sharing fleets (data partners: paired data to build the reference database; free fleet battery monitoring in return)",
+          "Bike-leasing companies (channel: one contract reaches an employer's staff; registers frame and battery serials; approves accessories)",
+          "Bike dealers (OEM diagnostics during maintenance, as a cross-check)"
+        ],
+        "key_activities": [
+          "Building the reference database with fleet partners (charging curves, charger efficiency per model)",
+          "Deploying socket-side meters to lessees",
+          "Same-method capacity estimation: start charge level inferred from the socket power curve against the database; lessee calibration at first charges and on occasional prompts",
+          "Calibrating every meter",
+          "Report generation and online verification",
+          "Running the internal game (community, battery pet) — keeps lessees charging through the meter",
+          "Monitoring EU Battery Regulation requirements"
+        ],
+        "value_propositions": [
+          "Leasing companies: a differentiator when negotiating with employers",
+          "Lessees: battery condition before the end-of-lease buyout decision — the buyout price is fixed at signing (~15–20%), so a well-kept battery makes the buyout a better deal",
+          "Next owner: cross-brand comparable, verifiable report that moves with the bike",
+          "Covers older batteries that OEM tools cannot read (measures at the socket, never touches the BMS)"
+        ],
+        "customer_relationships": [
+          "Leasing companies: dedicated account management",
+          "Lessees: in-company community and gamification, battery pet",
+          "Occasional quick-calibration prompts"
+        ],
+        "customer_segments": [
+          "Users and payers: lessees (meter inside the lease)",
+          "Channel (non-paying): leasing companies",
+          "Data partners (non-paying): logistics & sharing fleets",
+          "Expansion: bought-out bikes carry their report into the private market → private owners join"
+        ],
+        "key_resources": [
+          "Same-method measurement (SoH = estimated capacity ÷ rated capacity)",
+          "Reference database (charging curves, charger-efficiency table); calibrated meters",
+          "Battery health histories",
+          "Paired data: socket-side meter vs OEM diagnostics",
+          "App and reporting platform"
+        ],
+        "channels": [
+          "Leasing companies: meter offered as an approved lease accessory",
+          "In-company promotion",
+          "Mobile app",
+          "Later: second-hand platforms (report transferred at buyout)"
+        ],
+        "cost_structure": [
+          "Meters: purchase and per-unit calibration (incl. meters and free monitoring for fleet partners)",
+          "Building and maintaining the reference database",
+          "Software development and operation",
+          "Sales to leasing companies",
+          "Data protection (GDPR) compliance",
+          "CE / electrical-safety conformity of the meter (with the hardware partner)"
+        ],
+        "revenue_streams": [
+          "Monthly accessory fee inside the lease, paid by the lessee through gross salary",
+          "Later: report transfer fee at buyout / private resale"
+        ]
+      },
+      "highlight": "starts inside companies (leasing schemes) and measures every battery with the same method via a calibrated meter between the wall socket and the original charger",
+      "must_status": {
+        "M1": {
+          "status": "met",
+          "note": "Meter comes with the lease; the report moves with the bike"
+        },
+        "M2": {
+          "status": "met",
+          "note": "Same-method SoH"
+        },
+        "M3": {
+          "status": "met",
+          "note": "Lease-registered serial during the lease"
+        },
+        "M4": {
+          "status": "met",
+          "note": "Same-method measurement"
+        },
+        "M5": {
+          "status": "met",
+          "note": "Presentation detail"
+        },
+        "M6": {
+          "status": "met",
+          "note": "By design: report transferred after buyout"
+        },
+        "M7": {
+          "status": "met",
+          "note": "Measures at the socket, never reads the BMS"
+        },
+        "M8": {
+          "status": "no_conflict",
+          "note": "No conflict"
+        },
+        "M9": {
+          "status": "met",
+          "note": "Data-ownership rules"
+        }
+      }
     },
     {
       "id": 2,
-      "name": "Marketplace Trust Plug-in & Buyer Bounty",
-      "name_zh": "二手平台信任外掛＋買家懸賞",
-      "target": "Targets private sales on 2dehands.be & point of sale",
+      "name": "Give-to-Get Battery Reports",
+      "name_zh": "給報告換看報告",
+      "target": "Private second-hand market, entered through group testing days",
       "members": [
+        "3A-2",
+        "1A-1",
+        "1C-1",
+        "1C-3",
         "2A-4",
-        "2C-3",
-        "3A-3",
-        "1A-4",
+        "2C-2",
+        "3B-5",
         "3B-4",
-        "3B-2"
+        "3A-1"
       ],
-      "related": [
-        "2B-6",
-        "2B-2"
-      ],
-      "collection": "Sellers complete guided home diagnostic steps (1A-4) or upload existing dealer printouts translated by the AI interpreter (2B-6).",
-      "sharing_funding": "Embedded directly in online listings (2A-4) with a Verified Badge (2C-3) and cross-bike comparison (2B-2). For unlisted batteries, buyers click a 1-click request or place a micro-bounty (3A-3) to prompt seller disclosure; fee deferred until sale (3B-2) or subsidized by marketplace (3B-4)."
+      "related": [],
+      "bmc": {
+        "key_partners": [
+          "Hardware manufacturers (socket-side meter)",
+          "Partner platform (e.g. 2dehands, Decathlon private-sales section) or own platform",
+          "Test points (bike dealers) — one-off tests, final checks, serial reading with OEM tools",
+          "Groups: universities, cycling clubs, companies, neighbourhoods"
+        ],
+        "key_activities": [
+          "Running group testing days",
+          "Managing credits and meter refunds (a charge counts toward the refund only if the charge level is entered)",
+          "Final check before sale (binds report to battery — serial read with OEM tool, or compared with the registration photo)",
+          "Platform development",
+          "Monitoring EU Battery Regulation requirements"
+        ],
+        "value_propositions": [
+          "Buyers: verifiable, comparable battery reports — pay only for the reports they view",
+          "Sellers & owners: subsidised testing, meter refund, viewing credits (capped)",
+          "Platforms: more trust and more completed sales"
+        ],
+        "customer_relationships": [
+          "Self-service under clear give-to-get rules",
+          "Community around shared reports",
+          "Refund progress and reminders to enter the charge level"
+        ],
+        "customer_segments": [
+          "Multi-sided platform:",
+          "Private buyers (first-time e-bike buyers are the natural payers: they have no battery to contribute)",
+          "Private sellers",
+          "Owners not yet selling (credits for a later purchase)",
+          "Partner platforms (may absorb the view fee into their transaction fee)"
+        ],
+        "key_resources": [
+          "Report and credit system",
+          "Designated measurement method (socket-side meter + charge level entered at each charge, calibrated by a one-off test)",
+          "Library of user-contributed reports",
+          "Layered verification (serial photo at registration + OEM serial read at tests, seal, history check, signature)"
+        ],
+        "channels": [
+          "Group testing days (cold start)",
+          "Listing pages of the partner platform, or own platform",
+          "Mobile app"
+        ],
+        "cost_structure": [
+          "Test subsidy (e.g. 70% of a one-off test)",
+          "Meter refunds (e.g. up to €50, then credits)",
+          "Final checks before sale",
+          "Cold-start marketing",
+          "Group testing days (staff, equipment, venue)",
+          "Platform development"
+        ],
+        "revenue_streams": [
+          "Pay-per-view for users without a report (buyers; to break even, each report needs ≥ cost per report ÷ view price paid views)",
+          "Meter sales (net of refunds)",
+          "Partner-platform fee or co-funding — the platform may absorb the view fee into its transaction fee"
+        ]
+      },
+      "highlight": "share your battery report and get free views of other reports; no report, pay per view — payers fund the contributors' measurements",
+      "must_status": {
+        "M1": {
+          "status": "met",
+          "note": "Two entry points; non-contributors pay to view"
+        },
+        "M2": {
+          "status": "met",
+          "note": "Designated method"
+        },
+        "M3": {
+          "status": "met",
+          "note": "Layered binding + final check before sale"
+        },
+        "M4": {
+          "status": "met",
+          "note": "Designated method"
+        },
+        "M5": {
+          "status": "met",
+          "note": "Presentation detail"
+        },
+        "M6": {
+          "status": "met",
+          "note": "Core of the concept"
+        },
+        "M7": {
+          "status": "met",
+          "note": "Measures at the socket, never reads the BMS"
+        },
+        "M8": {
+          "status": "no_conflict",
+          "note": "No conflict"
+        },
+        "M9": {
+          "status": "met",
+          "note": "Report bound to the battery, not the person (with consent)"
+        }
+      }
     },
     {
       "id": 3,
-      "name": "QR Battery Health Passport & Central Lifecycle DB",
-      "name_zh": "QR 電池健康護照＋中央生命週期資料庫",
-      "target": "Targets cross-brand standardization & B2B data access",
+      "name": "AI Battery Manager",
+      "name_zh": "AI 電池管理",
+      "target": "Private owners; companies subscribe to the aggregated database",
       "members": [
-        "2C-4",
+        "2B-6",
         "1D-2",
-        "2A-1",
-        "2A-3",
         "1D-1",
-        "3B-1"
+        "1A-1",
+        "1C-1",
+        "2B-1",
+        "2B-2",
+        "2B-3",
+        "2B-4",
+        "2A-3",
+        "3B-1",
+        "3A-4",
+        "2B-5"
       ],
-      "related": [
-        "2A-2"
-      ],
-      "collection": "Aggregates partner dealer maintenance checks (1D-1), home checks, and post-2027 EU passport records into a central database (1D-2) tied to battery ID.",
-      "sharing_funding": "Tamper-evident QR code on the battery (2A-1) + owner digital wallet (2A-3). Buyers scan the QR or query the portal/SMS (2A-2) for free (3B-1); records transfer on resale. Monetized via B2B database access (1D-2) for dealers, refurbishers, and insurers."
+      "related": [],
+      "bmc": {
+        "key_partners": [
+          "Partner bike dealers (verified-level testing)",
+          "B2B data-sharing partners (fleets)",
+          "Smart-plug brands (designated models; we make no hardware)",
+          "LLM provider",
+          "Second-hand platforms (embedding)"
+        ],
+        "key_activities": [
+          "Data collection and cleaning",
+          "Normalising data from different sources, report parsing",
+          "Adding support for new brands and report formats",
+          "Pairing official reports with plug data to calibrate (the flywheel)",
+          "Trend-based health tracking and advice",
+          "Data products and API",
+          "Building the database on the individual side before B2B sales",
+          "Monitoring EU Battery Regulation requirements"
+        ],
+        "value_propositions": [
+          "Companies: large cross-brand battery history data (degradation curves by model and brand), residual-value and risk estimates",
+          "Individuals: free health tracking and advice, free basic lookup",
+          "Any report turned into one comparable score; remaining range and replacement cost in plain language",
+          "At sale: the accumulated history as a shareable report, labelled by verification level"
+        ],
+        "customer_relationships": [
+          "Companies: dedicated account management",
+          "Individuals: AI assistant (chat, Q&A on reports), periodic health updates"
+        ],
+        "customer_segments": [
+          "Multi-sided platform:",
+          "Paying side: companies that need large-scale battery data — refurbishers, dealers, leasing companies, second-life battery firms, insurers, second-hand platforms (embedding)",
+          "Subsidised side: private owners and buyers"
+        ],
+        "key_resources": [
+          "Central battery history database",
+          "Data standard, normalisation and report-parsing model",
+          "Knowledge of each brand's report format",
+          "Paired data: official reports vs plug data (for calibration)",
+          "Individuals' consent for data use (GDPR) — continuous home-charging data is behavioural data"
+        ],
+        "channels": [
+          "Companies: direct sales, API",
+          "Individuals: app / web chat; report link or QR shared by the seller; partner dealers (upgrade to verified)",
+          "Embedded in platform listing pages"
+        ],
+        "cost_structure": [
+          "Data infrastructure",
+          "Model and API costs",
+          "Development",
+          "GDPR compliance",
+          "B2B sales",
+          "Subsidy for verified-level dealer tests",
+          "Liability mitigation: disclaimers, source and verification labels, safety referral to dealers"
+        ],
+        "revenue_streams": [
+          "Data licensing subscriptions",
+          "API usage fees",
+          "Embedding licence for platforms and dealers"
+        ]
+      },
+      "highlight": "an AI battery manager for owners: tracks battery health from uploaded reports and smart plugs, gives advice, and turns the history into a report at sale; companies subscribe to the aggregated database",
+      "must_status": {
+        "M1": {
+          "status": "met",
+          "note": "Free; upload reports; low-cost plugs"
+        },
+        "M2": {
+          "status": "partial",
+          "note": "Some reports lack SoH; plug data needs calibration first"
+        },
+        "M3": {
+          "status": "partial",
+          "note": "Uploads and plug data are weakly bound; dealer-verified data is verifiable"
+        },
+        "M4": {
+          "status": "partial",
+          "note": "Normalisation has a ceiling; calibration improves as data accumulates"
+        },
+        "M5": {
+          "status": "met",
+          "note": "Strongest: interpretation and advice are the highlight"
+        },
+        "M6": {
+          "status": "met",
+          "note": "Serves private owners directly"
+        },
+        "M7": {
+          "status": "met",
+          "note": "Plugs work with any charger"
+        },
+        "M8": {
+          "status": "no_conflict",
+          "note": "No conflict; can link to the battery passport later"
+        },
+        "M9": {
+          "status": "partial",
+          "note": "Continuous home-charging data is behavioural data"
+        }
+      }
     }
   ],
   "ideas": [
@@ -1572,5 +1863,671 @@ window.STAGE3_DATA = {
       "duplicate_of": null,
       "concept": "1D-2"
     }
-  ]
+  ],
+  "criteria": [
+    {
+      "id": "M1",
+      "type": "must",
+      "name": "Accessibility",
+      "description": "Open access for all parties in the transaction, at reasonable cost"
+    },
+    {
+      "id": "M2",
+      "type": "must",
+      "name": "Validity",
+      "description": "States remaining capacity or SoH, not only cycle count"
+    },
+    {
+      "id": "M3",
+      "type": "must",
+      "name": "Verifiability",
+      "description": "Measured, tied to the battery ID and test date, checkable by the next owner"
+    },
+    {
+      "id": "M4",
+      "type": "must",
+      "name": "Comparability",
+      "description": "Same metrics and method across brands and testers"
+    },
+    {
+      "id": "M5",
+      "type": "must",
+      "name": "Interpretability",
+      "description": "Translated into remaining range and whether a replacement is needed"
+    },
+    {
+      "id": "M6",
+      "type": "must",
+      "name": "Private transactions",
+      "description": "Usable in private (person-to-person) sales"
+    },
+    {
+      "id": "M7",
+      "type": "must",
+      "name": "Legacy systems",
+      "description": "Covers older batteries that manufacturer tools cannot read"
+    },
+    {
+      "id": "M8",
+      "type": "must",
+      "name": "Battery regulation",
+      "description": "Compatible with the EU Battery Regulation (Art. 14, battery passport)"
+    },
+    {
+      "id": "M9",
+      "type": "must",
+      "name": "Privacy (GDPR)",
+      "description": "Personal data handled in line with GDPR"
+    },
+    {
+      "id": "N1",
+      "type": "nice",
+      "name": "Power & safety indicators",
+      "description": "Power or internal resistance, safety indicators"
+    },
+    {
+      "id": "N2",
+      "type": "nice",
+      "name": "Method & precision stated",
+      "description": "The report states the test method and precision"
+    },
+    {
+      "id": "N7",
+      "type": "nice",
+      "name": "Platform integration",
+      "description": "Structured fields that fit into second-hand listing platforms"
+    },
+    {
+      "id": "N8",
+      "type": "nice",
+      "name": "Not tied to one manufacturer",
+      "description": "Independent of a single drive-system manufacturer"
+    },
+    {
+      "id": "N9",
+      "type": "nice",
+      "name": "Insurance & financing",
+      "description": "Usable for insurance and financing"
+    },
+    {
+      "id": "N10",
+      "type": "nice",
+      "name": "End of lease",
+      "description": "Usable at lease end"
+    },
+    {
+      "id": "N11",
+      "type": "nice",
+      "name": "Value after the battery passport",
+      "description": "Still useful once the battery passport applies (2027)"
+    },
+    {
+      "id": "T1",
+      "type": "nice",
+      "name": "Health history",
+      "description": "Battery health history over time"
+    },
+    {
+      "id": "T3",
+      "type": "nice",
+      "name": "Independent third-party testing",
+      "description": "Measured by an independent third party"
+    }
+  ],
+  "criteria_note": {
+    "BM": "Business model / adoption: handled in the Business Model Canvas, not a need-specification criterion (not shown as a criterion)",
+    "M8_M9": "Constraint criteria: a concept is linked only if it actively uses them; otherwise 'no conflict' (D106)"
+  },
+  "ecosystem": {
+    "note": "Actors and flows of the three candidate business models, drawn in one diagram (D132). Positions x,y are fractions of the diagram area; modules sit inside the 'us' box.",
+    "flow_types": {
+      "data": "battery data",
+      "report": "battery report",
+      "money": "payment or subsidy",
+      "device": "hardware",
+      "service": "service or channel"
+    },
+    "nodes": [
+      {
+        "id": "hw",
+        "kind": "actor",
+        "label": "Hardware manufacturer",
+        "candidates": [
+          1,
+          2
+        ],
+        "x": 0.07,
+        "y": 0.14,
+        "description": "Builds the socket-side meter; we specify the model and calibrate each unit"
+      },
+      {
+        "id": "plug",
+        "kind": "actor",
+        "label": "Smart-plug brands",
+        "candidates": [
+          3
+        ],
+        "x": 0.07,
+        "y": 0.4,
+        "description": "Designated off-the-shelf smart plugs; we make no hardware"
+      },
+      {
+        "id": "llm",
+        "kind": "actor",
+        "label": "LLM provider",
+        "candidates": [
+          3
+        ],
+        "x": 0.07,
+        "y": 0.64,
+        "description": "Model and API behind the AI assistant"
+      },
+      {
+        "id": "fleet",
+        "kind": "actor",
+        "label": "Logistics & sharing fleets",
+        "candidates": [
+          1,
+          3
+        ],
+        "x": 0.07,
+        "y": 0.88,
+        "notes": {
+          "1": "Data partners: charging data for the reference database, in return for free battery monitoring",
+          "3": "B2B data-sharing partners"
+        }
+      },
+      {
+        "id": "leasing",
+        "kind": "actor",
+        "label": "Leasing company",
+        "candidates": [
+          1
+        ],
+        "x": 0.33,
+        "y": 0.07,
+        "description": "Channel (non-paying): one contract reaches an employer's staff; registers frame and battery serials; approves accessories"
+      },
+      {
+        "id": "lessee",
+        "kind": "actor",
+        "label": "Lessee",
+        "candidates": [
+          1
+        ],
+        "x": 0.62,
+        "y": 0.07,
+        "description": "User and payer; the buyout price is fixed at signing, so a well-kept battery makes the buyout a better deal"
+      },
+      {
+        "id": "owner",
+        "kind": "actor",
+        "label": "Private owner / seller",
+        "candidates": [
+          2,
+          3
+        ],
+        "x": 0.9,
+        "y": 0.14,
+        "notes": {
+          "2": "Gives a report, gets free views (capped) and a meter refund",
+          "3": "Free health tracking and advice; shares the history as a report at sale"
+        }
+      },
+      {
+        "id": "buyer",
+        "kind": "actor",
+        "label": "Buyer / next owner",
+        "candidates": [
+          1,
+          2,
+          3
+        ],
+        "x": 0.93,
+        "y": 0.42,
+        "notes": {
+          "1": "Receives a comparable, verifiable report with the bike",
+          "2": "Pays per view when they have no report to give (e.g. first-time e-bike buyers)",
+          "3": "Sees the report labelled by verification level"
+        }
+      },
+      {
+        "id": "market",
+        "kind": "actor",
+        "label": "Second-hand platform",
+        "candidates": [
+          2,
+          3
+        ],
+        "x": 0.93,
+        "y": 0.66,
+        "description": "2dehands, Decathlon private-sales section, Buycycle, or our own platform"
+      },
+      {
+        "id": "companies",
+        "kind": "actor",
+        "label": "Companies",
+        "candidates": [
+          3
+        ],
+        "x": 0.93,
+        "y": 0.9,
+        "description": "Refurbishers, dealers, leasing companies (residual value), insurers, second-life battery firms"
+      },
+      {
+        "id": "dealer",
+        "kind": "actor",
+        "label": "Bike dealers / test points",
+        "candidates": [
+          1,
+          2,
+          3
+        ],
+        "x": 0.33,
+        "y": 0.93,
+        "notes": {
+          "1": "OEM diagnostics during maintenance, as a cross-check",
+          "2": "One-off tests, final check before sale, serial read with OEM tools",
+          "3": "Verified-level tests"
+        }
+      },
+      {
+        "id": "groups",
+        "kind": "actor",
+        "label": "Groups",
+        "candidates": [
+          2
+        ],
+        "x": 0.62,
+        "y": 0.93,
+        "description": "Universities, cycling clubs, companies, neighbourhoods: cold-start testing days"
+      },
+      {
+        "id": "us",
+        "kind": "platform",
+        "label": "Our platform",
+        "candidates": [
+          1,
+          2,
+          3
+        ],
+        "x": 0.48,
+        "y": 0.5,
+        "description": "The start-up: everything inside this box is what we run",
+        "w": 0.36,
+        "h": 0.52
+      },
+      {
+        "id": "db",
+        "kind": "module",
+        "label": "Battery database",
+        "candidates": [
+          1,
+          3
+        ],
+        "notes": {
+          "1": "Reference charging curves and charger-efficiency table, built with fleet partners",
+          "3": "Cross-brand battery histories; the more pairs of official reports and plug data, the more accurate"
+        },
+        "parent": "us"
+      },
+      {
+        "id": "soh",
+        "kind": "module",
+        "label": "Same-method SoH",
+        "candidates": [
+          1,
+          2
+        ],
+        "description": "SoH = estimated capacity ÷ rated capacity, the same method for every battery",
+        "notes": {
+          "1": "Start charge level inferred from the socket power curve against the database",
+          "2": "Charge level entered at each charge, calibrated by a one-off test"
+        },
+        "parent": "us"
+      },
+      {
+        "id": "norm",
+        "kind": "module",
+        "label": "Report normalisation",
+        "candidates": [
+          3
+        ],
+        "description": "Turns any uploaded report into one comparable score; plug trends calibrated against paired official reports",
+        "parent": "us"
+      },
+      {
+        "id": "ai",
+        "kind": "module",
+        "label": "AI assistant",
+        "candidates": [
+          3
+        ],
+        "description": "Health tracking, advice and Q&A in plain language; safety questions referred to dealers",
+        "parent": "us"
+      },
+      {
+        "id": "credits",
+        "kind": "module",
+        "label": "Credits & refunds",
+        "candidates": [
+          2
+        ],
+        "description": "Viewing credits for contributors, meter refunds, pay-per-view",
+        "parent": "us"
+      },
+      {
+        "id": "verify",
+        "kind": "module",
+        "label": "Report verification",
+        "candidates": [
+          1,
+          2,
+          3
+        ],
+        "notes": {
+          "1": "Digital signature; battery bound by the lease-registered serial",
+          "2": "Digital signature; layered binding (serial photo, OEM serial read, seal, history check)",
+          "3": "Verification level: unverified (uploads, plug data) or dealer-verified"
+        },
+        "parent": "us"
+      }
+    ],
+    "flows": [
+      {
+        "id": "f1",
+        "from": "hw",
+        "to": "us",
+        "type": "device",
+        "candidates": [
+          1,
+          2
+        ],
+        "label": "Meters, calibrated per unit"
+      },
+      {
+        "id": "f2",
+        "from": "fleet",
+        "to": "db",
+        "type": "data",
+        "candidates": [
+          1,
+          3
+        ],
+        "label": "Charging & battery data"
+      },
+      {
+        "id": "f3",
+        "from": "db",
+        "to": "fleet",
+        "type": "service",
+        "candidates": [
+          1
+        ],
+        "label": "Free battery monitoring"
+      },
+      {
+        "id": "f4",
+        "from": "leasing",
+        "to": "lessee",
+        "type": "service",
+        "candidates": [
+          1
+        ],
+        "label": "Meter as an approved lease accessory"
+      },
+      {
+        "id": "f5",
+        "from": "leasing",
+        "to": "verify",
+        "type": "data",
+        "candidates": [
+          1
+        ],
+        "label": "Registered frame & battery serials"
+      },
+      {
+        "id": "f6",
+        "from": "lessee",
+        "to": "soh",
+        "type": "data",
+        "candidates": [
+          1
+        ],
+        "label": "Charging data via the meter"
+      },
+      {
+        "id": "f7",
+        "from": "lessee",
+        "to": "us",
+        "type": "money",
+        "candidates": [
+          1
+        ],
+        "label": "Monthly accessory fee (in the lease, via gross salary)"
+      },
+      {
+        "id": "f8",
+        "from": "dealer",
+        "to": "soh",
+        "type": "data",
+        "candidates": [
+          1
+        ],
+        "label": "OEM diagnostics (cross-check)"
+      },
+      {
+        "id": "f9",
+        "from": "verify",
+        "to": "lessee",
+        "type": "report",
+        "candidates": [
+          1
+        ],
+        "label": "Battery health report"
+      },
+      {
+        "id": "f10",
+        "from": "lessee",
+        "to": "buyer",
+        "type": "report",
+        "candidates": [
+          1
+        ],
+        "label": "Report moves with the bike at buyout / resale"
+      },
+      {
+        "id": "f11",
+        "from": "groups",
+        "to": "us",
+        "type": "service",
+        "candidates": [
+          2
+        ],
+        "label": "Group testing days"
+      },
+      {
+        "id": "f12",
+        "from": "owner",
+        "to": "dealer",
+        "type": "service",
+        "candidates": [
+          2,
+          3
+        ],
+        "labels": {
+          "2": "One-off test & final check before sale",
+          "3": "Verified-level test"
+        }
+      },
+      {
+        "id": "f13",
+        "from": "dealer",
+        "to": "verify",
+        "type": "data",
+        "candidates": [
+          2,
+          3
+        ],
+        "label": "Test result + serial read"
+      },
+      {
+        "id": "f14",
+        "from": "us",
+        "to": "dealer",
+        "type": "money",
+        "candidates": [
+          2,
+          3
+        ],
+        "label": "Test subsidy"
+      },
+      {
+        "id": "f15",
+        "from": "owner",
+        "to": "soh",
+        "type": "data",
+        "candidates": [
+          2
+        ],
+        "label": "Charging data + charge level entered"
+      },
+      {
+        "id": "f16",
+        "from": "credits",
+        "to": "owner",
+        "type": "money",
+        "candidates": [
+          2
+        ],
+        "label": "Meter refund & viewing credits"
+      },
+      {
+        "id": "f17",
+        "from": "us",
+        "to": "owner",
+        "type": "device",
+        "candidates": [
+          2
+        ],
+        "label": "Meter (refunded after enough charges)"
+      },
+      {
+        "id": "f18",
+        "from": "verify",
+        "to": "market",
+        "type": "report",
+        "candidates": [
+          2,
+          3
+        ],
+        "label": "Reports on listings"
+      },
+      {
+        "id": "f19",
+        "from": "market",
+        "to": "buyer",
+        "type": "report",
+        "candidates": [
+          2,
+          3
+        ],
+        "label": "Report on the listing"
+      },
+      {
+        "id": "f20",
+        "from": "buyer",
+        "to": "credits",
+        "type": "money",
+        "candidates": [
+          2
+        ],
+        "label": "Pay per view"
+      },
+      {
+        "id": "f21",
+        "from": "market",
+        "to": "us",
+        "type": "money",
+        "candidates": [
+          2,
+          3
+        ],
+        "labels": {
+          "2": "Fee / co-funding (may absorb the view fee)",
+          "3": "Embedding licence"
+        }
+      },
+      {
+        "id": "f22",
+        "from": "plug",
+        "to": "owner",
+        "type": "device",
+        "candidates": [
+          3
+        ],
+        "label": "Designated smart plugs"
+      },
+      {
+        "id": "f23",
+        "from": "owner",
+        "to": "norm",
+        "type": "data",
+        "candidates": [
+          3
+        ],
+        "label": "Uploaded reports + smart-plug data"
+      },
+      {
+        "id": "f24",
+        "from": "ai",
+        "to": "owner",
+        "type": "service",
+        "candidates": [
+          3
+        ],
+        "label": "Free tracking & advice"
+      },
+      {
+        "id": "f25",
+        "from": "llm",
+        "to": "ai",
+        "type": "service",
+        "candidates": [
+          3
+        ],
+        "label": "Model & API"
+      },
+      {
+        "id": "f26",
+        "from": "db",
+        "to": "companies",
+        "type": "data",
+        "candidates": [
+          3
+        ],
+        "label": "Cross-brand degradation data & API"
+      },
+      {
+        "id": "f27",
+        "from": "companies",
+        "to": "us",
+        "type": "money",
+        "candidates": [
+          3
+        ],
+        "label": "Subscription"
+      },
+      {
+        "id": "f28",
+        "from": "owner",
+        "to": "buyer",
+        "type": "report",
+        "candidates": [
+          3
+        ],
+        "label": "Report link / QR at sale"
+      }
+    ]
+  }
 };

@@ -1362,6 +1362,10 @@
   .bmc-cell-list li {
     margin-bottom: 2.5px;
   }
+  /* D144: highlighted phrases in the full canvas take the selected candidate's colour */
+  .bmc-hl {
+    color: var(--bmc-hl-color, inherit);
+  }
 
   /* Tooltip */
   #tooltip {
@@ -3104,13 +3108,18 @@
     const cpl = isBottom ? 88 : 32;
     let lines = 0;
     (items || []).forEach(txt => {
-      lines += Math.ceil(Math.max(1, txt.length) / cpl);
+      lines += Math.ceil(Math.max(1, txt.replace(/==/g, "").length) / cpl);
     });
     return lines * 16 + (items || []).length * 2.5 + 34;
   }
 
+  // D144: "==phrase==" in bmc strings marks a highlight; never show the markers
+  function renderHl(text) {
+    return String(text).replace(/==(.+?)==/g, '<span class="bmc-hl">$1</span>');
+  }
+
   function makeBmcCellHtml(cls, title, items, flexWeight = 1) {
-    const liHtml = (items || []).map(item => `<li>${item}</li>`).join("");
+    const liHtml = (items || []).map(item => `<li>${renderHl(item)}</li>`).join("");
     return `
       <div class="bmc-cell ${cls}" data-cell="${cls}" style="flex: ${flexWeight.toFixed(2)} 1 0%;">
         <div class="bmc-cell-title">${title}</div>
@@ -3170,6 +3179,7 @@
       return;
     }
     const b = cand.bmc;
+    s9FullBmc.style.setProperty("--bmc-hl-color", COLORS.cand[cid]);
 
     const wKP = estimateBmcCellWeight(b.key_partners, false);
     const wKA = estimateBmcCellWeight(b.key_activities, false);

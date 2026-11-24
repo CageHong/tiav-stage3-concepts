@@ -970,60 +970,62 @@ window.STAGE3_DATA = {
       "related": [],
       "bmc": {
         "key_partners": [
-          "Hardware manufacturers (socket-side meter; we specify the model and calibrate each unit)",
+          "Hardware manufacturers (plug-in energy meter; we buy it, specify the model and calibrate each unit)",
           "Logistics & sharing fleets (data partners: paired data to build the reference database; free fleet battery monitoring in return)",
           "Bike-leasing companies (channel: one contract reaches an employer's staff; registers frame and battery serials; approves accessories)",
           "Bike dealers (OEM diagnostics during maintenance, as a cross-check)"
         ],
         "key_activities": [
           "Building the reference database with fleet partners (charging curves, charger efficiency per model)",
-          "Deploying socket-side meters to lessees",
+          "Deploying plug-in energy meters to lessees",
           "Same-method capacity estimation: start charge level inferred from the socket power curve against the database; lessee calibration at first charges and on occasional prompts",
-          "Calibrating every meter",
+          "Calibrating every plug-in energy meter",
           "Report generation and online verification",
-          "Running the internal game (community, battery pet) — keeps lessees charging through the meter",
+          "Running the internal game (community, battery pet as a personified battery) — keeps lessees charging through the energy meter",
           "Monitoring EU Battery Regulation requirements"
         ],
         "value_propositions": [
-          "Leasing companies: a differentiator when negotiating with employers",
-          "Lessees: battery condition before the end-of-lease buyout decision — the buyout price is fixed at signing (~15–20%), so a well-kept battery makes the buyout a better deal",
+          "Leasing companies: a battery management service to include in their lease offer — a differentiator when negotiating with employers",
+          "Lessees: battery management (tracking, advice, reports) before the end-of-lease buyout — the buyout price is fixed at signing (~15–20%), so a well-kept battery makes the buyout a better deal",
           "Next owner: cross-brand comparable, verifiable report that moves with the bike",
           "Covers older batteries that OEM tools cannot read (measures at the socket, never touches the BMS)"
         ],
         "customer_relationships": [
           "Leasing companies: dedicated account management",
-          "Lessees: in-company community and gamification, battery pet",
-          "Occasional quick-calibration prompts"
+          "Lessees: in-company community and gamification, battery pet (personified battery)",
+          "Occasional quick-calibration prompts",
+          "Fleets: data partnership (free battery monitoring in return)",
+          "Later: next owners receive the report with the bike"
         ],
         "customer_segments": [
-          "Users and payers: lessees (meter inside the lease)",
+          "Users and payers: lessees (energy meter inside the lease)",
           "Channel (non-paying): leasing companies",
           "Data partners (non-paying): logistics & sharing fleets",
           "Expansion: bought-out bikes carry their report into the private market → private owners join"
         ],
         "key_resources": [
           "Same-method measurement (SoH = estimated capacity ÷ rated capacity)",
-          "Reference database (charging curves, charger-efficiency table); calibrated meters",
+          "Reference database (charging curves, charger-efficiency table); calibrated energy meters",
           "Battery health histories",
-          "Paired data: socket-side meter vs OEM diagnostics",
+          "Paired data: plug-in energy meter vs OEM diagnostics",
           "App and reporting platform"
         ],
         "channels": [
-          "Leasing companies: meter offered as an approved lease accessory",
+          "Leasing companies: battery management offered as part of their lease (plug-in energy meter included as an approved accessory)",
           "In-company promotion",
-          "Mobile app",
+          "Mobile app (tracking, game, reports)",
           "Later: second-hand platforms (report transferred at buyout)"
         ],
         "cost_structure": [
-          "Meters: purchase and per-unit calibration (incl. meters and free monitoring for fleet partners)",
+          "Energy meters: purchase and per-unit calibration (incl. meters and free monitoring for fleet partners)",
           "Building and maintaining the reference database",
           "Software development and operation",
           "Sales to leasing companies",
           "Data protection (GDPR) compliance",
-          "CE / electrical-safety conformity of the meter (with the hardware partner)"
+          "CE / electrical-safety conformity of the energy meter (with the hardware partner)"
         ],
         "revenue_streams": [
-          "Monthly accessory fee inside the lease, paid by the lessee through gross salary",
+          "Monthly accessory fee inside the lease: the lessee pays the leasing company through gross salary, the leasing company pays us",
           "Later: report transfer fee at buyout / private resale"
         ]
       },
@@ -1031,7 +1033,7 @@ window.STAGE3_DATA = {
       "must_status": {
         "M1": {
           "status": "met",
-          "note": "Meter comes with the lease; the report moves with the bike"
+          "note": "Energy meter comes with the lease; the report moves with the bike"
         },
         "M2": {
           "status": "met",
@@ -1065,6 +1067,299 @@ window.STAGE3_DATA = {
           "status": "met",
           "note": "Data-ownership rules"
         }
+      },
+      "bmc_short": {
+        "customer_segments": [
+          {
+            "text": "Lessees: users and payers",
+            "nodes": [
+              "lessee"
+            ],
+            "flows": []
+          },
+          {
+            "text": "Leasing companies: channel, non-paying",
+            "nodes": [
+              "leasing"
+            ],
+            "flows": []
+          },
+          {
+            "text": "Fleets: data partners, non-paying",
+            "nodes": [
+              "fleet"
+            ],
+            "flows": []
+          },
+          {
+            "text": "Later: next owners",
+            "nodes": [
+              "buyer"
+            ],
+            "flows": []
+          }
+        ],
+        "value_propositions": [
+          {
+            "text": "Lessees: battery management before the buyout",
+            "nodes": [],
+            "flows": [
+              "f46"
+            ]
+          },
+          {
+            "text": "Leasing companies: a selling point with employers",
+            "nodes": [],
+            "flows": [
+              "f45"
+            ]
+          },
+          {
+            "text": "Next owners: a comparable, verifiable report",
+            "nodes": [],
+            "flows": [
+              "f10"
+            ]
+          },
+          {
+            "text": "Older batteries measurable too",
+            "nodes": [
+              "soh"
+            ],
+            "flows": []
+          }
+        ],
+        "channels": [
+          {
+            "text": "Battery management offered in the lease",
+            "nodes": [],
+            "flows": [
+              "f45",
+              "f4"
+            ]
+          },
+          {
+            "text": "App: tracking, game, reports",
+            "nodes": [],
+            "flows": [
+              "f33"
+            ]
+          },
+          {
+            "text": "Report moves with the bike at buyout",
+            "nodes": [],
+            "flows": [
+              "f10"
+            ]
+          }
+        ],
+        "customer_relationships": [
+          {
+            "text": "Leasing companies: account management",
+            "nodes": [
+              "leasing"
+            ],
+            "flows": []
+          },
+          {
+            "text": "In-company game, battery pet",
+            "nodes": [],
+            "flows": [
+              "f33"
+            ]
+          },
+          {
+            "text": "Quick-calibration prompts",
+            "nodes": [],
+            "flows": [
+              "f34"
+            ]
+          },
+          {
+            "text": "Fleets: data partnership",
+            "nodes": [],
+            "flows": [
+              "f3"
+            ]
+          },
+          {
+            "text": "Later: next owners receive the report",
+            "nodes": [],
+            "flows": [
+              "f10"
+            ]
+          }
+        ],
+        "revenue_streams": [
+          {
+            "text": "Monthly accessory fee, via the leasing company",
+            "nodes": [],
+            "flows": [
+              "f29",
+              "f30"
+            ]
+          },
+          {
+            "text": "Later: report transfer fee",
+            "nodes": [],
+            "flows": [
+              "f32"
+            ]
+          }
+        ],
+        "key_resources": [
+          {
+            "text": "Same-method measurement and health histories",
+            "nodes": [
+              "soh"
+            ],
+            "flows": []
+          },
+          {
+            "text": "Reference database",
+            "nodes": [
+              "db"
+            ],
+            "flows": []
+          },
+          {
+            "text": "Calibrated energy meters",
+            "nodes": [],
+            "flows": [
+              "f1"
+            ]
+          }
+        ],
+        "key_activities": [
+          {
+            "text": "Building the database with fleets",
+            "nodes": [],
+            "flows": [
+              "f2",
+              "f3"
+            ]
+          },
+          {
+            "text": "Estimating start charge and SoH",
+            "nodes": [],
+            "flows": [
+              "f6"
+            ]
+          },
+          {
+            "text": "Calibrating every energy meter",
+            "nodes": [],
+            "flows": [
+              "f1"
+            ]
+          },
+          {
+            "text": "Reports and online verification",
+            "nodes": [],
+            "flows": [
+              "f5",
+              "f9"
+            ]
+          },
+          {
+            "text": "Running the in-company game",
+            "nodes": [
+              "community"
+            ],
+            "flows": []
+          }
+        ],
+        "key_partners": [
+          {
+            "text": "Hardware manufacturers: build the energy meter",
+            "nodes": [],
+            "flows": [
+              "f1"
+            ]
+          },
+          {
+            "text": "Fleets: data for free monitoring",
+            "nodes": [],
+            "flows": [
+              "f2",
+              "f3"
+            ]
+          },
+          {
+            "text": "Leasing companies: channel, serial registration",
+            "nodes": [],
+            "flows": [
+              "f45",
+              "f4",
+              "f5"
+            ]
+          },
+          {
+            "text": "Bike dealers: OEM diagnostics as a cross-check",
+            "nodes": [],
+            "flows": [
+              "f8"
+            ]
+          }
+        ],
+        "cost_structure": [
+          {
+            "text": "Energy meter purchase and calibration",
+            "nodes": [],
+            "flows": [
+              "f35",
+              "f1"
+            ]
+          },
+          {
+            "text": "Free fleet monitoring",
+            "nodes": [],
+            "flows": [
+              "f3"
+            ]
+          },
+          {
+            "text": "Reference database",
+            "nodes": [
+              "db"
+            ],
+            "flows": []
+          },
+          {
+            "text": "Sales to leasing companies",
+            "nodes": [
+              "leasing"
+            ],
+            "flows": []
+          }
+        ]
+      },
+      "summary_zh": "從封閉車隊開始，透過遊戲化社群提供電池健康追蹤服務，協助承租人管理電池健康；承租人透過租賃合約附加訂閱制加入，提升租期到期後車輛的剩餘價值。",
+      "summary": "Starting inside closed leasing fleets, a gamified battery-health tracking service helps lessees look after their battery; lessees join through a subscription added to their lease, which raises the bike's value at the end of the lease.",
+      "main_members": [
+        "1C-3",
+        "3A-1",
+        "1A-1",
+        "3B-3",
+        "2A-5"
+      ],
+      "story": {
+        "nodes": [
+          "leasing",
+          "lessee",
+          "community",
+          "buyer",
+          "us"
+        ],
+        "flows": [
+          "f45",
+          "f4",
+          "f46",
+          "f33",
+          "f29",
+          "f30",
+          "f10"
+        ]
       }
     },
     {
@@ -1086,49 +1381,55 @@ window.STAGE3_DATA = {
       "related": [],
       "bmc": {
         "key_partners": [
-          "Hardware manufacturers (socket-side meter)",
+          "Hardware manufacturers (plug-in energy meter: sold through their own retail, and supplied to us for the deposit route)",
           "Partner platform (e.g. 2dehands, Decathlon private-sales section) or own platform",
           "Test points (bike dealers) — one-off tests, final checks, serial reading with OEM tools",
           "Groups: universities, cycling clubs, companies, neighbourhoods"
         ],
         "key_activities": [
           "Running group testing days",
-          "Managing credits and meter refunds (a charge counts toward the refund only if the charge level is entered)",
+          "Managing deposits, refunds and vouchers (a charge counts toward the refund only if the charge level is entered)",
+          "Grading contributed reports by level (source, whether SoH is present, binding to the battery)",
           "Final check before sale (binds report to battery — serial read with OEM tool, or compared with the registration photo)",
           "Platform development",
           "Monitoring EU Battery Regulation requirements"
         ],
         "value_propositions": [
-          "Buyers: verifiable, comparable battery reports — pay only for the reports they view",
-          "Sellers & owners: subsidised testing, meter refund, viewing credits (capped)",
+          "Pay-per-view buyers: verifiable, comparable battery reports — pay only for the reports they view",
+          "Report contributors: vouchers tiered by report level (for the next test or for viewing reports), deposit refund or retail-route discount",
+          "Gadget lovers: an energy meter that comes with a service; service seekers: the service, with the meter as the way in",
           "Platforms: more trust and more completed sales"
         ],
         "customer_relationships": [
           "Self-service under clear give-to-get rules",
-          "Community around shared reports",
-          "Refund progress and reminders to enter the charge level"
+          "Community around shared reports (contributors and buyers)",
+          "Refund progress and reminders to enter the charge level",
+          "Pay-per-view buyers: self-service, pay per view",
+          "Partner platforms: partnership and embedding"
         ],
         "customer_segments": [
           "Multi-sided platform:",
-          "Private buyers (first-time e-bike buyers are the natural payers: they have no battery to contribute)",
-          "Private sellers",
-          "Owners not yet selling (credits for a later purchase)",
+          "Report contributors: private sellers, owners not yet selling (vouchers for a later purchase), buyers upgrading from an e-bike they can test",
+          "Pay-per-view buyers: first-time e-bike buyers have no battery to contribute, so they are the natural payers",
           "Partner platforms (may absorb the view fee into their transaction fee)"
         ],
         "key_resources": [
-          "Report and credit system",
-          "Designated measurement method (socket-side meter + charge level entered at each charge, calibrated by a one-off test)",
+          "Report and voucher system",
+          "Designated measurement method (plug-in energy meter + charge level entered at each charge, calibrated by a one-off test)",
           "Library of user-contributed reports",
-          "Layered verification (serial photo at registration + OEM serial read at tests, seal, history check, signature)"
+          "Report levels — measured with our method (highest), official reports, other reports — and layered verification (serial photo at registration + OEM serial read at tests, seal, history check, signature)"
         ],
         "channels": [
           "Group testing days (cold start)",
-          "Listing pages of the partner platform, or own platform",
-          "Mobile app"
+          "Reports embedded on partner listing pages (or our own platform)",
+          "Mobile app",
+          "Hardware manufacturer's retail (energy meter bought there, then activated with us)",
+          "Energy meter on deposit from us"
         ],
         "cost_structure": [
-          "Test subsidy (e.g. 70% of a one-off test)",
-          "Meter refunds (e.g. up to €50, then credits)",
+          "Test vouchers: we subsidise part of a one-off test at partner dealers (e.g. 70%)",
+          "Energy meters for the deposit route (the deposit is refunded after enough charges)",
+          "Discounts or vouchers for energy meters bought at retail",
           "Final checks before sale",
           "Cold-start marketing",
           "Group testing days (staff, equipment, venue)",
@@ -1136,7 +1437,6 @@ window.STAGE3_DATA = {
         ],
         "revenue_streams": [
           "Pay-per-view for users without a report (buyers; to break even, each report needs ≥ cost per report ÷ view price paid views)",
-          "Meter sales (net of refunds)",
           "Partner-platform fee or co-funding — the platform may absorb the view fee into its transaction fee"
         ]
       },
@@ -1148,15 +1448,15 @@ window.STAGE3_DATA = {
         },
         "M2": {
           "status": "met",
-          "note": "Designated method"
+          "note": "Designated-method reports carry SoH; reports without SoH get a lower level"
         },
         "M3": {
           "status": "met",
-          "note": "Layered binding + final check before sale"
+          "note": "Layered binding + final check before sale; weaker binding means a lower report level"
         },
         "M4": {
           "status": "met",
-          "note": "Designated method"
+          "note": "Designated-method reports are comparable; other sources are shown with their level, not merged into one score"
         },
         "M5": {
           "status": "met",
@@ -1178,6 +1478,312 @@ window.STAGE3_DATA = {
           "status": "met",
           "note": "Report bound to the battery, not the person (with consent)"
         }
+      },
+      "bmc_short": {
+        "customer_segments": [
+          {
+            "text": "Report contributors: sellers, owners not yet selling, upgrading buyers",
+            "nodes": [
+              "owner"
+            ],
+            "flows": []
+          },
+          {
+            "text": "Pay-per-view buyers: first-time e-bike buyers",
+            "nodes": [
+              "buyer"
+            ],
+            "flows": []
+          },
+          {
+            "text": "Second-hand platforms",
+            "nodes": [
+              "market"
+            ],
+            "flows": []
+          }
+        ],
+        "value_propositions": [
+          {
+            "text": "Pay-per-view buyers: pay only for reports viewed",
+            "nodes": [],
+            "flows": [
+              "f18",
+              "f19"
+            ]
+          },
+          {
+            "text": "Contributors: vouchers by report level, deposit back or discount",
+            "nodes": [],
+            "flows": [
+              "f39",
+              "f16"
+            ]
+          },
+          {
+            "text": "Gadget lovers: a device that comes with a service",
+            "nodes": [],
+            "flows": [
+              "f37"
+            ]
+          },
+          {
+            "text": "Platforms: more trust, more sales",
+            "nodes": [],
+            "flows": [
+              "f18"
+            ]
+          }
+        ],
+        "channels": [
+          {
+            "text": "Group testing days",
+            "nodes": [],
+            "flows": [
+              "f11"
+            ]
+          },
+          {
+            "text": "Reports embedded on partner listing pages",
+            "nodes": [],
+            "flows": [
+              "f18",
+              "f19",
+              "f39"
+            ]
+          },
+          {
+            "text": "Retail energy meter, activated with us",
+            "nodes": [],
+            "flows": [
+              "f37",
+              "f15"
+            ]
+          },
+          {
+            "text": "Energy meter on deposit",
+            "nodes": [],
+            "flows": [
+              "f1",
+              "f17"
+            ]
+          }
+        ],
+        "customer_relationships": [
+          {
+            "text": "Self-service give-to-get rules",
+            "nodes": [
+              "credits"
+            ],
+            "flows": []
+          },
+          {
+            "text": "Community around shared reports",
+            "nodes": [],
+            "flows": [
+              "f40",
+              "f47"
+            ]
+          },
+          {
+            "text": "Refund progress, charge-level reminders",
+            "nodes": [],
+            "flows": [
+              "f16"
+            ]
+          },
+          {
+            "text": "Pay-per-view buyers: self-service",
+            "nodes": [],
+            "flows": [
+              "f20"
+            ]
+          },
+          {
+            "text": "Platforms: partnership and embedding",
+            "nodes": [
+              "market"
+            ],
+            "flows": [
+              "f18"
+            ]
+          }
+        ],
+        "revenue_streams": [
+          {
+            "text": "Pay per view",
+            "nodes": [],
+            "flows": [
+              "f20"
+            ]
+          },
+          {
+            "text": "Platform fee or co-funding",
+            "nodes": [],
+            "flows": [
+              "f21"
+            ]
+          }
+        ],
+        "key_resources": [
+          {
+            "text": "Report and voucher system",
+            "nodes": [
+              "credits"
+            ],
+            "flows": []
+          },
+          {
+            "text": "Designated measurement method",
+            "nodes": [
+              "soh"
+            ],
+            "flows": []
+          },
+          {
+            "text": "Report levels and layered verification",
+            "nodes": [
+              "verify"
+            ],
+            "flows": []
+          },
+          {
+            "text": "Library of contributed reports",
+            "nodes": [],
+            "flows": [
+              "f18"
+            ]
+          }
+        ],
+        "key_activities": [
+          {
+            "text": "Group testing days",
+            "nodes": [],
+            "flows": [
+              "f11"
+            ]
+          },
+          {
+            "text": "Deposits, refunds, vouchers",
+            "nodes": [
+              "credits"
+            ],
+            "flows": [
+              "f36"
+            ]
+          },
+          {
+            "text": "Grading contributed reports by level",
+            "nodes": [],
+            "flows": [
+              "f44"
+            ]
+          },
+          {
+            "text": "Final check before sale",
+            "nodes": [],
+            "flows": [
+              "f12",
+              "f13"
+            ]
+          },
+          {
+            "text": "Collecting charging data and charge levels",
+            "nodes": [],
+            "flows": [
+              "f15"
+            ]
+          }
+        ],
+        "key_partners": [
+          {
+            "text": "Hardware manufacturers: retail route, deposit energy meters",
+            "nodes": [],
+            "flows": [
+              "f37",
+              "f1"
+            ]
+          },
+          {
+            "text": "Second-hand platforms",
+            "nodes": [],
+            "flows": [
+              "f18",
+              "f21"
+            ]
+          },
+          {
+            "text": "Bike dealers: test points",
+            "nodes": [],
+            "flows": [
+              "f12",
+              "f13"
+            ]
+          },
+          {
+            "text": "Groups",
+            "nodes": [],
+            "flows": [
+              "f11"
+            ]
+          }
+        ],
+        "cost_structure": [
+          {
+            "text": "Test vouchers",
+            "nodes": [],
+            "flows": [
+              "f14"
+            ]
+          },
+          {
+            "text": "Deposit energy meters",
+            "nodes": [],
+            "flows": [
+              "f35"
+            ]
+          },
+          {
+            "text": "Retail-route discounts, vouchers",
+            "nodes": [],
+            "flows": [
+              "f16"
+            ]
+          },
+          {
+            "text": "Testing days, cold-start marketing",
+            "nodes": [],
+            "flows": [
+              "f11"
+            ]
+          }
+        ]
+      },
+      "summary_zh": "提供電池報告交換平台：個人提供不同的電池檢測報告（官方、非官方、用我們的方案量的），依報告等級換取可用於下次檢測或觀看別人報告的 voucher；沒有報告的人付費觀看。",
+      "summary": "A battery-report exchange: individuals contribute battery reports (official, third-party, or measured with our method) and earn vouchers, tiered by report level, for their next test or for viewing others' reports; without a report, you pay to view.",
+      "main_members": [
+        "3A-2",
+        "3B-5",
+        "1A-1",
+        "1C-1",
+        "2C-2"
+      ],
+      "story": {
+        "nodes": [
+          "owner",
+          "buyer",
+          "credits",
+          "verify",
+          "market"
+        ],
+        "flows": [
+          "f44",
+          "f15",
+          "f16",
+          "f39",
+          "f19",
+          "f20"
+        ]
       }
     },
     {
@@ -1204,7 +1810,7 @@ window.STAGE3_DATA = {
       "bmc": {
         "key_partners": [
           "Partner bike dealers (verified-level testing)",
-          "B2B data-sharing partners (fleets)",
+          "Fleets (data-sharing partners: free battery monitoring and cross-brand degradation analysis in return)",
           "Smart-plug brands (designated models; we make no hardware)",
           "LLM provider",
           "Second-hand platforms (embedding)"
@@ -1227,7 +1833,9 @@ window.STAGE3_DATA = {
         ],
         "customer_relationships": [
           "Companies: dedicated account management",
-          "Individuals: AI assistant (chat, Q&A on reports), periodic health updates"
+          "Individuals: AI assistant (chat, Q&A on reports), periodic health updates",
+          "Personified battery (a digital pet reflecting battery state and care)",
+          "Buyers: self-service report view, labelled by verification level"
         ],
         "customer_segments": [
           "Multi-sided platform:",
@@ -1252,13 +1860,14 @@ window.STAGE3_DATA = {
           "Development",
           "GDPR compliance",
           "B2B sales",
+          "Free monitoring and analysis for fleet partners",
           "Subsidy for verified-level dealer tests",
           "Liability mitigation: disclaimers, source and verification labels, safety referral to dealers"
         ],
         "revenue_streams": [
           "Data licensing subscriptions",
           "API usage fees",
-          "Embedding licence for platforms and dealers"
+          "Embedding licence for second-hand platforms (dealers that want data subscribe as companies)"
         ]
       },
       "highlight": "an AI battery manager for owners: tracks battery health from uploaded reports and smart plugs, gives advice, and turns the history into a report at sale; companies subscribe to the aggregated database",
@@ -1299,6 +1908,294 @@ window.STAGE3_DATA = {
           "status": "partial",
           "note": "Continuous home-charging data is behavioural data"
         }
+      },
+      "bmc_short": {
+        "customer_segments": [
+          {
+            "text": "Paying companies: refurbishers, dealers, leasing, insurers, second-life, platforms",
+            "nodes": [
+              "companies"
+            ],
+            "flows": []
+          },
+          {
+            "text": "Private owners (free)",
+            "nodes": [
+              "owner"
+            ],
+            "flows": []
+          },
+          {
+            "text": "Buyers (free)",
+            "nodes": [
+              "buyer"
+            ],
+            "flows": []
+          }
+        ],
+        "value_propositions": [
+          {
+            "text": "Companies: cross-brand degradation data",
+            "nodes": [],
+            "flows": [
+              "f26"
+            ]
+          },
+          {
+            "text": "Owners: free tracking and advice",
+            "nodes": [],
+            "flows": [
+              "f24"
+            ]
+          },
+          {
+            "text": "Any report as one comparable score",
+            "nodes": [
+              "norm"
+            ],
+            "flows": []
+          },
+          {
+            "text": "Buyers: report labelled by verification level",
+            "nodes": [],
+            "flows": [
+              "f19",
+              "f28"
+            ]
+          }
+        ],
+        "channels": [
+          {
+            "text": "Companies: direct sales, API",
+            "nodes": [],
+            "flows": [
+              "f26"
+            ]
+          },
+          {
+            "text": "Owners: app chat",
+            "nodes": [],
+            "flows": [
+              "f24"
+            ]
+          },
+          {
+            "text": "Report link or QR",
+            "nodes": [],
+            "flows": [
+              "f28"
+            ]
+          },
+          {
+            "text": "Embedded on platforms",
+            "nodes": [],
+            "flows": [
+              "f18"
+            ]
+          }
+        ],
+        "customer_relationships": [
+          {
+            "text": "Companies: account management",
+            "nodes": [
+              "companies"
+            ],
+            "flows": []
+          },
+          {
+            "text": "AI assistant",
+            "nodes": [],
+            "flows": [
+              "f24"
+            ]
+          },
+          {
+            "text": "Personified battery",
+            "nodes": [],
+            "flows": [
+              "f40"
+            ]
+          },
+          {
+            "text": "Buyers: self-service view with verification level",
+            "nodes": [],
+            "flows": [
+              "f19",
+              "f28"
+            ]
+          }
+        ],
+        "revenue_streams": [
+          {
+            "text": "Subscription and API fees",
+            "nodes": [],
+            "flows": [
+              "f27"
+            ]
+          },
+          {
+            "text": "Platform embedding licence",
+            "nodes": [],
+            "flows": [
+              "f21"
+            ]
+          }
+        ],
+        "key_resources": [
+          {
+            "text": "Central battery history database",
+            "nodes": [
+              "db"
+            ],
+            "flows": []
+          },
+          {
+            "text": "Normalisation and report-parsing model",
+            "nodes": [
+              "norm"
+            ],
+            "flows": []
+          },
+          {
+            "text": "Paired official reports and plug data",
+            "nodes": [],
+            "flows": [
+              "f23"
+            ]
+          }
+        ],
+        "key_activities": [
+          {
+            "text": "Collecting and normalising data",
+            "nodes": [],
+            "flows": [
+              "f23",
+              "f2"
+            ]
+          },
+          {
+            "text": "Pairing and calibration (flywheel)",
+            "nodes": [],
+            "flows": [
+              "f42"
+            ]
+          },
+          {
+            "text": "Health tracking and advice",
+            "nodes": [],
+            "flows": [
+              "f43",
+              "f24"
+            ]
+          },
+          {
+            "text": "Data products and API",
+            "nodes": [],
+            "flows": [
+              "f26"
+            ]
+          }
+        ],
+        "key_partners": [
+          {
+            "text": "Partner dealers: verified-level tests",
+            "nodes": [],
+            "flows": [
+              "f12",
+              "f13"
+            ]
+          },
+          {
+            "text": "Fleets: data for monitoring and analysis",
+            "nodes": [],
+            "flows": [
+              "f2",
+              "f3"
+            ]
+          },
+          {
+            "text": "Smart-plug brands",
+            "nodes": [],
+            "flows": [
+              "f22"
+            ]
+          },
+          {
+            "text": "LLM provider",
+            "nodes": [],
+            "flows": [
+              "f25"
+            ]
+          },
+          {
+            "text": "Second-hand platforms: embedding",
+            "nodes": [],
+            "flows": [
+              "f18"
+            ]
+          }
+        ],
+        "cost_structure": [
+          {
+            "text": "Data infrastructure",
+            "nodes": [
+              "db"
+            ],
+            "flows": []
+          },
+          {
+            "text": "Model and API fees",
+            "nodes": [],
+            "flows": [
+              "f41"
+            ]
+          },
+          {
+            "text": "Verified-test subsidy",
+            "nodes": [],
+            "flows": [
+              "f14"
+            ]
+          },
+          {
+            "text": "B2B sales",
+            "nodes": [
+              "companies"
+            ],
+            "flows": []
+          },
+          {
+            "text": "Free monitoring and analysis",
+            "nodes": [],
+            "flows": [
+              "f3"
+            ]
+          }
+        ]
+      },
+      "summary_zh": "提供 AI 電池管理工具：個人上傳檢測資料，獲得電池管理建議；我們收集資料、正規化後建立電池資料庫，並授權給需要電池資訊的買方。",
+      "summary": "An AI battery manager: individuals upload test data and get battery-care advice; we normalise the data into a battery database and license it to buyers who need battery information.",
+      "main_members": [
+        "2B-6",
+        "1D-2",
+        "2B-1",
+        "1D-1"
+      ],
+      "story": {
+        "nodes": [
+          "owner",
+          "norm",
+          "ai",
+          "db",
+          "companies"
+        ],
+        "flows": [
+          "f23",
+          "f24",
+          "f42",
+          "f26",
+          "f27"
+        ]
       }
     }
   ],
@@ -1998,7 +2895,7 @@ window.STAGE3_DATA = {
         ],
         "x": 0.07,
         "y": 0.14,
-        "description": "Builds the socket-side meter; we specify the model and calibrate each unit"
+        "description": "Builds the plug-in energy meter; we specify the model and calibrate each unit"
       },
       {
         "id": "plug",
@@ -2060,6 +2957,21 @@ window.STAGE3_DATA = {
         "description": "User and payer; the buyout price is fixed at signing, so a well-kept battery makes the buyout a better deal"
       },
       {
+        "id": "people",
+        "kind": "group",
+        "label": "Individuals",
+        "candidates": [
+          1,
+          2,
+          3
+        ],
+        "x": 0.92,
+        "y": 0.255,
+        "w": 0.17,
+        "h": 0.42,
+        "description": "Private individuals; the two boxes inside are named per candidate concept"
+      },
+      {
         "id": "owner",
         "kind": "actor",
         "label": "Private owner / seller",
@@ -2067,11 +2979,16 @@ window.STAGE3_DATA = {
           2,
           3
         ],
-        "x": 0.9,
-        "y": 0.14,
+        "x": 0.92,
+        "y": 0.15,
         "notes": {
-          "2": "Gives a report, gets free views (capped) and a meter refund",
+          "2": "Sellers, owners not yet selling, buyers upgrading from an e-bike they can test: give a report, get free views (capped) and a deposit refund or discount",
           "3": "Free health tracking and advice; shares the history as a report at sale"
+        },
+        "parent": "people",
+        "labels": {
+          "2": "Report contributors",
+          "3": "Private owner"
         }
       },
       {
@@ -2083,12 +3000,18 @@ window.STAGE3_DATA = {
           2,
           3
         ],
-        "x": 0.93,
-        "y": 0.42,
+        "x": 0.92,
+        "y": 0.36,
         "notes": {
           "1": "Receives a comparable, verifiable report with the bike",
-          "2": "Pays per view when they have no report to give (e.g. first-time e-bike buyers)",
+          "2": "First-time e-bike buyers: no battery to contribute, so they pay per view",
           "3": "Sees the report labelled by verification level"
+        },
+        "parent": "people",
+        "labels": {
+          "1": "Next owner",
+          "2": "Pay-per-view buyers",
+          "3": "Buyer"
         }
       },
       {
@@ -2209,11 +3132,11 @@ window.STAGE3_DATA = {
       {
         "id": "credits",
         "kind": "module",
-        "label": "Credits & refunds",
+        "label": "Vouchers & deposits",
         "candidates": [
           2
         ],
-        "description": "Viewing credits for contributors, meter refunds, pay-per-view",
+        "description": "Vouchers tiered by report level (for the next test or for viewing reports), deposits and refunds, pay-per-view",
         "parent": "us"
       },
       {
@@ -2227,10 +3150,26 @@ window.STAGE3_DATA = {
         ],
         "notes": {
           "1": "Digital signature; battery bound by the lease-registered serial",
-          "2": "Digital signature; layered binding (serial photo, OEM serial read, seal, history check)",
+          "2": "Report levels: measured with our method (highest), official reports, other reports; digital signature; layered binding (serial photo, OEM serial read, seal, history check)",
           "3": "Verification level: unverified (uploads, plug data) or dealer-verified"
         },
         "parent": "us"
+      },
+      {
+        "id": "community",
+        "kind": "module",
+        "label": "Community & gamification",
+        "candidates": [
+          1,
+          2,
+          3
+        ],
+        "parent": "us",
+        "notes": {
+          "1": "In-company game and battery pet that keep lessees charging through the energy meter",
+          "2": "Community around shared reports",
+          "3": "Personified battery: a digital pet reflecting battery state and care"
+        }
       }
     ],
     "flows": [
@@ -2243,7 +3182,11 @@ window.STAGE3_DATA = {
           1,
           2
         ],
-        "label": "Meters, calibrated per unit"
+        "label": "Energy meters, calibrated per unit",
+        "labels": {
+          "1": "Energy meters (calibrated per unit)",
+          "2": "Energy meters for the deposit route"
+        }
       },
       {
         "id": "f2",
@@ -2262,9 +3205,14 @@ window.STAGE3_DATA = {
         "to": "fleet",
         "type": "service",
         "candidates": [
-          1
+          1,
+          3
         ],
-        "label": "Free battery monitoring"
+        "label": "Free battery monitoring",
+        "labels": {
+          "1": "Free battery monitoring",
+          "3": "Free monitoring + cross-brand degradation analysis"
+        }
       },
       {
         "id": "f4",
@@ -2274,7 +3222,7 @@ window.STAGE3_DATA = {
         "candidates": [
           1
         ],
-        "label": "Meter as an approved lease accessory"
+        "label": "Offered in the lease (energy meter included)"
       },
       {
         "id": "f5",
@@ -2294,17 +3242,7 @@ window.STAGE3_DATA = {
         "candidates": [
           1
         ],
-        "label": "Charging data via the meter"
-      },
-      {
-        "id": "f7",
-        "from": "lessee",
-        "to": "us",
-        "type": "money",
-        "candidates": [
-          1
-        ],
-        "label": "Monthly accessory fee (in the lease, via gross salary)"
+        "label": "Charging data via the energy meter"
       },
       {
         "id": "f8",
@@ -2348,8 +3286,8 @@ window.STAGE3_DATA = {
       },
       {
         "id": "f12",
-        "from": "owner",
-        "to": "dealer",
+        "from": "dealer",
+        "to": "owner",
         "type": "service",
         "candidates": [
           2,
@@ -2380,7 +3318,11 @@ window.STAGE3_DATA = {
           2,
           3
         ],
-        "label": "Test subsidy"
+        "label": "Test subsidy",
+        "labels": {
+          "2": "Test voucher (we subsidise the test)",
+          "3": "Test subsidy"
+        }
       },
       {
         "id": "f15",
@@ -2400,7 +3342,7 @@ window.STAGE3_DATA = {
         "candidates": [
           2
         ],
-        "label": "Meter refund & viewing credits"
+        "label": "Deposit refund or retail discount + vouchers by report level"
       },
       {
         "id": "f17",
@@ -2410,7 +3352,7 @@ window.STAGE3_DATA = {
         "candidates": [
           2
         ],
-        "label": "Meter (refunded after enough charges)"
+        "label": "Energy meter (deposit route)"
       },
       {
         "id": "f18",
@@ -2516,7 +3458,7 @@ window.STAGE3_DATA = {
         "candidates": [
           3
         ],
-        "label": "Subscription"
+        "label": "Subscription & API fees"
       },
       {
         "id": "f28",
@@ -2527,7 +3469,341 @@ window.STAGE3_DATA = {
           3
         ],
         "label": "Report link / QR at sale"
+      },
+      {
+        "id": "f29",
+        "from": "lessee",
+        "to": "leasing",
+        "type": "money",
+        "candidates": [
+          1
+        ],
+        "label": "Monthly lease incl. accessory fee (deducted from gross salary)"
+      },
+      {
+        "id": "f30",
+        "from": "leasing",
+        "to": "us",
+        "type": "money",
+        "candidates": [
+          1
+        ],
+        "label": "Service fee (accessory fee in the lease)"
+      },
+      {
+        "id": "f32",
+        "from": "buyer",
+        "to": "us",
+        "type": "money",
+        "candidates": [
+          1
+        ],
+        "label": "Report transfer fee (later)"
+      },
+      {
+        "id": "f33",
+        "from": "community",
+        "to": "lessee",
+        "type": "service",
+        "candidates": [
+          1
+        ],
+        "label": "In-company game, battery pet"
+      },
+      {
+        "id": "f34",
+        "from": "soh",
+        "to": "lessee",
+        "type": "service",
+        "candidates": [
+          1
+        ],
+        "label": "Quick-calibration prompts"
+      },
+      {
+        "id": "f35",
+        "from": "us",
+        "to": "hw",
+        "type": "money",
+        "candidates": [
+          1,
+          2
+        ],
+        "label": "Energy meter purchase"
+      },
+      {
+        "id": "f36",
+        "from": "owner",
+        "to": "us",
+        "type": "money",
+        "candidates": [
+          2
+        ],
+        "label": "Deposit"
+      },
+      {
+        "id": "f37",
+        "from": "hw",
+        "to": "owner",
+        "type": "device",
+        "candidates": [
+          2
+        ],
+        "label": "Energy meter bought at retail"
+      },
+      {
+        "id": "f38",
+        "from": "owner",
+        "to": "hw",
+        "type": "money",
+        "candidates": [
+          2
+        ],
+        "label": "Energy meter purchase (retail)"
+      },
+      {
+        "id": "f39",
+        "from": "market",
+        "to": "owner",
+        "type": "report",
+        "candidates": [
+          2
+        ],
+        "label": "Views with vouchers"
+      },
+      {
+        "id": "f40",
+        "from": "community",
+        "to": "owner",
+        "type": "service",
+        "candidates": [
+          2,
+          3
+        ],
+        "labels": {
+          "2": "Community around shared reports",
+          "3": "Personified battery"
+        }
+      },
+      {
+        "id": "f41",
+        "from": "us",
+        "to": "llm",
+        "type": "money",
+        "candidates": [
+          3
+        ],
+        "label": "API fees"
+      },
+      {
+        "id": "f42",
+        "from": "norm",
+        "to": "db",
+        "type": "data",
+        "candidates": [
+          3
+        ],
+        "label": "Calibrated data"
+      },
+      {
+        "id": "f43",
+        "from": "db",
+        "to": "ai",
+        "type": "data",
+        "candidates": [
+          3
+        ],
+        "label": "Battery histories"
+      },
+      {
+        "id": "f44",
+        "from": "owner",
+        "to": "verify",
+        "type": "report",
+        "candidates": [
+          2
+        ],
+        "label": "Existing reports (official / third-party), graded by level"
+      },
+      {
+        "id": "f45",
+        "from": "us",
+        "to": "leasing",
+        "type": "service",
+        "candidates": [
+          1
+        ],
+        "label": "Battery management service for their lease offer"
+      },
+      {
+        "id": "f46",
+        "from": "us",
+        "to": "lessee",
+        "type": "service",
+        "candidates": [
+          1
+        ],
+        "label": "Battery management (tracking, advice, reports)"
+      },
+      {
+        "id": "f47",
+        "from": "community",
+        "to": "buyer",
+        "type": "service",
+        "candidates": [
+          2
+        ],
+        "label": "Community around shared reports"
       }
-    ]
+    ],
+    "layouts": {
+      "1": {
+        "nodes": {
+          "leasing": {
+            "x": 0.36,
+            "y": 0.09
+          },
+          "lessee": {
+            "x": 0.68,
+            "y": 0.09
+          },
+          "hw": {
+            "x": 0.08,
+            "y": 0.3
+          },
+          "fleet": {
+            "x": 0.08,
+            "y": 0.76
+          },
+          "us": {
+            "x": 0.45,
+            "y": 0.55,
+            "w": 0.38,
+            "h": 0.44
+          },
+          "people": {
+            "x": 0.89,
+            "y": 0.55,
+            "w": 0.18,
+            "h": 0.24
+          },
+          "buyer": {
+            "x": 0.89,
+            "y": 0.57
+          },
+          "dealer": {
+            "x": 0.45,
+            "y": 0.93
+          }
+        },
+        "modules": [
+          "db",
+          "soh",
+          "verify",
+          "community"
+        ]
+      },
+      "2": {
+        "nodes": {
+          "hw": {
+            "x": 0.08,
+            "y": 0.18
+          },
+          "groups": {
+            "x": 0.08,
+            "y": 0.76
+          },
+          "us": {
+            "x": 0.42,
+            "y": 0.52,
+            "w": 0.36,
+            "h": 0.46
+          },
+          "people": {
+            "x": 0.86,
+            "y": 0.3,
+            "w": 0.2,
+            "h": 0.46
+          },
+          "owner": {
+            "x": 0.86,
+            "y": 0.18
+          },
+          "buyer": {
+            "x": 0.86,
+            "y": 0.42
+          },
+          "market": {
+            "x": 0.86,
+            "y": 0.84
+          },
+          "dealer": {
+            "x": 0.42,
+            "y": 0.93
+          }
+        },
+        "modules": [
+          "soh",
+          "credits",
+          "verify",
+          "community"
+        ]
+      },
+      "3": {
+        "nodes": {
+          "plug": {
+            "x": 0.62,
+            "y": 0.08
+          },
+          "llm": {
+            "x": 0.08,
+            "y": 0.4
+          },
+          "fleet": {
+            "x": 0.08,
+            "y": 0.78
+          },
+          "us": {
+            "x": 0.42,
+            "y": 0.53,
+            "w": 0.38,
+            "h": 0.5
+          },
+          "people": {
+            "x": 0.87,
+            "y": 0.27,
+            "w": 0.2,
+            "h": 0.44
+          },
+          "owner": {
+            "x": 0.87,
+            "y": 0.15
+          },
+          "buyer": {
+            "x": 0.87,
+            "y": 0.39
+          },
+          "market": {
+            "x": 0.87,
+            "y": 0.66
+          },
+          "companies": {
+            "x": 0.87,
+            "y": 0.9
+          },
+          "dealer": {
+            "x": 0.42,
+            "y": 0.93
+          }
+        },
+        "modules": [
+          "db",
+          "norm",
+          "ai",
+          "verify",
+          "community"
+        ]
+      }
+    }
   }
 };
